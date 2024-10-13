@@ -1,8 +1,8 @@
-import { StyleSheet, Text, SafeAreaView } from 'react-native'
+import { StyleSheet, Text, SafeAreaView, FlatList } from 'react-native'
 import React, { useState } from 'react'
 import CardWeather from '@/components/shared/cardWeather'
 import Header from '@/components/shared/Header/Header'
-
+import CardState from '@/components/shared/CardStage'
 const HomeScreen = () => {
 
   return (
@@ -12,6 +12,7 @@ const HomeScreen = () => {
       </SafeAreaView>
       <SafeAreaView style={styles.content}>
           <CardWeather />
+          <CardState date={20}/>
       </SafeAreaView>
       <SafeAreaView style={styles.footer}></SafeAreaView>
     </SafeAreaView>
@@ -23,15 +24,17 @@ export default HomeScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
     alignItems: 'center',
+    gap: 30,
+    padding: 20,
   },
   header: {
   },
   content: {
-    width: 50,
-    height: 50,
-    backgroundColor: 'pink',
+    width: '90%',
+    gap: 30,
+    flexDirection: 'column',
+    borderRadius: 15,
   },
   footer: {
     width: 50,
