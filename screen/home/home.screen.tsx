@@ -1,21 +1,51 @@
-import { StyleSheet, Text, SafeAreaView, FlatList } from 'react-native'
-import React, { useState } from 'react'
+import { StyleSheet, Text, SafeAreaView, FlatList, StatusBar } from 'react-native'
+import React, { useMemo } from 'react'
 import CardWeather from '@/components/shared/cardWeather'
 import Header from '@/components/shared/Header/Header'
 import CardState from '@/components/shared/CardStage'
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet'
+import { useRef, useCallback, useEffect } from 'react'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Import GestureHandlerRootView
+import Menu from '@/components/shared/Menu'
 const HomeScreen = () => {
+  const BottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const snapPoints = useMemo(() => ['40%', '88%'], []); 
+  // callbacks
+  const handlePresentModalPress = useCallback(() => {
+    BottomSheetModalRef.current?.present();
+  }, []);
+  useEffect(() => {
+    handlePresentModalPress();
+  }, [handlePresentModalPress]);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <SafeAreaView style={styles.header}>
-        <Header />      
+    <GestureHandlerRootView>
+      <BottomSheetModalProvider>
+      <StatusBar></StatusBar>
+      <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.header}>
+          <Header />      
+        </SafeAreaView>
+        <SafeAreaView style={styles.content}>
+            <CardWeather />
+            <CardState date={20}/>
+        </SafeAreaView>
+        <SafeAreaView style={styles.footer}>
+          <BottomSheetModal 
+            ref={BottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints}
+            backgroundStyle ={styles.modal}
+            enablePanDownToClose={false}
+          >
+            <BottomSheetView style={styles.contentContainer}>
+              <Menu />
+            </BottomSheetView>
+          </BottomSheetModal>
+        </SafeAreaView>
       </SafeAreaView>
-      <SafeAreaView style={styles.content}>
-          <CardWeather />
-          <CardState date={20}/>
-      </SafeAreaView>
-      <SafeAreaView style={styles.footer}></SafeAreaView>
-    </SafeAreaView>
+    </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   )
 }
 
@@ -37,8 +67,21 @@ const styles = StyleSheet.create({
     borderRadius: 15,
   },
   footer: {
-    width: 50,
-    height: 50,
-    backgroundColor: 'black',
   },
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  modal: {
+    borderRadius: 50, 
+    backgroundColor: '#C6E9CA',
+    // Shadow cho iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+
+    // Shadow cho Android
+    elevation: 5, 
+  }
 })

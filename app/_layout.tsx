@@ -9,15 +9,14 @@ export default function RootLayout() {
           <Stack.Screen name="(routes)/welcome-intro/index" />
           <Stack.Screen name="(routes)/login/index" />
           <Stack.Screen name="(routes)/home/index" />
-
-          {/* <Stack.Screen
-            name="(routes)/course-details/index"
+          <Stack.Screen
+            name="(routes)/myfarm/index"
             options={{
               headerShown: true,
-              title: "Course Details",
+              title: "My Farm",
               headerBackTitle: "Back",
             }}
-          /> */}
+          />
         </Stack>
     </ToastProvider>
   );
