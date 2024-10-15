@@ -1,11 +1,9 @@
 import { StyleSheet, Text, SafeAreaView } from 'react-native'
 import React from 'react'
-
+import DiseaseScreen from '@/screen/diseases/diseases.screen'
 const Disease = () => {
   return (
-    <SafeAreaView>
-      <Text>Disease</Text>
-    </SafeAreaView>
+    <DiseaseScreen />
   )
 }
 

@@ -1,14 +1,12 @@
-import { StyleSheet, Text, SafeAreaView } from 'react-native'
+import DiagnoseScreen from '@/screen/diagnose/diagnose.screen'
 import React from 'react'
+import { Text } from 'react-native'
 
 const Diagnostic = () => {
   return (
-    <SafeAreaView>
-      <Text>Diagnostic</Text>
-    </SafeAreaView>
+    <DiagnoseScreen />
   )
 }
 
 export default Diagnostic
 
-const styles = StyleSheet.create({})

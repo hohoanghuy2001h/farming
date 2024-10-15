@@ -27,3 +27,10 @@ type stagePlant = {
     maxLight: number,
     days: number,
 }
+type listDataType = {
+    _id: string;
+    image: any;
+    title: string;
+    summary: string;
+    detail: string;
+};

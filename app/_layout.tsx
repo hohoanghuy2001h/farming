@@ -18,6 +18,40 @@ export default function RootLayout() {
               header: () => <Header title='My Farm'/>
             }}
           />
+          <Stack.Screen
+            name="(routes)/irrigation"
+            options={{
+              headerShown: true,
+              // title: "My Farm",
+              // headerBackTitle: "Back",
+              header: () => <Header title='Irrigation'/>
+            }}
+          />
+          <Stack.Screen
+            name="(routes)/diagnostic/index"
+            options={{
+              headerShown: true,
+              // title: "My Farm",
+              // headerBackTitle: "Back",
+              header: () => <Header title='Diagnostic'/>
+            }}
+          />
+          <Stack.Screen
+            name="(routes)/cultivation"
+            options={{
+              headerShown: true,
+              // title: "My Farm",
+              // headerBackTitle: "Back",
+              header: () => <Header title='Cultivation Tips'/>
+            }}
+          />
+          <Stack.Screen
+            name="(routes)/disease"
+            options={{
+              headerShown: true,
+              header: () => <Header title='Diseases & Medicare'/>
+            }}
+          />
         </Stack>
     </ToastProvider>
   );

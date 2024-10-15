@@ -1,14 +1,10 @@
-import { StyleSheet, Text, SafeAreaView } from 'react-native'
+import CultivationScreen from '@/screen/cultivation/cultivation.screen'
 import React from 'react'
 
 const Cultivation = () => {
   return (
-    <SafeAreaView>
-      <Text>Cultivation</Text>
-    </SafeAreaView>
+    <CultivationScreen />
   )
 }
 
 export default Cultivation
-
-const styles = StyleSheet.create({})

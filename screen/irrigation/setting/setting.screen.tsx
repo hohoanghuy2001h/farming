@@ -1,14 +1,14 @@
 import { StyleSheet, Text, SafeAreaView } from 'react-native'
 import React from 'react'
 
-const News = () => {
+const SettingScreen = () => {
   return (
     <SafeAreaView>
-      <Text>News</Text>
+      <Text>SettingScreen</Text>
     </SafeAreaView>
   )
 }
 
-export default News
+export default SettingScreen
 
 const styles = StyleSheet.create({})

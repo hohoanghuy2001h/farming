@@ -1,14 +1,14 @@
 import { StyleSheet, Text, SafeAreaView } from 'react-native'
 import React from 'react'
 
-const Irrigation = () => {
+const StatisticalScreen = () => {
   return (
     <SafeAreaView>
-      <Text>Irrigation</Text>
+      <Text>StatisticalScreen</Text>
     </SafeAreaView>
   )
 }
 
-export default Irrigation
+export default StatisticalScreen
 
 const styles = StyleSheet.create({})
