@@ -5,37 +5,28 @@ import { windowWidth } from '@/utils/Dimensions';
 import { useRouter } from 'expo-router'
 
 interface HeaderProps {
-  avatar?: string,
-  field?: string,
+  title: string,
+  right?: boolean
 }
 
-const Header: React.FC<HeaderProps> = ({avatar = null}) => {
+const Header: React.FC<HeaderProps> = ({title = 'Default', right = false}) => {
     const router = useRouter();
     return (
         <SafeAreaView style={styles.container}>
-            <SafeAreaView style={styles.left}>
-                <TouchableOpacity style={{
-                    flexDirection: 'row',
-                    gap: 10,
-                    alignItems: 'center',
-                }}>
-                    <Image
-                      style={styles.image}
-                      source={require('@/assets/images/location.png')}
-                    />   
-                    <Text>Field 1</Text>
-                </TouchableOpacity>
-            </SafeAreaView>
-            <SafeAreaView style={styles.right}>
-               <SafeAreaView style={styles.notice}>
-                  <Icon name='bell' size={30}/>
-                  <SafeAreaView style ={styles.dot}/>
-               </SafeAreaView>
-               <Image 
-                   style={styles.avatar}
-                   source={require('@/assets/images/location.png')}
-               />
-            </SafeAreaView>
+           <TouchableOpacity style={styles.left} onPress={() => router.back()}>
+              <Icon name="arrow-left" style={styles.icon} size={20} /> 
+           </TouchableOpacity>
+           <SafeAreaView style={styles.center}>
+              <Text style={styles.title}>{title}</Text>
+           </SafeAreaView>
+           <SafeAreaView style={styles.right}>
+              { right? 
+              <SafeAreaView style={styles.iconContainer}>
+                <Icon name="flag" style={styles.icon} color={'white'} size={20} /> 
+              </SafeAreaView>
+              : <></>
+              }
+           </SafeAreaView>
         </SafeAreaView>
     )
 }
@@ -44,36 +35,39 @@ export default Header
 
 const styles = StyleSheet.create({
   container: {
-    height: 60,
+    height: 100,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    width: windowWidth,
+    width: windowWidth - 40,
+    margin: 'auto',
+    padding: 20,
+    backgroundColor: 'none',
   },
-  left: {},
-  image: {
-    width: 30,
-    height: 30,
+  left: {
+    borderRadius: 10,
+    backgroundColor: '#D9D9D9',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
   right: {
-    flexDirection: 'row',
-    gap: 20,
+    width: 40,
+    aspectRatio: 1/1,
+  },
+  iconContainer: {
+    borderRadius: 20,
+    backgroundColor: '#D9D9D9',
     alignItems: 'center',
+    padding: 8,
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%',
   },
-  notice: {
-    position: 'relative'
+  center: {},
+  icon: {},
+  title: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
-  dot: {
-    backgroundColor: 'red',
-    width: 10,
-    height: 10,
-    borderRadius: 50,
-    position: 'absolute',
-    right: '10%',
-  },
-  avatar: {
-    width: 30,
-    height: 30,
-  }
 })

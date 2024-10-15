@@ -1,7 +1,7 @@
-import { StyleSheet, Text, SafeAreaView, FlatList, StatusBar } from 'react-native'
+import { StyleSheet, Text, SafeAreaView} from 'react-native'
 import React, { useMemo } from 'react'
 import CardWeather from '@/components/shared/cardWeather'
-import Header from '@/components/shared/Header/Header'
+import Header from '@/components/shared/HeaderHome/Header'
 import CardState from '@/components/shared/CardStage'
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet'
 import { useRef, useCallback, useEffect } from 'react'
@@ -21,7 +21,6 @@ const HomeScreen = () => {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-      <StatusBar></StatusBar>
       <SafeAreaView style={styles.container}>
         <SafeAreaView style={styles.header}>
           <Header />      

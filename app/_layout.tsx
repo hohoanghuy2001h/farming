@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 import { ToastProvider } from "react-native-toast-notifications";
-
+import Header from '@/components/shared/Header/Header';
 export default function RootLayout() {
   return (
     <ToastProvider>
@@ -10,11 +10,12 @@ export default function RootLayout() {
           <Stack.Screen name="(routes)/login/index" />
           <Stack.Screen name="(routes)/home/index" />
           <Stack.Screen
-            name="(routes)/myfarm/index"
+            name="(routes)/myfarm"
             options={{
               headerShown: true,
-              title: "My Farm",
-              headerBackTitle: "Back",
+              // title: "My Farm",
+              // headerBackTitle: "Back",
+              header: () => <Header title='My Farm'/>
             }}
           />
         </Stack>

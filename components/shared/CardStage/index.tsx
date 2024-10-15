@@ -8,7 +8,6 @@ interface CardInfoProps {
 }
 export const CardState: React.FC<CardInfoProps> = ({date}) => {
   const {loading, stagePlant} = useStage(date);
-
   return (
     loading ? 
     <SafeAreaView style={styles.container}>

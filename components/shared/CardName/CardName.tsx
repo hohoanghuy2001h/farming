@@ -1,34 +1,22 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import React from 'react'
-import Feather from '@expo/vector-icons/Feather';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import Entypo from '@expo/vector-icons/Entypo';
-import AntDesign from '@expo/vector-icons/AntDesign';
+import Icon from 'react-native-vector-icons/FontAwesome';
 const screenWidth = Dimensions.get('window').width;
 
 interface CardNameProps {
-    iconType?: 'FontAwesome6' | 'Entypo' | 'AntDesign' | 'Feather'; // Loại icon (FontAwesome hoặc Entypo)
     iconName?: string;
     onclick?: boolean;
     warning?: number;
 }
 // Định nghĩa kiểu cho các component icon
-type IconMap = {
-    [key in 'FontAwesome6' | 'Entypo' | 'AntDesign' | 'Feather']: React.ComponentType<{ name: string; size: number; color: string; style?: object }>;
-};
-const CardName: React.FC<CardNameProps> = ({iconType = 'FontAwesome6',iconName = 'temperature-half', onclick = false, warning= 0}) => {
+
+const CardName: React.FC<CardNameProps> = ({iconName = 'temperature-half', onclick = false, warning= 0}) => {
     // Tạo đối tượng để ánh xạ các loại icon
-    const iconMap = {
-        FontAwesome6: FontAwesome6,
-        Entypo: Entypo,
-        AntDesign: AntDesign,
-        Feather: Feather,
-    };
     const colorIcon = onclick? 'white': '#13852F';
-    const IconComponent = iconMap[iconType]; 
+
     return (
     <View style={[styles.container, onclick ? styles.onclick : null]}>
-        <IconComponent name={iconName} size={40} color={colorIcon} />
+        <Icon name={iconName} size={40} color={colorIcon} />
         <Text style={[styles.state,
                       onclick ? styles.onclickState : null,
                       warning == 1? styles.stateHigh : warning == 2 ? styles.stateLow : null 

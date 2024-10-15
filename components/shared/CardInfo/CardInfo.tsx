@@ -6,6 +6,7 @@ interface CardInfoProps {
   warning?: boolean;
 }
 export const CardInfo: React.FC<CardInfoProps> = ({label, value, type, warning=false}) => {
+  // console.log(label, value, type, warning);
   return (
     <SafeAreaView style={styles.container}>
       <SafeAreaView style= {styles.labelContainer}>
@@ -19,10 +20,12 @@ export const CardInfo: React.FC<CardInfoProps> = ({label, value, type, warning=f
 
 const styles = StyleSheet.create({
   container: {
+    width: 125,
+    height: 100,
+    marginLeft: 5,
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingVertical: 10,
-    display: 'flex',
+    paddingVertical: 20,
     borderWidth: 1,
     borderRadius: 20,
     borderColor: '#ddd',
@@ -33,9 +36,9 @@ const styles = StyleSheet.create({
       width: 0,           
       height: 4,            
     },
-    shadowOpacity: 0.25,      
-    shadowRadius: 4,        
-    elevation: 5,           
+    shadowOpacity: 0.2,      
+    shadowRadius: 5,        
+    elevation: 5, 
   },
   labelContainer: {
     flexDirection: 'row',
