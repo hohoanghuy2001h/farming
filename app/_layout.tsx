@@ -52,6 +52,27 @@ export default function RootLayout() {
               header: () => <Header title='Diseases & Medicare'/>
             }}
           />
+          <Stack.Screen
+            name="(routes)/news"
+            options={{
+              headerShown: true,
+              header: () => <Header title='News'/>
+            }}
+          />
+          <Stack.Screen
+            name="(routes)/aboutus/index"
+            options={{
+              headerShown: true,
+              header: () => <Header title='About Us'/>
+            }}
+          />
+          <Stack.Screen
+            name="(routes)/notices"
+            options={{
+              headerShown: true,
+              header: () => <Header title='Notices'/>
+            }}
+          />
         </Stack>
     </ToastProvider>
   );

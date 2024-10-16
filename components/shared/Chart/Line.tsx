@@ -3,7 +3,6 @@ import React from 'react'
 import {
     LineChart,
   } from "react-native-chart-kit";
-import Svg, { Defs, LinearGradient, Stop } from 'react-native-svg';
 
 
 const screenWidth = Dimensions.get('window').width;
@@ -11,10 +10,10 @@ interface ChartProps {
     data: any,
     title?: string
 }
-const Line: React.FC<ChartProps> = ({data, title = 'null'})  => {
+const Line: React.FC<ChartProps> = ({data, title = ''})  => {
   return (
     <SafeAreaView style={styles.container}>
-      {title ? <Text style={styles.title}>{title}</Text> : null}
+      {title ? <Text style={styles.title}>{title}</Text> : <></>}
       <LineChart
         data={data}
         width={screenWidth-40} // from react-native

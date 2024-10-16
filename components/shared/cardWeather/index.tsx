@@ -63,7 +63,8 @@ const styles = StyleSheet.create({
   content: {
     width: '100%',
     height: '100%',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    zIndex: -10,
   },
   title: {
     marginLeft: 110,
@@ -106,8 +107,9 @@ const styles = StyleSheet.create({
   icon: {
     position: 'absolute',
     top: -80,
-    right: -20,
+    right: -30,
     width: 200,
     aspectRatio: 1/1,
+    zIndex: -5,
   },
 })

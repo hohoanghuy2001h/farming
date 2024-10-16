@@ -1,12 +1,10 @@
 import { Link } from 'expo-router';
-import { SafeAreaView, Text, StyleSheet, TouchableOpacity, ScrollView, FlatList} from 'react-native';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { SafeAreaView, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import CardName from '@/components/shared/CardName/CardName';
-import Carousel from 'react-native-reanimated-carousel';
 import { windowWidth } from '@/utils/Dimensions';
 import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
 import useData from '@/hooks/useData';
-// import Line from '@/components/shared/Chart/Line';
+import Line from '@/components/shared/Chart/Line';
 import { useState } from 'react';
 
 //FAKE API
@@ -33,7 +31,7 @@ const cardNameArray = [
   },
 ]
 //Data chart
-const data = {
+const dataChart = {
   'Light': {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
     datasets: [
@@ -41,6 +39,7 @@ const data = {
         data: [20, 45, 28, 80, 99, 43, 50],
       },
     ],
+    name: 'Light',
   },
   'Tempurature': {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
@@ -49,6 +48,7 @@ const data = {
         data: [90, 45, 28, 80, 99, 43, 50],
       },
     ],
+    name: 'Light',
   },
   'Humidity': {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
@@ -57,6 +57,7 @@ const data = {
         data: [80, 45, 28, 80, 99, 43, 50],
       },
     ],
+    name: 'Light',
   },
   'Soil': {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
@@ -65,6 +66,7 @@ const data = {
         data: [100, 45, 28, 80, 99, 43, 50],
       },
     ],
+    name: 'Light',
   },
 }
 export default function StatisticalScreen() {
@@ -76,41 +78,40 @@ export default function StatisticalScreen() {
         onPress={() => {
           setActiveItem(index)
         }}
-        style={styles.cardNameItem}
         key={index}
+        style = {styles.itemContainer}
       >
           <CardName iconName={item.iconName} key={index} 
                     warning={item.warning} 
                     onclick={index == activeItem? true : false} 
           />
       </TouchableOpacity>
-
     );
   }
   return (
     <SafeAreaView style={styles.container}>
       <SafeAreaView style={styles.wrapper}>
         <HeaderMyFarm />
-        {/* <SafeAreaView style={styles.graphContainer}>
-          <Line data={data['Light']}></Line>
-        </SafeAreaView> */}
-        <SafeAreaView style={styles.carouselContainer}>
-        <Carousel
-            width={windowWidth / 3} // Chiều rộng của carousel
-            height={200} // Chiều cao của carousel
-            data={cardNameArray}
-            style = {styles.cardNameContainer}
-            renderItem={({item, index}) => itemRender(item,index)}
-          />
+        <SafeAreaView style={styles.graphContainer}>
+          <Line data={dataChart['Light']}></Line>
+        </SafeAreaView>
+        <SafeAreaView style={styles.swipperContainer}>
+            <FlatList 
+               data={cardNameArray}
+               contentContainerStyle ={styles.swipperWrapper}
+               renderItem={({item, index}) => itemRender(item, index)}
+               horizontal
+               showsHorizontalScrollIndicator={false}
+               ItemSeparatorComponent={() => <SafeAreaView style={{ width: 20 }} />}  // 20px spacing between items
+            />
         </SafeAreaView>
 
-        {/* <SafeAreaView style={styles.desContainer}>
+         <SafeAreaView style={styles.desContainer}>
             <Text style={styles.desTitle}>Best Conditions:</Text>
             <SafeAreaView style={styles.desTextContainer}>
-              <Text>Hello</Text>
+              <Text style = {styles.text}>Hello</Text>
             </SafeAreaView>
-        </SafeAreaView> */}      
-        <Text>5</Text>
+        </SafeAreaView>       
         </SafeAreaView>
     </SafeAreaView>
   );
@@ -124,26 +125,37 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     width: windowWidth - 40,
-    gap: 20,
+    gap: 10,
     position: 'relative',
   },
-  carouselContainer: {
-    backgroundColor: 'red',
-    height: 200,
+  swipperContainer: {
+    height: 220,
     overflow: 'hidden',
-    justifyContent: 'center',
+    width: '100%',
+  },
+  swipperWrapper: {
     alignItems: 'center',
   },
-  cardNameContainer: {
-      alignItems: 'center',
-      justifyContent: 'center', 
-      paddingHorizontal: 20,
-      width: '100%',
-    },
-
-  cardNameItem: {
-    width: windowWidth / 3 - 10,
-    height: 200,
-    marginHorizontal: 3,
-  }
+  desContainer: {
+    gap: 15,
+  },
+  desTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#2E5A1C' 
+  },
+  desTextContainer: {
+    padding: 20,
+    borderColor: '#21963A',
+    borderWidth: 1,
+    borderRadius: 10,
+  },
+  text: {
+    padding: 10,
+    textAlign: 'justify',
+  },
+  itemContainer: {
+    width: windowWidth/3,
+  },
+  graphContainer: {}
 });

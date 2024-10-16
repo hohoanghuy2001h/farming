@@ -58,6 +58,8 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   header: {
+    position: 'relative',
+    zIndex: 10,
   },
   content: {
     width: '90%',

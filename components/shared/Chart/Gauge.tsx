@@ -1,116 +1,82 @@
-import { StyleSheet, Text, SafeAreaView, Dimensions } from 'react-native'
-import React from 'react'
-import {
-    ProgressChart ,
-  } from "react-native-chart-kit";
-
-
-const screenWidth = Dimensions.get('window').width;
-interface ChartProps {
-    data: any,
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, Text, StyleSheet } from 'react-native';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+interface GaugeChartProps {
+  data: number,
+  title?: string
 }
-const Gauge: React.FC<ChartProps> = ({data})  => {
-    let configStyle;
-    // if (data < 70) {
-    //     configStyle = [
-    //       {
-    //         name: 'Low',
-    //         population: data,
-    //         color: '#FFCC32', // Màu vàng cho độ ẩm thấp
-    //         legendFontColor: '#7F7F7F',
-    //         legendFontSize: 15,
-    //       },
-    //       {
-    //         name: 'Unused',
-    //         population: 100 - data,
-    //         color: '#E0E0E0', // Màu xám cho phần không sử dụng
-    //         legendFontColor: '#7F7F7F',
-    //         legendFontSize: 15,
-    //       },
-    //     ];
-    //   } else if (data >= 70 && data <= 80) {
-    //     configStyle = [
-    //       {
-    //         name: 'Moderate',
-    //         population: data,
-    //         color: '#0099FF', // Màu xanh dương cho độ ẩm vừa
-    //         legendFontColor: '#7F7F7F',
-    //         legendFontSize: 15,
-    //       },
-    //       {
-    //         name: 'Unused',
-    //         population: 100 - data,
-    //         color: '#E0E0E0',
-    //         legendFontColor: '#7F7F7F',
-    //         legendFontSize: 15,
-    //       },
-    //     ];
-    //   } else {
-    //     configStyle = [
-    //       {
-    //         name: 'High',
-    //         population: data,
-    //         color: '#E13832', // Màu đỏ cho độ ẩm cao
-    //         legendFontColor: '#7F7F7F',
-    //         legendFontSize: 15,
-    //       },
-    //       {
-    //         name: 'Unused',
-    //         population: 100 - data,
-    //         color: '#E0E0E0',
-    //         legendFontColor: '#7F7F7F',
-    //         legendFontSize: 15,
-    //       },
-    //     ];
-    // }
+
+const Gauge: React.FC<GaugeChartProps> = ({data, title = ''})  => {
+ // Khởi tạo trạng thái warning với giá trị mặc định là 'normal'
+  const [warning, setWarning] = useState('Good');
+
+  // Hàm để thay đổi giá trị warning
+  const compareNumber = (numberToCompare: number) => {
+    if (numberToCompare > 80) {
+      setWarning('High');
+    } else if (numberToCompare < 60) {
+      setWarning('Low');
+    } else {
+      setWarning('Good');
+    }
+  };
+  const colorWarning = () => {
+    if(warning == 'Good') return "#3498db";
+    else if (warning == 'High') return  "#E13832";
+    else return '#FFBC43'; 
+  }
+  useEffect(() => {
+    compareNumber(data)
+  }, [data])
+  
   return (
     <SafeAreaView style={styles.container}>
-        {/* <ProgressChart
-            data={data}
-            width={screenWidth}
-            height={220}
-            strokeWidth={16}
-            radius={32}
-            chartConfig={{
-            backgroundColor: '#e26a00',
-            backgroundGradientFrom: '#fb8c00',
-            backgroundGradientTo: '#ffa726',
-            decimalPlaces: 2, // Số thập phân
-            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-            style: {
-                borderRadius: 16,
-            },
-            }}
-            style={{
-                marginVertical: 8,
-                borderRadius: 16,
-            }}
-        /> */}
-        <Text style={styles.valueText}>{data}%</Text>
-        <Text style={styles.labelText}>SOIL MOISTURE</Text>
+      <AnimatedCircularProgress
+        size={150}
+        width={15}
+        fill={data}
+        tintColor={colorWarning()} // Gọi hàm để lấy màu sắc
+        backgroundColor="#ddd" // Màu nền xám nhạt
+        rotation={-120} // Bắt đầu từ đỉnh
+        lineCap="round" // Đầu tròn cho vòng tròn
+        arcSweepAngle={240} // Vòng tròn chỉ bao phủ 240 độ
+        children={() => (
+          <SafeAreaView style={styles.content}>
+            <Text style={[styles.percentage, {color: colorWarning()}]}>{data}%</Text>
+            <Text style= {[styles.warning, {color: colorWarning()}]}>{warning}</Text>
+          </SafeAreaView>
+        )}
+        
+      />
+      <Text style={styles.label}>SOIL MOISTURE</Text>
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default Gauge; 
 const styles = StyleSheet.create({
-    container: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        backgroundColor: '#f0f0f0',
-        padding: 20,
-        borderRadius: 16,
-      },
-      valueText: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        color: '#13852F',
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 40,
+  },
+  content: {
+    position: 'absolute', // Giữ phần trăm trong vòng tròn
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  percentage: {
+    fontSize: 35,
+    color: '#13852F',
+    fontWeight: 'bold',
+  },
+  label: {
+    fontSize: 18,
+    color: 'green',
+    fontWeight: 'bold',
+  },
+  warning: {
+    color: '#13852F',
+  },
+});
 
-      },
-      labelText: {
-        fontSize: 16,
-        color: '#389E6D',
-
-      },
-})
+export default Gauge;

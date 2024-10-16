@@ -4,7 +4,7 @@ import { useNew } from '@/hooks/new';
 import ListItem from '@/components/shared/ListItem';
 import { windowWidth } from '@/utils/Dimensions';
 
-const NewsScreen = () => {
+const NoticesScreen = () => {
   const {data, loading} = useNew();
   const renderItem = ({ item }: { item: listDataType }) => {
     return (
@@ -24,7 +24,7 @@ const NewsScreen = () => {
   )
 }
 
-export default NewsScreen
+export default NoticesScreen
 
 const styles = StyleSheet.create({
   container: {

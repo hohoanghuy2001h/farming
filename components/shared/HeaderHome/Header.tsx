@@ -11,6 +11,12 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({avatar = null}) => {
     const router = useRouter();
+    const redictPage = () => {
+      router.push({
+        pathname: '/(routes)/notices',
+        params: { },
+    })
+    }
     return (
         <SafeAreaView style={styles.container}>
             <SafeAreaView style={styles.left}>
@@ -28,7 +34,9 @@ const Header: React.FC<HeaderProps> = ({avatar = null}) => {
             </SafeAreaView>
             <SafeAreaView style={styles.right}>
                <SafeAreaView style={styles.notice}>
+                <TouchableOpacity onPress={redictPage}>
                   <Icon name='bell' size={30}/>
+                </TouchableOpacity>
                   <SafeAreaView style ={styles.dot}/>
                </SafeAreaView>
                <Image 
@@ -50,6 +58,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 20,
     width: windowWidth,
+    position: 'relative',
+    zIndex: 10,
   },
   left: {},
   image: {

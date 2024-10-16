@@ -7,12 +7,13 @@ import { useRouter } from 'expo-router'
 interface HeaderProps {
   title: string,
   right?: boolean
+  backgroundColor?: string,
 }
 
-const Header: React.FC<HeaderProps> = ({title = 'Default', right = false}) => {
+const Header: React.FC<HeaderProps> = ({title = 'Default', right = false, backgroundColor = 'white'}) => {
     const router = useRouter();
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={[styles.container, {backgroundColor: backgroundColor}]}>
            <TouchableOpacity style={styles.left} onPress={() => router.back()}>
               <Icon name="arrow-left" style={styles.icon} size={20} /> 
            </TouchableOpacity>
@@ -39,9 +40,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: windowWidth - 40,
-    margin: 'auto',
-    padding: 20,
+    width: windowWidth,
     backgroundColor: 'none',
   },
   left: {
@@ -49,10 +48,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#D9D9D9',
     paddingHorizontal: 20,
     paddingVertical: 10,
+    marginLeft: 20,
   },
   right: {
     width: 40,
     aspectRatio: 1/1,
+    marginRight: 20,
   },
   iconContainer: {
     borderRadius: 20,

@@ -2,23 +2,22 @@ import { StyleSheet, Text, SafeAreaView, Image } from 'react-native'
 import React from 'react'
 import { useLocalSearchParams } from 'expo-router'
 import { useNewDetail } from '@/hooks/new'
-const DetailScreen = () => {
-  const { id } = useLocalSearchParams();
-  const idAsString = Array.isArray(id) ? id[0] : id;
-  const {data} = useNewDetail(idAsString);
+const aboutusScreen = () => {
+  const {data} = useNewDetail('2');
   return (
     <SafeAreaView style = {styles.container}>
-      <Text style={styles.title}>{data?.title}</Text>
       <Image 
         source={data?.image}
         style={styles.image}
         />
-      <Text style={styles.content}>{data?.detail}</Text>
+      <Text style={styles.content}>
+        Cảm ơn mọi người đã cùng nhau phấn đấu trong thời gian qua để cùng nhau tốt nghiệp. Đây sẽ là kỷ niệm tuyệt vời thời đại học của chúng ta.
+      </Text>
     </SafeAreaView>
   )
 }
 
-export default DetailScreen
+export default aboutusScreen
 
 const styles = StyleSheet.create({
   container: {
@@ -32,7 +31,9 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingTop: 10,
   },
-  image: {},
+  image: {
+    marginTop: 30,
+  },
   content: {
     textAlign: 'justify',
     paddingHorizontal: 30,
