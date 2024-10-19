@@ -2,7 +2,7 @@ import { Text, SafeAreaView, StyleSheet, Image ,Dimensions, Switch} from 'react-
 import React, { useState, useEffect } from 'react';
 import Gauge from '@/components/shared/Chart/Gauge';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
-
+import QuestModal from '@/components/shared/Modal/QuestModal';
 const screenWidth = Dimensions.get('window').width;
 
 export default function SettingScreen() {
@@ -10,7 +10,17 @@ export default function SettingScreen() {
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(5);
   const [isRunning, setIsRunning] = useState(false); // Trạng thái của timer
+  const [visibilityturnOn, setVisibilityturnOn] = useState(false);
+  const [visibilityturnOff, setVisibilityturnOff] = useState(false);
+  const [humidity, setHumidity] = useState(0);
 
+  //Hàm lấy API độ ẩm         //CODE THÊM NHA
+  useEffect(() => {
+    setHumidity(75);
+  }, [humidity])
+  
+
+  //Đây là hàm tính đếm ngược
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null; 
     if (isRunning && seconds > 0) {
@@ -32,19 +42,36 @@ export default function SettingScreen() {
       if (interval !== null) clearInterval(interval); // Xóa interval khi unmount
     };
   }, [isRunning, seconds]);
-
   const resetTimer = () => {
     setSeconds(59);
     setMinutes(5);
     setIsRunning(false);
     setIsOn(false);
   };
+
+  //Đây là hàm bật nước
+  const turnOn = () => {
+    setIsOn(true);
+    setVisibilityturnOn(false);
+  }
+  //Đây là hàm tắt nước
+  const turnOff = () => {
+    setIsOn(false);
+    setVisibilityturnOff(false);
+  }
+
   return (
   <SafeAreaView style={styles.container}>
+    <QuestModal visible={visibilityturnOn} onSubmit={turnOn}>
+      <Text>a</Text>
+    </QuestModal>
+    <QuestModal visible={visibilityturnOff} onSubmit={turnOff}>
+      <Text>a</Text>
+    </QuestModal>
     <SafeAreaView style={styles.wrapper}>
       <SafeAreaView style= {styles.mainContainer}>
         <SafeAreaView style={styles.chartContainer}>
-          <Gauge data={75} />
+          <Gauge data={humidity} />
         </SafeAreaView>
         <SafeAreaView style={styles.imageContainer}>
         <Image 

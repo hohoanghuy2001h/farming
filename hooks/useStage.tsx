@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import stageDefault from '@/constants/stage.api'
+import stageDefault from '@/constants/stage.template'
 import axios from "axios";
 
 export default function useStage(date: number) {
@@ -25,24 +25,6 @@ export default function useStage(date: number) {
               }
             }
         })
-    //   const accessToken = await AsyncStorage.getItem("access_token");
-    //   const refreshToken = await AsyncStorage.getItem("refresh_token");
-
-    //   await axios
-    //     .get(`${SERVER_URI}/me`, {
-    //       headers: {
-    //         "access-token": accessToken,
-    //         "refresh-token": refreshToken,
-    //       },
-    //     })
-    //     .then((res: any) => {
-    //       setUser(res.data.user);
-    //       setLoading(false);
-    //     })
-    //     .catch((error: any) => {
-    //       setError(error?.message);
-    //       setLoading(false);
-    //     });
     };
     subscription();
   }, [refetch]);

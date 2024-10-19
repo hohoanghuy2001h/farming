@@ -36,8 +36,8 @@ const QuestModal: React.FC<QuestModalProps> = ({children, visible, onSubmit}) =>
             style={[styles.wrapper, {transform: [{scale: scaleValue}]}]}>
             {children}
             <SafeAreaView style={styles.buttonContainer}>
-                <TouchableOpacity onPress={onSubmit} style={[styles.button, {backgroundColor: '4E9525'}]}>Yes</TouchableOpacity>
-                <TouchableOpacity onPress= {() => setShowModal(false)} style={[styles.button, {backgroundColor: 'white'}]}>No</TouchableOpacity>
+                <TouchableOpacity onPress={onSubmit} style={[styles.button, {backgroundColor: '4E9525'}]}>Xác nhận</TouchableOpacity>
+                <TouchableOpacity onPress= {() => setShowModal(false)} style={[styles.button, {backgroundColor: 'white'}]}>Hủy</TouchableOpacity>
             </SafeAreaView>
           </Animated.View>
         </SafeAreaView>

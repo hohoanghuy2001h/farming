@@ -1,9 +1,12 @@
 import { Stack } from 'expo-router';
 import { ToastProvider } from "react-native-toast-notifications";
 import Header from '@/components/shared/Header/Header';
+import { store } from '@/store/store';
+import { Provider } from 'react-redux';
 export default function RootLayout() {
   return (
-    <ToastProvider>
+    <Provider store={store}>
+      <ToastProvider>
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
           <Stack.Screen name="(routes)/welcome-intro/index" />
@@ -15,7 +18,7 @@ export default function RootLayout() {
               headerShown: true,
               // title: "My Farm",
               // headerBackTitle: "Back",
-              header: () => <Header title='My Farm'/>
+              header: () => <Header title='My Farm' right/>
             }}
           />
           <Stack.Screen
@@ -74,6 +77,7 @@ export default function RootLayout() {
             }}
           />
         </Stack>
-    </ToastProvider>
+      </ToastProvider>
+    </Provider>
   );
 }
