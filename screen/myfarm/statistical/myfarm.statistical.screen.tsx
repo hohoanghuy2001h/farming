@@ -3,75 +3,73 @@ import { SafeAreaView, Text, StyleSheet, TouchableOpacity, FlatList} from 'react
 import CardName from '@/components/shared/CardName/CardName';
 import { windowWidth } from '@/utils/Dimensions';
 import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
-import useData from '@/hooks/useData';
+import { useData } from '@/hooks/data';
 import Line from '@/components/shared/Chart/Line';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 //FAKE API
 const cardNameArray = [
   {
-    iconName: 'sun-o',
+    iconName: 'sun',
     cardName: "Light",
+    fieldName: 'field1',
     warning: 0,
+    unit: '°C',
   },
   {
-    iconName: 'sun-o',
-    cardName: "Temperature",
+    iconName: 'temperature-half',
+    cardName: "Tempurature",
+    fieldName: 'field2',
     warning: 0,
+    unit: '%',
   },
   {
-    iconName: 'sun-o',
+    iconName: 'water',
     cardName: "Humidity",
+    fieldName: 'field3',
     warning: 1,
+    unit: '%',
   },
   {
-    iconName: 'sun-o',
+    iconName: 'seedling',
     cardName: "Soil",
+    fieldName: 'field4',
     warning: 2,
+    unit: '%',
   },
 ]
-//Data chart
-const dataChart = {
-  'Light': {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-    datasets: [
-      {
-        data: [20, 45, 28, 80, 99, 43, 50],
-      },
-    ],
-    name: 'Light',
-  },
-  'Tempurature': {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-    datasets: [
-      {
-        data: [90, 45, 28, 80, 99, 43, 50],
-      },
-    ],
-    name: 'Light',
-  },
-  'Humidity': {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-    datasets: [
-      {
-        data: [80, 45, 28, 80, 99, 43, 50],
-      },
-    ],
-    name: 'Light',
-  },
-  'Soil': {
-    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
-    datasets: [
-      {
-        data: [100, 45, 28, 80, 99, 43, 50],
-      },
-    ],
-    name: 'Light',
-  },
+  
+const configDataChart = (rawData: any) => {
+  let data = {};
+  if(rawData != null){
+    data = {
+      labels: rawData.map((item: any)=> {
+        //const date = new Date(item.created_at).toLocaleString();
+        const date = new Date(item.created_at);
+        const hours = date.getUTCHours(); // Lấy giờ theo UTC
+        const minutes = date.getUTCMinutes(); // Lấy phút theo UTC
+    
+        // Định dạng giờ và phút
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+      }),  
+      datasets: [
+        {
+          data: rawData.map((item: any) => parseFloat(item.field)),  // Chuyển field thành số thực
+          color: () => '#37B84F', // Mã màu hex cho đường
+          strokeWidth: 3, // Độ dày của đường
+        },
+      ],
+    };
+  }
+  return data;
 }
 export default function StatisticalScreen() {
-  const {data} = useData(1,2);
   const [activeItem, setActiveItem] = useState(0); // State để lưu vị trí của item active
+  const {data} = useData(cardNameArray[activeItem].fieldName)
+  const [dataChart, setDataChart] = useState({})
+  useEffect(() => {
+    setDataChart(configDataChart(data));
+  }, [data])  
   const itemRender = (item: any, index: number) => {
     return (
       <TouchableOpacity 
@@ -93,7 +91,7 @@ export default function StatisticalScreen() {
       <SafeAreaView style={styles.wrapper}>
         <HeaderMyFarm />
         <SafeAreaView style={styles.graphContainer}>
-          <Line data={dataChart['Light']}></Line>
+          {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={cardNameArray[activeItem].unit}/>}
         </SafeAreaView>
         <SafeAreaView style={styles.swipperContainer}>
             <FlatList 

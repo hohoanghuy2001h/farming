@@ -2,40 +2,38 @@ import React, { useEffect, useState } from "react";
 import stageDefault from '@/constants/stage.template'
 import axios from "axios";
 
-export default function useData(field: any, date: any) {
+export default function useData(field: string) {
   const [loading, setLoading] = useState(true);
-  const [daysPlant, setDaysPlant] = useState<plant>({day: 0});
   const [data, setData] = useState()
   const [error, setError] = useState("");
   const [refetch, setRefetch] = useState(false);
   const channelID = '2522610';
   const format = 'json';
-  const APIkey = 'TFIJYCYIARJ7QG5V';
-  const URL = `https://api.thingspeak.com/channels/${channelID}/feeds.${format}?api_key=${APIkey}&average=5&results=30`
+  const APIkey = 'RGMQCNRYULAD3MEE';
+  const URL = `https://api.thingspeak.com/channels/${channelID}/feeds.${format}?api_key=${APIkey}&timescale=30`
   useEffect(() => {
     const subscription = async () => {
-        setDaysPlant({
-            day: date,
-        });
-        setLoading(false);
-
+      setLoading(false);
       await axios
-        .get(`${URL}`, {
-          headers: {
-            
-          },
-        })
+        .get(`${URL}`, {})
         .then((res: any) => {
-            // console.log(res.data);
           setLoading(false);
+          const feeds = res.data.feeds;
+          const filteredData = feeds
+          .filter((feed: any) => feed[field] !== null)
+          .map((feed: any) => ({
+            field: Math.round(parseInt(feed[field])),
+            created_at:  new Date(feed.created_at),
+          }))
+          setData(filteredData);
         })
-    //     .catch((error: any) => {
-    //       setError(error?.message);
-    //       setLoading(false);
-    //     });
+        .catch((error: any) => {
+          setError(error?.message);
+          setLoading(false);
+        });
     };
     subscription();
-  }, [refetch]);
+  }, [refetch, field]);
 
   return { loading, data, error, setRefetch, refetch };
 }

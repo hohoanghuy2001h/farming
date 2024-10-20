@@ -1,4 +1,4 @@
-import useUser from '@/hooks/auth/userAuth'
+import {useUser} from '@/hooks/auth/userAuth'
 import { Redirect } from "expo-router";
 
 const index = () => {

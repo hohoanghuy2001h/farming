@@ -3,6 +3,7 @@ import { Link } from 'expo-router'
 import PrimaryButton from '@/components/shared/Button'
 import React from 'react'
 import { useRouter } from 'expo-router'
+import LoginScreen from '@/screen/auth/login/login.screen'
 
 
 const Login = () => {
@@ -12,11 +13,7 @@ const Login = () => {
     router.replace('/home');
   };
   return (
-    <SafeAreaView style={styles.container}>
-      <SafeAreaView style= {styles.buttonContainer}>
-        <PrimaryButton content='SIGN IN' action={handlePress}></PrimaryButton>
-      </SafeAreaView>
-    </SafeAreaView>
+    <LoginScreen />
   )
 }
 

@@ -1,19 +1,33 @@
 import { StyleSheet, Text, SafeAreaView, Image } from 'react-native'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import useStage from '@/hooks/useStage'
 import stageImages from '@/assets/images/stages'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/store/store'
+import { useFieldDetail } from '@/hooks/field'
+const getStageDay = (date: Date) => {
+  const day = new Date(date); // Tạo bản sao để không thay đổi inputDate
+  // Bước 2: Lấy thời gian hiện tại
+  const currentDate = new Date(); // Lấy thời gian hiện tại
 
-interface CardInfoProps {
-    date: number,    
+  // Bước 3: Tính khoảng thời gian giữa hai thời gian
+  const timeDifference = currentDate.getTime() - day.getTime(); // Thời gian chênh lệch tính bằng milliseconds
+  const millisecondsInADay = 1000 * 3600 * 24; // Cách ước lượng số milliseconds trong một tháng
+  const monthsDifference = Math.round(timeDifference / millisecondsInADay);
+  return monthsDifference;
 }
-export const CardState: React.FC<CardInfoProps> = ({date}) => {
-  const {loading, stagePlant} = useStage(date);
+export const CardState = () => {
+  const item = useSelector((state: RootState) => state.field);
+  const {data}= useFieldDetail(item.fieldID);
+  const [fieldCurrent, setFieldCurrent] = useState<fieldType>();
+  const [day, setDay] = useState(0)
+  const {stagePlant} = useStage(day);
+  useEffect(() => {
+    setFieldCurrent(data);
+    setDay(getStageDay(data?.timePlant));
+  }, [data, item])
   return (
-    loading ? 
-    <SafeAreaView style={styles.container}>
-      <Text>Loading</Text>
-    </SafeAreaView>
-    :
+    item.fieldID !== '' ? 
     <SafeAreaView style={styles.container}>
       <SafeAreaView style={styles.wrapper}>
         <SafeAreaView style={styles.left}>
@@ -25,10 +39,13 @@ export const CardState: React.FC<CardInfoProps> = ({date}) => {
         <SafeAreaView style={styles.right}>
           <Text style={styles.title}>The Chilli Plant</Text>
           <Text style={styles.text}>Growth stage: {stagePlant?.stage}</Text>
-          <Text style={styles.text}>{date} days</Text>
+          <Text style={styles.text}>{getStageDay(fieldCurrent?.timePlant)} days</Text>
         </SafeAreaView>
       </SafeAreaView>
-    </SafeAreaView>
+    </SafeAreaView> :
+    <SafeAreaView style={styles.container}>
+        <Text style={styles.textLoading}>Vui lòng hãy chọn field.</Text>
+   </SafeAreaView>
   )
 }
 
@@ -70,6 +87,10 @@ const styles = StyleSheet.create({
   text: {
     color: 'gray',
     marginTop: 5,
+  },
+  textLoading: {
+    fontSize: 30,
+    fontWeight: 'bold'
   }
 
 })

@@ -3,10 +3,12 @@ import React, { useState, useEffect } from 'react';
 import Gauge from '@/components/shared/Chart/Gauge';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
 import QuestModal from '@/components/shared/Modal/QuestModal';
-const screenWidth = Dimensions.get('window').width;
-
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useNewestFieldData } from '@/hooks/data';
 export default function SettingScreen() {
+  const {data} = useNewestFieldData('field2'); //field humidity
   const [isOn, setIsOn] = useState(false);
+  const [isSchedualing, setIsSchedualing] = useState(false);
   const [seconds, setSeconds] = useState(0);
   const [minutes, setMinutes] = useState(5);
   const [isRunning, setIsRunning] = useState(false); // Trạng thái của timer
@@ -16,8 +18,8 @@ export default function SettingScreen() {
 
   //Hàm lấy API độ ẩm         //CODE THÊM NHA
   useEffect(() => {
-    setHumidity(75);
-  }, [humidity])
+    setHumidity(data.field);
+  }, [humidity, data])
   
 
   //Đây là hàm tính đếm ngược
@@ -81,23 +83,52 @@ export default function SettingScreen() {
         </SafeAreaView>
       </SafeAreaView>
       <SafeAreaView style={styles.buttonContainer}>
-        <Text style={styles.buttonText}>Chế độ tưới nước thủ công: {isOn? 'Turn ON': 'Turn OFF'}</Text>
-          <Switch 
-            value={isOn} 
-            style = {styles.button}
-            onValueChange={(value) => {
-              setIsOn(value)
-              setIsRunning(value)
-            }} 
-            trackColor={{false: '#D9D9D9' , true: '#13852F'}}
-          />
-        {
-          isOn ? 
-          <SafeAreaView style={styles.timeCounterContainer}>
-            <Text style={styles.timeText}>Hệ thống tưới nước sẽ tự động tắt sau:</Text>
-            <Text style={styles.timeCount}>{minutes} : {seconds}</Text>
-          </SafeAreaView> :<></>
-        }
+        <SafeAreaView style={styles.btnItem}>
+          <SafeAreaView style={styles.btnTitleContain}>
+            <SafeAreaView style={styles.btnTitleRight}>
+              <Text style={styles.btnTitle}>Automic</Text>
+              <Text style={styles.subbtnTitle}>Next irrigates in 8:00</Text>
+            </SafeAreaView>
+            <TouchableOpacity style={styles.btnTitleLeft}>
+              <Image 
+                source={require('@/assets/images/setting.png')}
+              />
+            </TouchableOpacity>
+          </SafeAreaView>
+          <SafeAreaView>
+            <Switch 
+              value={isSchedualing} 
+              style = {styles.button}
+              onValueChange={(value) => {
+                setIsSchedualing(value)
+              }} 
+              trackColor={{false: '#D9D9D9' , true: '#13852F'}}
+            />
+          </SafeAreaView>
+        </SafeAreaView>
+        <SafeAreaView style={styles.btnItem}>
+          <SafeAreaView style={styles.btnTitleContain}>
+            <SafeAreaView style={styles.btnTitleRight}>
+              <Text style={styles.btnTitle}>Manually</Text>
+              <Text style={styles.subbtnTitle}>System will turn of after</Text>
+              <Text style={{color: 'black', fontWeight: 'bold', fontSize: 10}}>{minutes}:{seconds}</Text>
+            </SafeAreaView>
+            <SafeAreaView style={styles.btnTitleLeft}>
+
+            </SafeAreaView>
+          </SafeAreaView>
+          <SafeAreaView>
+            <Switch 
+              value={isOn} 
+              style = {styles.button}
+              onValueChange={(value) => {
+                setIsOn(value)
+                setIsRunning(value)
+              }} 
+              trackColor={{false: '#D9D9D9' , true: '#13852F'}}
+            />
+          </SafeAreaView>
+        </SafeAreaView>
       </SafeAreaView>
     </SafeAreaView>
   </SafeAreaView>
@@ -113,6 +144,7 @@ const styles = StyleSheet.create({
   wrapper: {
     width: windowWidth - 40,
     marginHorizontal: 'auto',
+    gap: 30,
   },
   mainContainer: {
     flexDirection: 'row',
@@ -128,34 +160,32 @@ const styles = StyleSheet.create({
 
   },
   buttonContainer: {
-    gap: 40, 
-    marginTop: 25,
+    flexDirection: 'row',
+    gap: 10,
   },
-  button: {
-    transform: [{ scaleX: 2.5 }, { scaleY: 2.5 }], // Phóng to theo cả chiều X và Y
-    margin: 'auto',
+  btnItem: {
+    borderWidth: 1,
+    borderColor: '#BCBEC0',
+    borderRadius: 10,
+    width: windowWidth / 2 - 30,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    gap: 30,
   },
-  buttonText: {
-    fontSize: 18,
+  btnTitleContain: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  btnTitleRight:{},
+  btnTitle:{
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#2E5A1C',
   },
-  timeCounterContainer: {
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    width: screenWidth - 40,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#21963A',
-    gap: 10,
+  subbtnTitle: {
+    color: '#BFBFBB',
+    fontSize: 10,
   },
-  timeText: {
-
-  },
-  timeCount: {
-    margin: 'auto',
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#FFCC32',
-  },
+  btnTitleLeft:{},
+  button: {},
 });

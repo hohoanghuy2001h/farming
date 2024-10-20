@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function useUser() {
+const useUser = () => {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User>();
   const [error, setError] = useState("");
@@ -44,3 +44,19 @@ export default function useUser() {
 
   return { loading, user, error, setRefetch, refetch };
 }
+const useLogout = () => {
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User>();
+  const [error, setError] = useState("");
+  const [refetch, setRefetch] = useState(false);
+
+  useEffect(() => {
+    const subscription = async () => {
+        setLoading(false);
+    };
+    subscription();
+  }, [refetch]);
+
+  return { loading, user, error, setRefetch, refetch };
+}
+export {useUser, useLogout};

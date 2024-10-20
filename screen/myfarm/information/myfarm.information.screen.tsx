@@ -1,39 +1,57 @@
 import { Text, SafeAreaView, StyleSheet, TouchableOpacity, Image, FlatList} from 'react-native';
 import {CardInfo} from '@/components/shared/CardInfo/CardInfo';
 import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { windowWidth, windowHeight } from '@/utils/Dimensions';
-
-const data = [
+import { windowWidth } from '@/utils/Dimensions';
+import { useNewestData } from '@/hooks/data';
+import { useEffect } from 'react';
+const dataTemplate = [
   {
     label: 'Temperature',
-    value: 24,
-    type: '°C',
+    value: 0,
+    unit: '°C',
     warning: false,
+    timeUpdate: '',
   },
   {
     label: 'Humidity',
-    value: 85,
-    type: '%',
+    value: 0,
+    unit: '%',
     warning: true,
+    timeUpdate: '',
   },
   {
-    label: 'Light',
-    value: 90,
-    type: '%',
+    label: 'Light Intensity',
+    value: 0,
+    unit: '%',
     warning: false,
+    timeUpdate: '',
   },
   {
-    label: 'Fertilizer',
-    value: 40,
-    type: '%',
+    label: 'Soil Moisturize',
+    value: 0,
+    unit: '%',
     warning: false,
+    timeUpdate: '',
   },
 ]
+const changeValue = (data: any)  => {
+  if(Object.keys(data).length !== 0){
+    dataTemplate.map((item, index) => {
+      item.value = data.data[index];
+      item.timeUpdate = new Date(data.created_at).toLocaleString();
+    })   
+  }
+  return dataTemplate;
+}
 export default function InformationScreen() {
+  const {data} = useNewestData();
+  useEffect(() => {
+    changeValue(data);
+  }, [data])
+  
   const renderItem = (data: any) => {
     return (
-      <CardInfo label={data.item.label} type={data.item.type} value={data.item.value} warning={data.item.warning} />
+      <CardInfo label={data.item.label} type={data.item.unit} value={data.item.value} warning={data.item.warning} date={data.item.timeUpdate} />
     );
   }
   return (
@@ -43,7 +61,7 @@ export default function InformationScreen() {
       <SafeAreaView style = {styles.contentContainer}>
         <SafeAreaView style={styles.leftContainer}>
           <FlatList
-            data={data} 
+            data={dataTemplate} 
             renderItem={renderItem}
             contentContainerStyle={styles.cardContainer} // Áp dụng gap cho container
             />

@@ -42,7 +42,7 @@ export default function StatisticalScreen() {
     <SafeAreaView style={styles.container}>
       <SafeAreaView style ={styles.wrapper}>
         <Line data={data['Soil']} title='Biểu đồ lượng nước tiêu thụ mỗi ngày'></Line>
-        <Bar data={data['Soil']} title='Biểu đồ lượng nước tiêu thụ mỗi ngày' ></Bar>
+        <Bar data={data['Soil']} title='Biểu đồ số lần tưới mỗi ngày' ></Bar>
       </SafeAreaView>
     </SafeAreaView>
   );

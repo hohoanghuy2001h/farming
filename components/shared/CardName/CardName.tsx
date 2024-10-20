@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, Dimensions } from 'react-native'
 import React from 'react'
-import Icon from 'react-native-vector-icons/FontAwesome';
-const screenWidth = Dimensions.get('window').width;
+import { FontAwesome6 } from '@expo/vector-icons';
 
 interface CardNameProps {
     iconName?: string;
@@ -16,7 +15,7 @@ const CardName: React.FC<CardNameProps> = ({iconName = 'temperature-half', oncli
 
     return (
     <View style={[styles.container, onclick ? styles.onclick : null]}>
-        <Icon name={iconName} size={40} color={colorIcon} />
+        <FontAwesome6 name={iconName} size={40} color={colorIcon} />
         <Text style={[styles.state,
                       onclick ? styles.onclickState : null,
                       warning == 1? styles.stateHigh : warning == 2 ? styles.stateLow : null 

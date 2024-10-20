@@ -34,3 +34,13 @@ type listDataType = {
     summary: string;
     detail: string;
 };
+type fieldType = {
+    _id: string,
+    image: any,
+    name: string,
+    size: number, //Theo hecta
+    device: string
+    latitude: number, //location của thiết bị
+    longitude: number,
+    timePlant: any, 
+}

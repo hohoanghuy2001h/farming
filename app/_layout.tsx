@@ -1,10 +1,13 @@
 import { Stack } from 'expo-router';
 import { ToastProvider } from "react-native-toast-notifications";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 import Header from '@/components/shared/Header/Header';
 import { store } from '@/store/store';
 import { Provider } from 'react-redux';
 export default function RootLayout() {
   return (
+    <GestureHandlerRootView>
     <Provider store={store}>
       <ToastProvider>
         <Stack screenOptions={{ headerShown: false }}>
@@ -79,5 +82,6 @@ export default function RootLayout() {
         </Stack>
       </ToastProvider>
     </Provider>
+    </GestureHandlerRootView>
   );
 }

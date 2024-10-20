@@ -4,14 +4,19 @@ interface CardInfoProps {
   value: string;
   type: string;
   warning?: boolean;
+  date: string,
 }
-export const CardInfo: React.FC<CardInfoProps> = ({label, value, type, warning=false}) => {
-  // console.log(label, value, type, warning);
+export const CardInfo: React.FC<CardInfoProps> = ({label, value, type, warning=false, date}) => {
   return (
     <SafeAreaView style={styles.container}>
       <SafeAreaView style= {styles.labelContainer}>
-        <Text style={[styles.label,warning? styles.warning:null]}>{label}</Text>
-        {warning? <Text style={styles.warningIcon}>a</Text> : null}
+        <SafeAreaView style={{flexDirection: 'row',}}>
+          <Text style={[styles.label,warning? styles.warning:null]}>{label}</Text>
+          {warning? <Text style={styles.warningIcon}>a</Text> : null}
+        </SafeAreaView>
+        {/* <SafeAreaView>
+          <Text style={styles.smallText}>{date}</Text>
+        </SafeAreaView> */}
       </SafeAreaView>
       <Text style={[styles.value, warning? styles.warning:null]}>{value}{type}</Text>
     </SafeAreaView>
@@ -41,7 +46,7 @@ const styles = StyleSheet.create({
     elevation: 5, 
   },
   labelContainer: {
-    flexDirection: 'row',
+    flexDirection: 'column',
   },
   warningIcon: {
     marginLeft: 10,
@@ -56,4 +61,8 @@ const styles = StyleSheet.create({
   warning: {
     color: 'red',
   },
+  smallText: {
+    color: '#B9b9b9',
+    fontSize: 12,
+  }
 });

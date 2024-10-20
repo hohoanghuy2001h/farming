@@ -27,7 +27,7 @@ export default function useStage(date: number) {
         })
     };
     subscription();
-  }, [refetch]);
+  }, [refetch, date]);
 
   return { loading, stagePlant, error, setRefetch, refetch };
 }
