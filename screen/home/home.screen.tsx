@@ -8,35 +8,46 @@ import { useRef, useCallback, useEffect } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Import GestureHandlerRootView
 import FieldScreen from '@/components/shared/FieldScreen'
 import Menu from '@/components/shared/Menu'
-
+import QuestModal from '@/components/shared/Modal/QuestModal'
+import { useRouter } from 'expo-router'
 const HomeScreen = () => {
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
   const FieldBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['40%', '88%'], []); 
   const FieldsnapPoints = useMemo(() => ['90%'], []); 
+  const [visible, setVsible] = useState(false);
+  const router = useRouter();
+
+  const logout = () => {
+    setVsible(true);
+    // router.push({
+    //   pathname: '/(auth)/login',
+    //   params: { },
+    // })
+    // dispatch(logOut());
+
+  }
+  const openModal = () => {
+
+  }
   // callbacks
   const handlePresentModalPress = useCallback(() => {
     BottomSheetModalRef.current?.present();
-  }, []);
-  const presentPresentFieldBottomSheetModal = useCallback(() => {
-    FieldBottomSheetModalRef.current?.present();
   }, []);
   const openPresentFieldBottomSheetModal = useCallback((index: number) => {
     FieldBottomSheetModalRef.current?.present();
     FieldBottomSheetModalRef.current?.snapToIndex(0);
   }, []);
-  const closePresentFieldBottomSheetModal = useCallback(() => {
-    FieldBottomSheetModalRef.current?.close();
-  }, []);
   useEffect(() => {
     handlePresentModalPress();
   }, [handlePresentModalPress]);
+  
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
       <SafeAreaView style={styles.container}>
         <SafeAreaView style={styles.header}>
-          <Header action={openPresentFieldBottomSheetModal}/>      
+          <Header action={openPresentFieldBottomSheetModal} logOut={logout}/>      
         </SafeAreaView>
         <SafeAreaView style={styles.content}>
             <CardWeather />
@@ -47,7 +58,7 @@ const HomeScreen = () => {
             ref={BottomSheetModalRef}
             index={0}
             snapPoints={snapPoints}
-            backgroundStyle ={styles.modal}
+            backgroundStyle ={styles.bottomModal}
             enablePanDownToClose={false}
           >
             <BottomSheetView style={styles.contentContainer}>
@@ -57,13 +68,16 @@ const HomeScreen = () => {
           <BottomSheetModal 
             ref={FieldBottomSheetModalRef}
             snapPoints={FieldsnapPoints}
-            backgroundStyle ={styles.modal}
+            backgroundStyle ={styles.bottomModal}
           >
             <BottomSheetView style={styles.contentContainer}>
               <FieldScreen />
             </BottomSheetView>
           </BottomSheetModal>
         </SafeAreaView>
+        <QuestModal visible={visible} onSubmit={() => setVsible(false)}>
+          <Text>Hello</Text>
+        </QuestModal>
       </SafeAreaView>
     </BottomSheetModalProvider>
     </GestureHandlerRootView>
@@ -95,7 +109,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
   },
-  modal: {
+  bottomModal: {
     borderRadius: 50, 
     backgroundColor: '#C6E9CA',
     // Shadow cho iOS

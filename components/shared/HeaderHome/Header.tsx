@@ -12,19 +12,13 @@ interface HeaderProps {
   avatar?: string,
   field?: string,
   action?: any,
+  logOut?: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({avatar = null, action}) => {
+const Header: React.FC<HeaderProps> = ({avatar = null, action, logOut}) => {
   const item = useSelector((state: RootState) => state.field);
   const {data} = useFieldDetail(item.fieldID)
   const dispatch = useDispatch();
-  const logout = () => {
-    router.push({
-      pathname: '/(auth)/login',
-      params: { },
-    })
-    dispatch(logOut());
-  }
     const router = useRouter();
     const redictPage = () => {
       router.push({
@@ -59,7 +53,7 @@ const Header: React.FC<HeaderProps> = ({avatar = null, action}) => {
                   <SafeAreaView style ={styles.dot}/>
                </SafeAreaView>
               <TouchableOpacity
-                onPress={() => logout()}
+                onPress={logOut}
               >
               <Image 
                    style={styles.avatar}

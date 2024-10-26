@@ -4,6 +4,8 @@ import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
 import { windowWidth } from '@/utils/Dimensions';
 import { useNewestData } from '@/hooks/data';
 import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 const dataTemplate = [
   {
     label: 'Temperature',
@@ -22,14 +24,14 @@ const dataTemplate = [
   {
     label: 'Light Intensity',
     value: 0,
-    unit: '%',
+    unit: '',
     warning: false,
     timeUpdate: '',
   },
   {
     label: 'Soil Moisturize',
     value: 0,
-    unit: '%',
+    unit: '',
     warning: false,
     timeUpdate: '',
   },
@@ -43,7 +45,12 @@ const changeValue = (data: any)  => {
   }
   return dataTemplate;
 }
+const changeWarning = (data: any) => {
+
+}
 export default function InformationScreen() {
+  const item = useSelector((state: RootState) => state.field);
+
   const {data} = useNewestData();
   useEffect(() => {
     changeValue(data);

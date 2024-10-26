@@ -2,9 +2,11 @@ import { StyleSheet, Text, SafeAreaView, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import useStage from '@/hooks/useStage'
 import stageImages from '@/assets/images/stages'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
 import { useFieldDetail } from '@/hooks/field'
+import { getCurrentStage } from '@/store/fieldReducer'
+
 const getStageDay = (date: Date) => {
   const day = new Date(date); // Tạo bản sao để không thay đổi inputDate
   // Bước 2: Lấy thời gian hiện tại
@@ -18,14 +20,20 @@ const getStageDay = (date: Date) => {
 }
 export const CardState = () => {
   const item = useSelector((state: RootState) => state.field);
-  const {data}= useFieldDetail(item.fieldID);
+  const dispatch = useDispatch();
+  const {data}= useFieldDetail(item.fieldID); //Tìm kiếm thông tin của field dựa trên fieldID
   const [fieldCurrent, setFieldCurrent] = useState<fieldType>();
   const [day, setDay] = useState(0)
-  const {stagePlant} = useStage(day);
+  const {stagePlant} = useStage(day); //Tìm kiếm stage phù hợp dựa trên day = currentDate - plantingDate (ngày trồng)
+
   useEffect(() => {
     setFieldCurrent(data);
     setDay(getStageDay(data?.timePlant));
   }, [data, item])
+  useEffect(() => {
+    // console.log(day);
+    dispatch(getCurrentStage({day,stagePlant}))
+  }, [day]);
   return (
     item.fieldID !== '' ? 
     <SafeAreaView style={styles.container}>

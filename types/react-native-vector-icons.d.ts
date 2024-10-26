@@ -3,6 +3,7 @@ declare module 'react-native-vector-icons/FontAwesome' {
     export default Icon;
   }
 declare module '@env' {
-  export const WEATHER_KEY: string;
-  export const WEATHER_URL: string;
+  export const CHANNEL_ID: string;
+  export const API_KEY_READ: string;
+  export const API_KEY_WRITE: string;
 }

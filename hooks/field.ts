@@ -28,7 +28,7 @@ const useFieldDetail = (_id: string) => {
         // Hàm filter dữ liệu theo search term
         const foundItem = await FieldsAPI.find(item => item._id === _id);
         setLoading(false);
-        setData(foundItem);
+        await setData(foundItem);
       };
       subscription();
     }, [refetch, _id]);

@@ -43,4 +43,8 @@ type fieldType = {
     latitude: number, //location của thiết bị
     longitude: number,
     timePlant: any, 
+};
+type dateScheduleType = {
+    date: Date,
+    repeat: 'none'| 'daily'| 'weekly' | 'monthly',
 }

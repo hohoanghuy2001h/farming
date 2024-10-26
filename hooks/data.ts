@@ -1,16 +1,13 @@
 import React, { useEffect, useState } from "react";
 import stageDefault from '@/constants/stage.template'
 import axios from "axios";
-
+import {CHANNEL_ID, API_KEY_READ} from '@env';
 const useData = (field: string) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState()
   const [error, setError] = useState("");
   const [refetch, setRefetch] = useState(false);
-  const channelID = '2522610';
-  const format = 'json';
-  const APIkey = 'RGMQCNRYULAD3MEE';
-  const URL = `https://api.thingspeak.com/channels/${channelID}/feeds.${format}?api_key=${APIkey}&timescale=30`
+  const URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?api_key=${API_KEY_READ}&results=20`;
   useEffect(() => {
     const subscription = async () => {
       setLoading(false);
@@ -42,10 +39,7 @@ const useNewestData = () => {
     const [data, setData] = useState({})
     const [error, setError] = useState("");
     const [refetch, setRefetch] = useState(false);
-    const channelID = '2522610';
-    const format = 'json';
-    const APIkey = 'RGMQCNRYULAD3MEE';
-    const URL = `https://api.thingspeak.com/channels/${channelID}/feeds.${format}?api_key=${APIkey}&result=1&timescale=30`
+    const URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?api_key=${API_KEY_READ}&results=20`;
     useEffect(() => {
       const subscription = async () => {
         setLoading(false);
@@ -82,10 +76,7 @@ const useNewestFieldData = (field: string) => {
   const [data, setData] = useState({})
   const [error, setError] = useState("");
   const [refetch, setRefetch] = useState(false);
-  const channelID = '2522610';
-  const format = 'json';
-  const APIkey = 'RGMQCNRYULAD3MEE';
-  const URL = `https://api.thingspeak.com/channels/${channelID}/feeds.${format}?api_key=${APIkey}&result=1&timescale=30`
+  const URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?api_key=${API_KEY_READ}&results=20`;
   useEffect(() => {
     const subscription = async () => {
       setLoading(false);

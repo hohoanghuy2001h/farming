@@ -5,6 +5,10 @@ import { windowHeight, windowWidth } from '@/utils/Dimensions';
 import QuestModal from '@/components/shared/Modal/QuestModal';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNewestFieldData } from '@/hooks/data';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet'
+import { useRef, useCallback, useMemo } from 'react'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Import GestureHandlerRootView
+import DatePickerModal from '@/components/shared/DatePickerModal';
 export default function SettingScreen() {
   const {data} = useNewestFieldData('field2'); //field humidity
   const [isOn, setIsOn] = useState(false);
@@ -15,6 +19,10 @@ export default function SettingScreen() {
   const [visibilityturnOn, setVisibilityturnOn] = useState(false);
   const [visibilityturnOff, setVisibilityturnOff] = useState(false);
   const [humidity, setHumidity] = useState(0);
+  const BottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const snapPoints = useMemo(() => ['100%'], []); 
+  const [isOpen, setIsOpen] = useState(false);
+
 
   //Hàm lấy API độ ẩm         //CODE THÊM NHA
   useEffect(() => {
@@ -62,76 +70,114 @@ export default function SettingScreen() {
     setVisibilityturnOff(false);
   }
 
-  return (
-  <SafeAreaView style={styles.container}>
-    <QuestModal visible={visibilityturnOn} onSubmit={turnOn}>
-      <Text>a</Text>
-    </QuestModal>
-    <QuestModal visible={visibilityturnOff} onSubmit={turnOff}>
-      <Text>a</Text>
-    </QuestModal>
-    <SafeAreaView style={styles.wrapper}>
-      <SafeAreaView style= {styles.mainContainer}>
-        <SafeAreaView style={styles.chartContainer}>
-          <Gauge data={humidity} />
-        </SafeAreaView>
-        <SafeAreaView style={styles.imageContainer}>
-        <Image 
-            style={styles.image} 
-            source={require('@/assets/images/Watering.png')}
-        />
-        </SafeAreaView>
-      </SafeAreaView>
-      <SafeAreaView style={styles.buttonContainer}>
-        <SafeAreaView style={styles.btnItem}>
-          <SafeAreaView style={styles.btnTitleContain}>
-            <SafeAreaView style={styles.btnTitleRight}>
-              <Text style={styles.btnTitle}>Automic</Text>
-              <Text style={styles.subbtnTitle}>Next irrigates in 8:00</Text>
-            </SafeAreaView>
-            <TouchableOpacity style={styles.btnTitleLeft}>
-              <Image 
-                source={require('@/assets/images/setting.png')}
-              />
-            </TouchableOpacity>
-          </SafeAreaView>
-          <SafeAreaView>
-            <Switch 
-              value={isSchedualing} 
-              style = {styles.button}
-              onValueChange={(value) => {
-                setIsSchedualing(value)
-              }} 
-              trackColor={{false: '#D9D9D9' , true: '#13852F'}}
-            />
-          </SafeAreaView>
-        </SafeAreaView>
-        <SafeAreaView style={styles.btnItem}>
-          <SafeAreaView style={styles.btnTitleContain}>
-            <SafeAreaView style={styles.btnTitleRight}>
-              <Text style={styles.btnTitle}>Manually</Text>
-              <Text style={styles.subbtnTitle}>System will turn of after</Text>
-              <Text style={{color: 'black', fontWeight: 'bold', fontSize: 10}}>{minutes}:{seconds}</Text>
-            </SafeAreaView>
-            <SafeAreaView style={styles.btnTitleLeft}>
+  //Đây là hàm mở màn hình schedule - irrigation
+  const openPresentBottomSheetModal = useCallback(() => {
+    BottomSheetModalRef.current?.present();
+    BottomSheetModalRef.current?.snapToIndex(0);
+    setIsOpen(true);
+  }, []);
+  // Hàm đóng BottomSheetModal
+  const handleDismissModal = () => {
+    BottomSheetModalRef.current?.dismiss();
+    setIsOpen(false);
+  };
+  const onClickScheduleBtn = () => {
+    openPresentBottomSheetModal();
+  }
+  //Đây là hàm mở tắt chế độ schedule irrigation
 
+  return (
+  <GestureHandlerRootView>
+    <BottomSheetModalProvider>
+      <SafeAreaView style={styles.container}>
+        <QuestModal visible={visibilityturnOn} onSubmit={turnOn}>
+          <Text>a</Text>
+        </QuestModal>
+        <QuestModal visible={visibilityturnOff} onSubmit={turnOff}>
+          <Text>a</Text>
+        </QuestModal>
+        <SafeAreaView style={styles.wrapper}>
+          <SafeAreaView style= {styles.mainContainer}>
+            <SafeAreaView style={styles.chartContainer}>
+              <Gauge data={humidity} />
+            </SafeAreaView>
+            <SafeAreaView style={styles.imageContainer}>
+            <Image 
+                style={styles.image} 
+                source={require('@/assets/images/Watering.png')}
+            />
             </SafeAreaView>
           </SafeAreaView>
-          <SafeAreaView>
-            <Switch 
-              value={isOn} 
-              style = {styles.button}
-              onValueChange={(value) => {
-                setIsOn(value)
-                setIsRunning(value)
-              }} 
-              trackColor={{false: '#D9D9D9' , true: '#13852F'}}
-            />
+          <SafeAreaView style={styles.buttonContainer}>
+            <SafeAreaView style={styles.btnItem}>
+              <SafeAreaView style={styles.btnTitleContain}>
+                <SafeAreaView style={styles.btnTitleRight}>
+                  <Text style={styles.btnTitle}>Automic</Text>
+                  <Text style={styles.subbtnTitle}>Next irrigates in 8:00</Text>
+                </SafeAreaView>
+                <TouchableOpacity 
+                  style={styles.btnTitleLeft} 
+                  onPress={onClickScheduleBtn}
+                >
+                  <Image 
+                    source={require('@/assets/images/setting.png')}
+                  />
+                </TouchableOpacity>
+              </SafeAreaView>
+              <SafeAreaView>
+                <Switch 
+                  value={isSchedualing} 
+                  style = {styles.button}
+                  onValueChange={(value) => {
+                    setIsSchedualing(value)
+                  }} 
+                  trackColor={{false: '#D9D9D9' , true: '#13852F'}}
+                />
+              </SafeAreaView>
+            </SafeAreaView>
+            <SafeAreaView style={styles.btnItem}>
+              <SafeAreaView style={styles.btnTitleContain}>
+                <SafeAreaView style={styles.btnTitleRight}>
+                  <Text style={styles.btnTitle}>Manually</Text>
+                  <Text style={styles.subbtnTitle}>System will turn of after</Text>
+                  <Text style={{color: 'black', fontWeight: 'bold', fontSize: 10}}>{minutes}:{seconds}</Text>
+                </SafeAreaView>
+                <SafeAreaView style={styles.btnTitleLeft}>
+
+                </SafeAreaView>
+              </SafeAreaView>
+              <SafeAreaView>
+                <Switch 
+                  value={isOn} 
+                  style = {styles.button}
+                  onValueChange={(value) => {
+                    setIsOn(value)
+                    setIsRunning(value)
+                  }} 
+                  trackColor={{false: '#D9D9D9' , true: '#13852F'}}
+                />
+              </SafeAreaView>
+            </SafeAreaView>
           </SafeAreaView>
         </SafeAreaView>
       </SafeAreaView>
-    </SafeAreaView>
-  </SafeAreaView>
+      <SafeAreaView>
+        <BottomSheetModal 
+          ref={BottomSheetModalRef}
+          index={0}
+          snapPoints={snapPoints}
+          backgroundStyle ={styles.bottomModal}
+          enablePanDownToClose={true}
+          onDismiss={handleDismissModal} // Xử lý khi modal đóng
+        >
+          <BottomSheetView style={styles.contentContainer}>
+            <DatePickerModal />
+          </BottomSheetView>
+        </BottomSheetModal>
+      </SafeAreaView>
+    </BottomSheetModalProvider>
+  </GestureHandlerRootView>
+
   );
 }
 
@@ -188,4 +234,20 @@ const styles = StyleSheet.create({
   },
   btnTitleLeft:{},
   button: {},
+  contentContainer: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  bottomModal: {
+    borderRadius: 50, 
+    backgroundColor: '#C6E9CA',
+    // Shadow cho iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+
+    // Shadow cho Android
+    elevation: 5, 
+  }
 });

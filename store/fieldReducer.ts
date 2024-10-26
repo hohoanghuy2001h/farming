@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import { initialState } from './reducer';
+import { initialState } from './globalinitial';
 import { useFieldDetail } from '@/hooks/field';
 // Cấu trúc đúng cho createAsyncThunk
 export const getFieldDetail = createAsyncThunk(
@@ -17,6 +17,10 @@ export const fieldSlice = createSlice({
     getCurrentField: (state, action) => {
         state.fieldID = action.payload;
     },
+    getCurrentStage: (state, action) => {
+        state.plantDate = action.payload.day;
+        state.plantStage = action.payload.stagePlant;
+    },
     incrementByAmount: (state, action: PayloadAction<fieldType>) => {
 
     },
@@ -28,6 +32,6 @@ export const fieldSlice = createSlice({
   },
 });
 // Action creators are generated for each case reducer function
-export const { getCurrentField } = fieldSlice.actions
+export const { getCurrentField, getCurrentStage } = fieldSlice.actions
 
 export default fieldSlice.reducer

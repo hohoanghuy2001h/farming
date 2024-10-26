@@ -10,32 +10,32 @@ import { useEffect, useState } from 'react';
 //FAKE API
 const cardNameArray = [
   {
-    iconName: 'sun',
-    cardName: "Light",
+    iconName: 'temperature-half',
+    cardName: "Tempurature",
     fieldName: 'field1',
     warning: 0,
     unit: '°C',
   },
   {
-    iconName: 'temperature-half',
-    cardName: "Tempurature",
+    iconName: 'water',
+    cardName: "Humidity",
     fieldName: 'field2',
-    warning: 0,
+    warning: 1,
     unit: '%',
   },
   {
-    iconName: 'water',
-    cardName: "Humidity",
+    iconName: 'sun',
+    cardName: "Light",
     fieldName: 'field3',
-    warning: 1,
-    unit: '%',
+    warning: 0,
+    unit: '',
   },
   {
     iconName: 'seedling',
     cardName: "Soil",
     fieldName: 'field4',
     warning: 2,
-    unit: '%',
+    unit: '',
   },
 ]
   
@@ -45,12 +45,14 @@ const configDataChart = (rawData: any) => {
     data = {
       labels: rawData.map((item: any)=> {
         //const date = new Date(item.created_at).toLocaleString();
-        const date = new Date(item.created_at);
-        const hours = date.getUTCHours(); // Lấy giờ theo UTC
-        const minutes = date.getUTCMinutes(); // Lấy phút theo UTC
-    
+        const date = new Date(item.created_at).toLocaleString();
+        // Tách phần thời gian từ chuỗi
+        const timePart = date.split(", ")[1];
+
+        // Tách giờ và phút
+        const [hour, minute] = timePart.split(":");   
         // Định dạng giờ và phút
-        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+        return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`
       }),  
       datasets: [
         {

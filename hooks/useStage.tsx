@@ -4,20 +4,16 @@ import axios from "axios";
 
 export default function useStage(date: number) {
   const [loading, setLoading] = useState(true);
-  const [daysPlant, setDaysPlant] = useState<plant>({day: 0});
   const [stagePlant, setStagePlant] = useState<stagePlant>()
   const [error, setError] = useState("");
   const [refetch, setRefetch] = useState(false);
 
   useEffect(() => {
     const subscription = async () => {
-        setDaysPlant({
-            day: date,
-        });
         setLoading(false);
-        await stageDefault.forEach((stage, index) => {
-            if(daysPlant?.day >= stage.days) {
-              if( index < stageDefault.length - 1 && daysPlant?.day < stageDefault[index + 1].days) {
+        stageDefault.forEach((stage, index) => {
+            if(date >= stage.days) {
+              if( index < stageDefault.length - 1 && date < stageDefault[index + 1].days) {
                 setStagePlant(stage);
               }
               else if(index == stageDefault.length - 1) {
