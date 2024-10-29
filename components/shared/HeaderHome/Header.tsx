@@ -35,7 +35,7 @@ const Header: React.FC<HeaderProps> = ({avatar = null, action, logOut}) => {
                     alignItems: 'center',
                 }}
                   onPress={() => {
-                    action(0);
+                    action();
                   }}
                 >
                     <Image

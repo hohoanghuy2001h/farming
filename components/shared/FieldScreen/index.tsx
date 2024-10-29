@@ -1,7 +1,7 @@
 import { StyleSheet, Text, SafeAreaView, FlatList, TouchableOpacity  } from 'react-native'
 import FieldItem from '../FieldItem'
 import { useField } from '@/hooks/field'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { windowWidth } from '@/utils/Dimensions'
 import { RootState } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux';
@@ -15,6 +15,7 @@ const FieldScreen = () => {
     setActiveIndex(index);
     dispatch(getCurrentField(item._id));
   }
+
   const renderFieldItem = ({ item, index }: { item: fieldType; index: number }) => {
     return (
       <TouchableOpacity 

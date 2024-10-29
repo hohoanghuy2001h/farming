@@ -3,9 +3,11 @@ import {CardInfo} from '@/components/shared/CardInfo/CardInfo';
 import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
 import { windowWidth } from '@/utils/Dimensions';
 import { useNewestData } from '@/hooks/data';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import stageImages from '@/assets/images/stages';
+import stageDefault from '@/constants/stage.template';
 const dataTemplate = [
   {
     label: 'Temperature',
@@ -50,7 +52,16 @@ const changeWarning = (data: any) => {
 }
 export default function InformationScreen() {
   const item = useSelector((state: RootState) => state.field);
+  const [currentPage, setCurrentPage] = useState<number>(0);
 
+  const getStageProgress = () => {
+    stageDefault.forEach((stage, index) => {
+      if(stage === item.plantStage) setCurrentPage(index)
+    })
+  }
+  useEffect(() => {
+    getStageProgress();
+  }, [item,currentPage])
   const {data} = useNewestData();
   useEffect(() => {
     changeValue(data);
@@ -76,7 +87,7 @@ export default function InformationScreen() {
         <SafeAreaView style={styles.rightContainer}>
             <Image 
               style={styles.plantImage} 
-              source={require('@/assets/images/stages/Branching.png')}
+              source={stageImages[currentPage]}
             />
         </SafeAreaView>
       </SafeAreaView>

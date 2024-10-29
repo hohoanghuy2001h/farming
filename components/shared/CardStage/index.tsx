@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
 import { useFieldDetail } from '@/hooks/field'
 import { getCurrentStage } from '@/store/fieldReducer'
-
+import stageDefault from '@/constants/stage.template'
 const getStageDay = (date: Date) => {
   const day = new Date(date); // Tạo bản sao để không thay đổi inputDate
   // Bước 2: Lấy thời gian hiện tại
@@ -14,9 +14,9 @@ const getStageDay = (date: Date) => {
 
   // Bước 3: Tính khoảng thời gian giữa hai thời gian
   const timeDifference = currentDate.getTime() - day.getTime(); // Thời gian chênh lệch tính bằng milliseconds
-  const millisecondsInADay = 1000 * 3600 * 24; // Cách ước lượng số milliseconds trong một tháng
-  const monthsDifference = Math.round(timeDifference / millisecondsInADay);
-  return monthsDifference;
+  const millisecondsInADay = 1000 * 3600 * 24; // Cách ước lượng số milliseconds trong một ngày
+  const daysDifference = Math.round(timeDifference / millisecondsInADay);
+  return daysDifference;
 }
 export const CardState = () => {
   const item = useSelector((state: RootState) => state.field);
@@ -25,15 +25,23 @@ export const CardState = () => {
   const [fieldCurrent, setFieldCurrent] = useState<fieldType>();
   const [day, setDay] = useState(0)
   const {stagePlant} = useStage(day); //Tìm kiếm stage phù hợp dựa trên day = currentDate - plantingDate (ngày trồng)
+  const [currentPage, setCurrentPage] = useState<number>(0);
 
+  const getStageProgress = () => {
+    stageDefault.forEach((stage, index) => {
+      if(stage === item.plantStage) setCurrentPage(index)
+    })
+  }
   useEffect(() => {
-    setFieldCurrent(data);
-    setDay(getStageDay(data?.timePlant));
+    getStageProgress();
+  }, [item,currentPage]);
+  useEffect(() => {
+    setFieldCurrent(data); //Cho thông tin field current vào biến fieldCurrent
+    setDay(getStageDay(data?.timePlant)); //Lấy thời gian từ thời gian trồng đến hiện tại của fieldCurrent
   }, [data, item])
   useEffect(() => {
-    // console.log(day);
-    dispatch(getCurrentStage({day,stagePlant}))
-  }, [day]);
+    dispatch(getCurrentStage({day,stagePlant}));
+  }, [day, stagePlant]); 
   return (
     item.fieldID !== '' ? 
     <SafeAreaView style={styles.container}>
@@ -41,7 +49,7 @@ export const CardState = () => {
         <SafeAreaView style={styles.left}>
           <Image 
             style={styles.image}
-            source={require('@/assets/images/stages/Seedling.png')}
+            source={stageImages[currentPage]}
           />
         </SafeAreaView>
         <SafeAreaView style={styles.right}>

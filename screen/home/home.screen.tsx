@@ -8,7 +8,6 @@ import { useRef, useCallback, useEffect } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Import GestureHandlerRootView
 import FieldScreen from '@/components/shared/FieldScreen'
 import Menu from '@/components/shared/Menu'
-import QuestModal from '@/components/shared/Modal/QuestModal'
 import { useRouter } from 'expo-router'
 const HomeScreen = () => {
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -75,9 +74,6 @@ const HomeScreen = () => {
             </BottomSheetView>
           </BottomSheetModal>
         </SafeAreaView>
-        <QuestModal visible={visible} onSubmit={() => setVsible(false)}>
-          <Text>Hello</Text>
-        </QuestModal>
       </SafeAreaView>
     </BottomSheetModalProvider>
     </GestureHandlerRootView>

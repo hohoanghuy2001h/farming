@@ -1,8 +1,9 @@
 import { StyleSheet, Text, SafeAreaView, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { windowWidth } from '@/utils/Dimensions';
 import { useRouter } from 'expo-router'
+import ModalQuestion from '../Modal/ModalQuestion';
 
 interface HeaderProps {
   title: string,
@@ -11,6 +12,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({title = 'Default', right = false, backgroundColor = 'white'}) => {
+    const [visible, setVisible] = useState(false);
     const router = useRouter();
     return (
         <SafeAreaView style={[styles.container, {backgroundColor: backgroundColor}]}>
@@ -22,12 +24,23 @@ const Header: React.FC<HeaderProps> = ({title = 'Default', right = false, backgr
            </SafeAreaView>
            <SafeAreaView style={styles.right}>
               { right? 
-              <SafeAreaView style={styles.iconContainer}>
-                <Icon name="flag" style={styles.icon} color={'white'} size={20} /> 
-              </SafeAreaView>
+              <TouchableOpacity
+                onPress={() => setVisible(true)}
+              >
+                <SafeAreaView style={styles.iconContainer}>
+                  <Icon name="flag" style={styles.icon} color={'white'} size={20} /> 
+                </SafeAreaView>
+              </TouchableOpacity>
               : <></>
               }
            </SafeAreaView>
+           <ModalQuestion isOpen = {visible} setIsOpen={setVisible} submit={() => setVisible(false)}>
+            <SafeAreaView>
+              <Text style={styles.modalTitle}>
+                  Detail Stage
+              </Text>
+            </SafeAreaView>
+          </ModalQuestion>
         </SafeAreaView>
     )
 }
@@ -70,5 +83,10 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
   },
 })

@@ -2,7 +2,6 @@ import { Text, SafeAreaView, StyleSheet, Image ,Dimensions, Switch} from 'react-
 import React, { useState, useEffect } from 'react';
 import Gauge from '@/components/shared/Chart/Gauge';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
-import QuestModal from '@/components/shared/Modal/QuestModal';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNewestFieldData } from '@/hooks/data';
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet'
@@ -90,12 +89,6 @@ export default function SettingScreen() {
   <GestureHandlerRootView>
     <BottomSheetModalProvider>
       <SafeAreaView style={styles.container}>
-        <QuestModal visible={visibilityturnOn} onSubmit={turnOn}>
-          <Text>a</Text>
-        </QuestModal>
-        <QuestModal visible={visibilityturnOff} onSubmit={turnOff}>
-          <Text>a</Text>
-        </QuestModal>
         <SafeAreaView style={styles.wrapper}>
           <SafeAreaView style= {styles.mainContainer}>
             <SafeAreaView style={styles.chartContainer}>

@@ -10,7 +10,7 @@ const useField = () => {
     const [refetch, setRefetch] = useState(false);
     useEffect(() => {
       const subscription = async () => {
-          setData (FieldsAPI)
+          await setData (FieldsAPI)
           setLoading(false)
       };
       subscription();

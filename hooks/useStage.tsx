@@ -23,7 +23,12 @@ export default function useStage(date: number) {
         })
     };
     subscription();
+    
   }, [refetch, date]);
+  // Monitor stagePlant changes to see updates
+  // useEffect(() => {
+  //   console.log("Updated stagePlant:", stagePlant);
+  // }, [stagePlant]);
 
   return { loading, stagePlant, error, setRefetch, refetch };
 }

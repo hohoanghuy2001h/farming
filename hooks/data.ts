@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
 import stageDefault from '@/constants/stage.template'
 import axios from "axios";
-import {CHANNEL_ID, API_KEY_READ} from '@env';
 const useData = (field: string) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState()
   const [error, setError] = useState("");
   const [refetch, setRefetch] = useState(false);
-  const URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?api_key=${API_KEY_READ}&results=20`;
+  const channelID = process.env.EXPO_PUBLIC_CHANNEL_ID;
+  const apiKeyRead = process.env.EXPO_PUBLIC_API_KEY_READ;
+  const URL = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${apiKeyRead}&results=20`;
   useEffect(() => {
     const subscription = async () => {
       setLoading(false);
@@ -39,7 +40,9 @@ const useNewestData = () => {
     const [data, setData] = useState({})
     const [error, setError] = useState("");
     const [refetch, setRefetch] = useState(false);
-    const URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?api_key=${API_KEY_READ}&results=20`;
+    const channelID = process.env.EXPO_PUBLIC_CHANNEL_ID;
+    const apiKeyRead = process.env.EXPO_PUBLIC_API_KEY_READ;
+    const URL = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${apiKeyRead}&results=20`;
     useEffect(() => {
       const subscription = async () => {
         setLoading(false);
@@ -76,7 +79,9 @@ const useNewestFieldData = (field: string) => {
   const [data, setData] = useState({})
   const [error, setError] = useState("");
   const [refetch, setRefetch] = useState(false);
-  const URL = `https://api.thingspeak.com/channels/${CHANNEL_ID}/feeds.json?api_key=${API_KEY_READ}&results=20`;
+  const channelID = process.env.EXPO_PUBLIC_CHANNEL_ID;
+  const apiKeyRead = process.env.EXPO_PUBLIC_API_KEY_READ;
+  const URL = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${apiKeyRead}&results=20`;
   useEffect(() => {
     const subscription = async () => {
       setLoading(false);
