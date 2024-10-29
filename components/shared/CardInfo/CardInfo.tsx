@@ -10,9 +10,9 @@ export const CardInfo: React.FC<CardInfoProps> = ({label, value, type, warning=f
   return (
     <SafeAreaView style={styles.container}>
       <SafeAreaView style= {styles.labelContainer}>
-        <SafeAreaView style={{flexDirection: 'row',}}>
+        <SafeAreaView style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
           <Text style={[styles.label,warning? styles.warning:null]}>{label}</Text>
-          {warning? <Text style={styles.warningIcon}>a</Text> : null}
+          {warning? <Image style={styles.warningIcon} source={require('@/assets/icons/alertIcon.png')}></Image> : null}
         </SafeAreaView>
         {/* <SafeAreaView>
           <Text style={styles.smallText}>{date}</Text>
@@ -49,7 +49,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
   },
   warningIcon: {
-    marginLeft: 10,
+    marginLeft: 5,
+    width: 15,
+    height: 15,
   },
   label: {
     fontSize: 14,

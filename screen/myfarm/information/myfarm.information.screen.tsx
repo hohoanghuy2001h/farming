@@ -47,13 +47,28 @@ const changeValue = (data: any)  => {
   }
   return dataTemplate;
 }
-const changeWarning = (data: any) => {
-
+const changeWarning = (data: number, label: string, stagePlant: stagePlant) => {
+  let warning = false;
+  switch(label) {
+    case 'Temperature':
+      warning = ( data < stagePlant.maxTemperature || data > stagePlant.minTemperature);
+      break;
+    case 'Humidity':
+      warning = ( data < stagePlant.maxHumidity || data > stagePlant.minHumidity);
+      break;
+    case 'Light Intensity':
+      warning = ( data < stagePlant.maxLight || data > stagePlant.minLight);
+      break;
+    case 'Soil Moisturize':
+      break;
+    default:
+      break;
+  }
+  return warning;
 }
 export default function InformationScreen() {
   const item = useSelector((state: RootState) => state.field);
   const [currentPage, setCurrentPage] = useState<number>(0);
-
   const getStageProgress = () => {
     stageDefault.forEach((stage, index) => {
       if(stage === item.plantStage) setCurrentPage(index)
@@ -69,7 +84,7 @@ export default function InformationScreen() {
   
   const renderItem = (data: any) => {
     return (
-      <CardInfo label={data.item.label} type={data.item.unit} value={data.item.value} warning={data.item.warning} date={data.item.timeUpdate} />
+      <CardInfo label={data.item.label} type={data.item.unit} value={data.item.value} warning={changeWarning(data.item.value, data.item.label, item.plantStage)} date={data.item.timeUpdate} />
     );
   }
   return (

@@ -3,6 +3,7 @@ import React from 'react'
 import useWeather from '@/hooks/useWeather'
 const CardWeather = () => {
   const {forecast,loading}  = useWeather();
+  console.log(forecast);
   return (
     loading? 
     <SafeAreaView>
@@ -26,9 +27,9 @@ const CardWeather = () => {
             </SafeAreaView>
           </SafeAreaView>
           <SafeAreaView style={styles.subtitleItem}>
-            <Text style={styles.titleData}>Tempurate</Text>
+            <Text style={styles.titleData}>Wind Speed</Text>
             <SafeAreaView style={styles.dataWrapper}>
-              <Text style={styles.data}>{Math.round(forecast?.temperature? forecast?.temperature : 0)}%</Text>
+              <Text style={styles.data}>{Math.round(forecast?.wind? forecast?.wind : 0)}</Text>
             </SafeAreaView>
           </SafeAreaView>
           <SafeAreaView style={styles.subtitleItem}>

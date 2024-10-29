@@ -2,6 +2,7 @@ import { StyleSheet, Text, SafeAreaView, Image } from 'react-native'
 import React from 'react'
 import { useLocalSearchParams } from 'expo-router'
 import { useDiseaseDetail } from '@/hooks/disease'
+import { ScrollView } from 'react-native-gesture-handler'
 
 const DetailScreen = () => {
   const { id } = useLocalSearchParams();
@@ -14,7 +15,12 @@ const DetailScreen = () => {
         source={data?.image}
         style={styles.image}
         />
-      <Text style={styles.content}>{data?.detail}</Text>
+      <ScrollView 
+            showsVerticalScrollIndicator={false} // Ẩn thanh cuộn dọc
+            showsHorizontalScrollIndicator={false} // Ẩn thanh cuộn ngang nếu có
+      >
+        <Text style={styles.content}>{data?.detail}</Text>
+      </ScrollView>
     </SafeAreaView>
   )
 }

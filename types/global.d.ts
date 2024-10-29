@@ -11,6 +11,7 @@ type weather = {
    temperature : number,
    humidity: number,
    feellike: number,
+   wind: number
 }
 type plant = {
     day: number,
@@ -19,8 +20,8 @@ type stagePlant = {
     id: number,
     stage: string,
     description: string,
-    minTempurature: number,
-    maxTempurature: number,
+    minTemperature: number,
+    maxTemperature: number,
     minHumidity: number,
     maxHumidity: number,
     minLight: number,

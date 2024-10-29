@@ -18,9 +18,9 @@ const CardName: React.FC<CardNameProps> = ({iconName = 'temperature-half', oncli
         <FontAwesome6 name={iconName} size={40} color={colorIcon} />
         <Text style={[styles.state,
                       onclick ? styles.onclickState : null,
-                      warning == 1? styles.stateHigh : warning == 2 ? styles.stateLow : null 
+                      warning == 1? styles.stateLow : warning == 2 ? styles.stateHigh : null 
         ]}>
-            {warning  == 0 ? 'GOOD': warning == 1 ? 'HIGH': 'LOW'}
+            {warning  == 0 ? 'GOOD': warning == 2 ? 'HIGH': 'LOW'}
         </Text>
     </View>
   )

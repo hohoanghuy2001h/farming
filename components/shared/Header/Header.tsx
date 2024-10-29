@@ -4,6 +4,10 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { windowWidth } from '@/utils/Dimensions';
 import { useRouter } from 'expo-router'
 import ModalQuestion from '../Modal/ModalQuestion';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { useFieldDetail } from '@/hooks/field';
+import ModalNotice from '../Modal/ModalNotice';
 
 interface HeaderProps {
   title: string,
@@ -12,37 +16,53 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({title = 'Default', right = false, backgroundColor = 'white'}) => {
-    const [visible, setVisible] = useState(false);
-    const router = useRouter();
-    return (
-        <SafeAreaView style={[styles.container, {backgroundColor: backgroundColor}]}>
-           <TouchableOpacity style={styles.left} onPress={() => router.back()}>
-              <Icon name="arrow-left" style={styles.icon} size={20} /> 
-           </TouchableOpacity>
-           <SafeAreaView style={styles.center}>
-              <Text style={styles.title}>{title}</Text>
-           </SafeAreaView>
-           <SafeAreaView style={styles.right}>
-              { right? 
-              <TouchableOpacity
-                onPress={() => setVisible(true)}
-              >
-                <SafeAreaView style={styles.iconContainer}>
-                  <Icon name="flag" style={styles.icon} color={'white'} size={20} /> 
-                </SafeAreaView>
-              </TouchableOpacity>
-              : <></>
-              }
-           </SafeAreaView>
-           <ModalQuestion isOpen = {visible} setIsOpen={setVisible} submit={() => setVisible(false)}>
-            <SafeAreaView>
+  const item = useSelector((state: RootState) => state.field);
+  const {data}= useFieldDetail(item.fieldID); //Tìm kiếm thông tin của field dựa trên fieldID
+  const [visible, setVisible] = useState(false);
+  const router = useRouter();
+  return (
+      <SafeAreaView style={[styles.container, {backgroundColor: backgroundColor}]}>
+          <TouchableOpacity style={styles.left} onPress={() => router.back()}>
+            <Icon name="arrow-left" style={styles.icon} size={20} /> 
+          </TouchableOpacity>
+          <SafeAreaView style={styles.center}>
+            <Text style={styles.title}>{title}</Text>
+          </SafeAreaView>
+          <SafeAreaView style={styles.right}>
+            { right? 
+            <TouchableOpacity
+              onPress={() => setVisible(true)}
+            >
+              <SafeAreaView style={styles.iconContainer}>
+                <Icon name="flag" style={styles.icon} color={'white'} size={20} /> 
+              </SafeAreaView>
+            </TouchableOpacity>
+            : <></>
+            }
+          </SafeAreaView>
+          <ModalNotice isOpen = {visible} setIsOpen={setVisible} submit={() => setVisible(false)}>
+          <SafeAreaView>
+            <SafeAreaView style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={styles.modalTitle}>
                   Detail Stage
               </Text>
+              <TouchableOpacity
+                onPress={() => setVisible(false)}
+              >
+                <SafeAreaView
+                   style={{borderWidth: 1, borderColor: 'black', borderRadius: 20, aspectRatio: 1/1, justifyContent: 'center', alignItems: 'center'}}
+                >
+                  <Icon name='close' size={20}></Icon>
+                </SafeAreaView>
+              </TouchableOpacity>
             </SafeAreaView>
-          </ModalQuestion>
-        </SafeAreaView>
-    )
+            <Text style={styles.modalContent}>
+              {item.plantStage.description}
+            </Text>
+          </SafeAreaView>
+        </ModalNotice>
+      </SafeAreaView>
+  )
 }
 
 export default Header
@@ -89,4 +109,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  modalContent: {
+
+  }
 })

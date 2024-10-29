@@ -15,10 +15,10 @@ export const initialState: stateType = {
     days: -1,
     description:'',
     maxLight: -1,
-    maxTempurature: -1,
+    maxTemperature: -1,
     minHumidity: -1,
     minLight: -1,
-    minTempurature: -1,
+    minTemperature: -1,
     stage: '',
   },
 }

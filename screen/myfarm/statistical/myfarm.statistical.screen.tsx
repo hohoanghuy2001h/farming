@@ -6,12 +6,14 @@ import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
 import { useData } from '@/hooks/data';
 import Line from '@/components/shared/Chart/Line';
 import { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 //FAKE API
 const cardNameArray = [
   {
     iconName: 'temperature-half',
-    cardName: "Tempurature",
+    cardName: "Temperature",
     fieldName: 'field1',
     warning: 0,
     unit: '°C',
@@ -25,20 +27,39 @@ const cardNameArray = [
   },
   {
     iconName: 'sun',
-    cardName: "Light",
+    cardName: "Light Intensity",
     fieldName: 'field3',
     warning: 0,
     unit: '',
   },
   {
     iconName: 'seedling',
-    cardName: "Soil",
+    cardName: "Soil Moisturize",
     fieldName: 'field4',
     warning: 2,
     unit: '',
   },
 ]
-  
+const changeWarning = (data: number, label: string, stagePlant: stagePlant) => {
+  let warning = 0;
+  switch(label) {
+    case 'Temperature':
+      warning = data < stagePlant.maxTemperature ? 1 : data > stagePlant.minTemperature ? 2 : 0;
+      break;
+    case 'Humidity':
+      warning = data < stagePlant.maxHumidity ? 1 : data > stagePlant.minHumidity ? 2 : 0;
+      break;
+    case 'Light Intensity':
+      warning = data < stagePlant.maxLight ? 1 : data > stagePlant.minLight ? 2 : 0;
+      break;
+    case 'Soil Moisturize':
+      break;
+    default:
+      break;
+  }
+  return warning;
+}  
+
 const configDataChart = (rawData: any) => {
   let data = {};
   if(rawData != null){
@@ -66,13 +87,14 @@ const configDataChart = (rawData: any) => {
   return data;
 }
 export default function StatisticalScreen() {
+  const item = useSelector((state: RootState) => state.field);
   const [activeItem, setActiveItem] = useState(0); // State để lưu vị trí của item active
   const {data} = useData(cardNameArray[activeItem].fieldName)
   const [dataChart, setDataChart] = useState({})
   useEffect(() => {
     setDataChart(configDataChart(data));
   }, [data])  
-  const itemRender = (item: any, index: number) => {
+  const itemRender = (itemData: any, index: number) => {
     return (
       <TouchableOpacity 
         onPress={() => {
@@ -81,8 +103,8 @@ export default function StatisticalScreen() {
         key={index}
         style = {styles.itemContainer}
       >
-          <CardName iconName={item.iconName} key={index} 
-                    warning={item.warning} 
+          <CardName iconName={itemData.iconName} key={index} 
+                    warning={changeWarning(24, itemData.cardName, item.plantStage )} 
                     onclick={index == activeItem? true : false} 
           />
       </TouchableOpacity>
@@ -109,7 +131,14 @@ export default function StatisticalScreen() {
          <SafeAreaView style={styles.desContainer}>
             <Text style={styles.desTitle}>Best Conditions:</Text>
             <SafeAreaView style={styles.desTextContainer}>
-              <Text style = {styles.text}>Hello</Text>
+              <Text style = {styles.text}>
+                {`Các thông số ở điều kiện lý tưởng khi cây đang trong giai đoạn ${item.plantStage.stage}:
+
+  - Nhiệt độ: ${item.plantStage.minTemperature}°C - ${item.plantStage.maxTemperature}°C
+  - Độ ẩm: ${item.plantStage.minHumidity}% - ${item.plantStage.minHumidity}%
+  - Ánh sáng: ${item.plantStage.maxLight}lux - ${item.plantStage.maxLight}lux
+                `}
+              </Text>
             </SafeAreaView>
         </SafeAreaView>       
         </SafeAreaView>
