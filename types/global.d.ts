@@ -46,6 +46,9 @@ type fieldType = {
     timePlant: any, 
 };
 type dateScheduleType = {
+    _id: string,
     date: Date,
-    repeat: 'none'| 'daily'| 'weekly' | 'monthly',
+    repeat: string,
+    onActive: boolean,
+    timeOut: NodeJS.Timeout | number,
 }

@@ -3,7 +3,6 @@ import React from 'react'
 import useWeather from '@/hooks/useWeather'
 const CardWeather = () => {
   const {forecast,loading}  = useWeather();
-  console.log(forecast);
   return (
     loading? 
     <SafeAreaView>

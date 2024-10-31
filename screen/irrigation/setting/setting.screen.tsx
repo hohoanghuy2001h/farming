@@ -68,6 +68,14 @@ export default function SettingScreen() {
     setIsOn(false);
     setVisibilityturnOff(false);
   }
+  //Đây là hàm tắt lên lịch
+  const turnOffSchedule = () => {
+    setIsSchedualing(false);
+  }
+  //Đây là hàm bật lên lịch
+  const turnOnSchedule = () => {
+    setIsSchedualing(true);
+  }
 
   //Đây là hàm mở màn hình schedule - irrigation
   const openPresentBottomSheetModal = useCallback(() => {
@@ -80,6 +88,7 @@ export default function SettingScreen() {
     BottomSheetModalRef.current?.dismiss();
     setIsOpen(false);
   };
+  //Đây là hàm onclick để mở schedule
   const onClickScheduleBtn = () => {
     openPresentBottomSheetModal();
   }
@@ -164,7 +173,10 @@ export default function SettingScreen() {
           onDismiss={handleDismissModal} // Xử lý khi modal đóng
         >
           <BottomSheetView style={styles.contentContainer}>
-            <DatePickerModal />
+            <DatePickerModal 
+              isScheduling ={isSchedualing}
+              setIsScheduling={setIsSchedualing}
+            />
           </BottomSheetView>
         </BottomSheetModal>
       </SafeAreaView>

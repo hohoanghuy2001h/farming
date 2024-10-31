@@ -34,7 +34,6 @@ export default function useWeather() {
               feellike: res.data.main['feels_like'],
               wind: res.data.wind['speed'],
             });
-            console.log(res.data);
             setLoading(false);
         })
         .catch((error: any) => {
