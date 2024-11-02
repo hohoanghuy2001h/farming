@@ -32,7 +32,29 @@ const useData = (field: string) => {
     };
     subscription();
   }, [refetch, field]);
-
+  const getNextSchedule = () => {
+    const now = new Date();
+    const hoursToSchedule = [6, 12, 18];
+    const targetTimes = hoursToSchedule.map(hour => {
+      const target = new Date();
+      target.setHours(hour, 0, 0, 0);
+      if (target <= now) target.setDate(target.getDate() + 1); // Nếu đã qua giờ, đặt cho ngày tiếp theo
+      return target.getTime();
+    });
+    return Math.min(...targetTimes) - now.getTime();
+  };
+  useEffect(() => {
+    const scheduleNextRefetch = () => {
+      const timeUntilNext = getNextSchedule();
+      const timeout = setTimeout(() => {
+        setRefetch(prev => !prev); // Gọi lại API vào giờ đã lên lịch
+        scheduleNextRefetch(); // Tái thiết lập cho lần gọi tiếp theo
+      }, timeUntilNext);
+      return () => clearTimeout(timeout);
+    };
+    const cancelTimeout = scheduleNextRefetch(); // Bắt đầu lịch trình
+    return cancelTimeout; // Hủy lịch khi unmount
+  }, []);
   return { loading, data, error, setRefetch, refetch };
 }
 const useNewestData = () => {

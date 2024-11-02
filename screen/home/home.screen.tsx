@@ -9,22 +9,24 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Import
 import FieldScreen from '@/components/shared/FieldScreen'
 import Menu from '@/components/shared/Menu'
 import { useRouter } from 'expo-router'
+import { useLogout } from '@/hooks/auth/userAuth'
+import { auth } from '@/firebaseConfig'
 const HomeScreen = () => {
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
   const FieldBottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['40%', '88%'], []); 
   const FieldsnapPoints = useMemo(() => ['90%'], []); 
   const [visible, setVsible] = useState(false);
+  const logoutUser = useLogout(auth);
   const router = useRouter();
 
   const logout = () => {
     setVsible(true);
-    // router.push({
-    //   pathname: '/(auth)/login',
-    //   params: { },
-    // })
-    // dispatch(logOut());
-
+    router.push({
+      pathname: '/(auth)/login',
+      params: { },
+    })
+    logoutUser()
   }
   const openModal = () => {
 
