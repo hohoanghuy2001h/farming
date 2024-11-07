@@ -8,6 +8,7 @@ import Line from '@/components/shared/Chart/Line';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
+import LoadingScreen from '@/screen/loading/loading.screen';
 
 //FAKE API
 const cardNameArray = [
@@ -89,7 +90,7 @@ const configDataChart = (rawData: any) => {
 export default function StatisticalScreen() {
   const item = useSelector((state: RootState) => state.field);
   const [activeItem, setActiveItem] = useState(0); // State để lưu vị trí của item active
-  const {data} = useData(cardNameArray[activeItem].fieldName)
+  const {data, loading} = useData(cardNameArray[activeItem].fieldName)
   const [dataChart, setDataChart] = useState({})
   useEffect(() => {
     setDataChart(configDataChart(data));
@@ -111,38 +112,39 @@ export default function StatisticalScreen() {
     );
   }
   return (
+    loading ? <LoadingScreen />:
     <SafeAreaView style={styles.container}>
-      <SafeAreaView style={styles.wrapper}>
-        <HeaderMyFarm />
-        <SafeAreaView style={styles.graphContainer}>
-          {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={cardNameArray[activeItem].unit}/>}
-        </SafeAreaView>
-        <SafeAreaView style={styles.swipperContainer}>
-            <FlatList 
-               data={cardNameArray}
-               contentContainerStyle ={styles.swipperWrapper}
-               renderItem={({item, index}) => itemRender(item, index)}
-               horizontal
-               showsHorizontalScrollIndicator={false}
-               ItemSeparatorComponent={() => <SafeAreaView style={{ width: 20 }} />}  // 20px spacing between items
-            />
-        </SafeAreaView>
+    <SafeAreaView style={styles.wrapper}>
+      <HeaderMyFarm />
+      <SafeAreaView style={styles.graphContainer}>
+        {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={cardNameArray[activeItem].unit}/>}
+      </SafeAreaView>
+      <SafeAreaView style={styles.swipperContainer}>
+          <FlatList 
+             data={cardNameArray}
+             contentContainerStyle ={styles.swipperWrapper}
+             renderItem={({item, index}) => itemRender(item, index)}
+             horizontal
+             showsHorizontalScrollIndicator={false}
+             ItemSeparatorComponent={() => <SafeAreaView style={{ width: 20 }} />}  // 20px spacing between items
+          />
+      </SafeAreaView>
 
-         <SafeAreaView style={styles.desContainer}>
-            <Text style={styles.desTitle}>Best Conditions:</Text>
-            <SafeAreaView style={styles.desTextContainer}>
-              <Text style = {styles.text}>
-                {`Các thông số ở điều kiện lý tưởng khi cây đang trong giai đoạn ${item.plantStage.stage}:
+       <SafeAreaView style={styles.desContainer}>
+          <Text style={styles.desTitle}>Best Conditions:</Text>
+          <SafeAreaView style={styles.desTextContainer}>
+            <Text style = {styles.text}>
+              {`Các thông số ở điều kiện lý tưởng khi cây đang trong giai đoạn ${item.plantStage.stage}:
 
-  - Nhiệt độ: ${item.plantStage.minTemperature}°C - ${item.plantStage.maxTemperature}°C
-  - Độ ẩm: ${item.plantStage.minHumidity}% - ${item.plantStage.minHumidity}%
-  - Ánh sáng: ${item.plantStage.maxLight}lux - ${item.plantStage.maxLight}lux
-                `}
-              </Text>
-            </SafeAreaView>
-        </SafeAreaView>       
-        </SafeAreaView>
-    </SafeAreaView>
+- Nhiệt độ: ${item.plantStage.minTemperature}°C - ${item.plantStage.maxTemperature}°C
+- Độ ẩm: ${item.plantStage.minHumidity}% - ${item.plantStage.minHumidity}%
+- Ánh sáng: ${item.plantStage.maxLight}lux - ${item.plantStage.maxLight}lux
+              `}
+            </Text>
+          </SafeAreaView>
+      </SafeAreaView>       
+      </SafeAreaView>
+  </SafeAreaView>
   );
 }
 

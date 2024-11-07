@@ -71,7 +71,6 @@ const useNewestData = () => {
         await axios
           .get(`${URL}`, {})
           .then((res: any) => {
-            setLoading(false);
             const feeds = res.data.feeds;
             const filteredData = feeds
             .filter((feed: any) => feed['field1'] !== null)
@@ -85,6 +84,7 @@ const useNewestData = () => {
                 ],
             }
             setData(lastConfigvalue);
+            setLoading(false);
           })
           .catch((error: any) => {
             setError(error?.message);

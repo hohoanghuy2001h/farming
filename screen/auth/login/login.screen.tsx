@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, Image, KeyboardAvoidingView, KeyboardAvoidingViewBase, Platform } from 'react-native'
+import { StyleSheet, Text, SafeAreaView, Image, KeyboardAvoidingView, KeyboardAvoidingViewBase, Platform, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { windowWidth, windowHeight } from '@/utils/Dimensions'
 import PrimaryButton from '@/components/shared/Button'
@@ -8,11 +8,13 @@ import { TextInput } from 'react-native-gesture-handler'
 import Icon from 'react-native-vector-icons/FontAwesome'
 import { useLogin } from '@/hooks/auth/userAuth'
 import { auth } from '@/firebaseConfig'
+import ModalNotice from '@/components/shared/Modal/ModalNotice'
 const LoginScreen = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>("")
   const [password, setPassword] = useState<string>("")
   const login = useLogin(auth);
+  const [visible, setVisible] = useState(false);
 
   const redictNewPage = () => {//Đây là function điều hướng trang
     router.push({
@@ -20,9 +22,10 @@ const LoginScreen = () => {
       params: {  },
     });
   };
-  const resolveLogin  = () => {
-      login(email,password);
-      redictNewPage()
+  const resolveLogin  = async () => {
+      const user = await login(email,password);
+      if (user) redictNewPage()
+      else setVisible(true)
   }
   return (
     <SafeAreaView style={styles.container}>
@@ -70,6 +73,25 @@ const LoginScreen = () => {
           <SecondButton content='Login with Email' leftIcon='envelope' colorIcon='red'/>
         </SafeAreaView>
       </SafeAreaView>
+      <ModalNotice isOpen = {visible} setIsOpen={setVisible} >
+        <SafeAreaView style={{
+          flexDirection: 'row',
+          justifyContent:'space-between',
+          marginBottom: 20,
+        }}>
+          <Text style={styles.modalTitle}>
+            Login Error
+          </Text>
+          <TouchableOpacity
+            onPress={() => setVisible(false)} 
+          >
+            <Icon name='close' size={20} />
+          </TouchableOpacity>
+        </SafeAreaView>
+        <SafeAreaView>
+          <Text>Tên user hoặc mật khẩu của bạn không đúng. Vui lòng hãy kiểm tra lại.</Text>
+        </SafeAreaView>
+      </ModalNotice>
     </SafeAreaView>
   )
 }
@@ -136,5 +158,9 @@ const styles = StyleSheet.create({
     height: 1,               // Chiều cao của đường thẳng
     backgroundColor: '#818181', // Màu sắc của đường thẳng
   },
-
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: 'red',
+  }
 })

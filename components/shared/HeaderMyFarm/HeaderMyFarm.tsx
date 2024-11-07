@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView } from 'react-native'
+import { StyleSheet, Text, SafeAreaView, Platform } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 import React, { useEffect, useState } from 'react'
@@ -7,6 +7,7 @@ import ModalQuestion from '../Modal/ModalQuestion';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useFieldDetail } from '@/hooks/field';
+import DateTimePicker from '@react-native-community/datetimepicker';
 const getStageDay = (date: Date) => {
   const day = new Date(date); // Tạo bản sao để không thay đổi inputDate
   // Bước 2: Lấy thời gian hiện tại
@@ -22,11 +23,22 @@ const HeaderMyFarm = () => {
   const [visible, setVisible] = useState(false);
   const item = useSelector((state: RootState) => state.field);
   const {data}= useFieldDetail(item.fieldID); //Tìm kiếm thông tin của field dựa trên fieldID
+  const [date, setDate] = useState(new Date());
   const [day, setDay] = useState(0)
+  const [show, setShow] = useState(false);
   useEffect(() => {
     setDay(getStageDay(data?.timePlant));
   }, [data])
-  
+    //Hàm này để lưu ngày của schedule
+  const onChange = (event: any, selectedDate: any) => {
+      const currentDate = selectedDate || date;
+      setShow(Platform.OS === 'ios');
+      setDate(currentDate);
+  };
+  //Change Planting date of field
+  const changeDateField = () =>  {
+    setVisible(false);
+  }
   return (
     <SafeAreaView style={styles.container}>
         <SafeAreaView style={styles.headerName}>
@@ -43,13 +55,19 @@ const HeaderMyFarm = () => {
         </SafeAreaView>
         </SafeAreaView>
         <SafeAreaView style={styles.statusPlant}>
-        <Text style={styles.statusText}>Good Health</Text>
+          <Text style={styles.statusText}>Good Health</Text>
         </SafeAreaView>
-        <ModalQuestion isOpen = {visible} setIsOpen={setVisible} submit={() => setVisible(false)}>
+        <ModalQuestion isOpen = {visible} setIsOpen={setVisible} submit={changeDateField}>
         <SafeAreaView>
           <Text style={styles.modalTitle}>
               Edit Planting Time
           </Text>
+          <DateTimePicker
+              value={date}
+              mode="date"
+              display="inline"
+              onChange={onChange}
+          />
         </SafeAreaView>
       </ModalQuestion>
     </SafeAreaView>
@@ -89,6 +107,7 @@ const styles = StyleSheet.create({
       modalTitle: {
         fontSize: 20,
         fontWeight: 'bold',
-        marginBottom: 20,
+        marginBottom: 10,
+        textAlign: 'center'
       },
 })

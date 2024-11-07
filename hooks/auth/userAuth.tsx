@@ -62,11 +62,15 @@ const useCreateUser = (auth: Auth) => {
 };
 const useLogin = (auth: Auth) => {
   const createUser = useCallback(async (email: string, password: string) => {
+    // const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    // if (!emailRegex.test(email)) {
+    //   console.error("Invalid email format");
+    //   return false; // Trả về false nếu email không hợp lệ
+    // }
     try {
       await signInWithEmailAndPassword(auth, email, password);
       return true; // Trả về true nếu thành công
-    } catch (error: any) {
-      console.error("Error login user:", error.message);
+    } catch (error: any) {      
       return false; // Trả về false nếu có lỗi
     }
   }, [auth]);

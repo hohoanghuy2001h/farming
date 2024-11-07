@@ -2,12 +2,12 @@ import { SafeAreaView, StyleSheet, Text, Modal, ModalProps, StatusBar, KeyboardA
 import React from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
+import Icon from 'react-native-vector-icons/FontAwesome';
 type PROPS = ModalProps & {
     isOpen: boolean,
     setIsOpen: (value: boolean) => void;
-    submit: () => void,
 }
-const ModalNotice = ({isOpen, setIsOpen,submit, children, ...rest}: PROPS) => {
+const ModalNotice = ({isOpen, setIsOpen, children, ...rest}: PROPS) => {
   const content = (
     <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: 'white',
     paddingHorizontal: 20,
-    paddingVertical: 10,
+    paddingVertical: 30,
     borderRadius: 20,
     width: windowWidth*0.8,
   },

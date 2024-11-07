@@ -2,6 +2,7 @@ export interface stateType {
   userID: string,
   fieldID: string,
   plantDate: number,
+  health: string, 
   plantStage: stagePlant,
 }
 
@@ -9,6 +10,7 @@ export const initialState: stateType = {
   fieldID: '',
   userID: '',
   plantDate: 0,
+  health: '',
   plantStage: {
     id: -1,
     maxHumidity:-1,

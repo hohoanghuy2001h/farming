@@ -8,6 +8,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import stageImages from '@/assets/images/stages';
 import stageDefault from '@/constants/stage.template';
+import LoadingScreen from '@/screen/loading/loading.screen';
 const dataTemplate = [
   {
     label: 'Temperature',
@@ -74,40 +75,40 @@ export default function InformationScreen() {
       if(stage === item.plantStage) setCurrentPage(index)
     })
   }
-  useEffect(() => {
-    getStageProgress();
-  }, [item,currentPage])
-  const {data} = useNewestData();
+  const {data, loading} = useNewestData();
   useEffect(() => {
     changeValue(data);
   }, [data])
-  
+  useEffect(() => {
+    getStageProgress();
+  }, [item,currentPage])
   const renderItem = (data: any) => {
     return (
       <CardInfo label={data.item.label} type={data.item.unit} value={data.item.value} warning={changeWarning(data.item.value, data.item.label, item.plantStage)} date={data.item.timeUpdate} />
     );
   }
   return (
-  <SafeAreaView style={styles.container}>
-    <SafeAreaView style={styles.wrapper}>
-      <HeaderMyFarm />
-      <SafeAreaView style = {styles.contentContainer}>
-        <SafeAreaView style={styles.leftContainer}>
-          <FlatList
-            data={dataTemplate} 
-            renderItem={renderItem}
-            contentContainerStyle={styles.cardContainer} // Áp dụng gap cho container
-            />
-        </SafeAreaView>
-        <SafeAreaView style={styles.rightContainer}>
-            <Image 
-              style={styles.plantImage} 
-              source={stageImages[currentPage]}
-            />
+    loading? <LoadingScreen/> :
+    <SafeAreaView style={styles.container}>
+      <SafeAreaView style={styles.wrapper}>
+        <HeaderMyFarm />
+        <SafeAreaView style = {styles.contentContainer}>
+          <SafeAreaView style={styles.leftContainer}>
+            <FlatList
+              data={dataTemplate} 
+              renderItem={renderItem}
+              contentContainerStyle={styles.cardContainer} // Áp dụng gap cho container
+              />
+          </SafeAreaView>
+          <SafeAreaView style={styles.rightContainer}>
+              <Image 
+                style={styles.plantImage} 
+                source={stageImages[currentPage]}
+              />
+          </SafeAreaView>
         </SafeAreaView>
       </SafeAreaView>
     </SafeAreaView>
-  </SafeAreaView>
   );
 }
 

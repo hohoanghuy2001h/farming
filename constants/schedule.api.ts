@@ -18,7 +18,7 @@ const scheduleAPI: dateScheduleType[] = [
             return date;
         })(),
         repeat: 'none', // Giá trị này đã đúng
-        onActive: true,
+        onActive: false,
         timeOut: 0,
     },
     {

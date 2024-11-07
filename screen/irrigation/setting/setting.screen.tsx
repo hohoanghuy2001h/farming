@@ -101,7 +101,7 @@ export default function SettingScreen() {
         <SafeAreaView style={styles.wrapper}>
           <SafeAreaView style= {styles.mainContainer}>
             <SafeAreaView style={styles.chartContainer}>
-              <Gauge data={humidity} />
+              <Gauge data={humidity || 0} />
             </SafeAreaView>
             <SafeAreaView style={styles.imageContainer}>
             <Image 

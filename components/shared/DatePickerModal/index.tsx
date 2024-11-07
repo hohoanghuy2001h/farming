@@ -163,25 +163,26 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ isScheduling, setIsSc
     return dayOfWeek;
   }
   // Hàm để xử lý thay đổi trạng thái của switch
-  const toggleSwitch = (date: Date) => {
+  const toggleSwitch = (timerId: string) => {
     setTimers((prevData) =>
       prevData.map((item) => {
-          if(item.date.getTime()  === date.getTime()) {
-            //Nếu tắt switch, xóa timeOut
-            if(item.onActive) clearInterval(item.timeOut);
-            //Nếu bật switch, khởi tạo lại timeOut
-            else {
-              const timeDifference = item.date.getTime() - new Date().getTime();
-              if (timeDifference > 0) {
-                const newTimeout = setTimeout(() => {
-                  console.log("Tưới nước được kích hoạt vào: ", item.date);
-                  handleRepeatLogic(item.date, item.repeat);
-                }, timeDifference);
-                item.timeOut = newTimeout;
-              }
+        if(item._id  === timerId) {
+          //Nếu tắt switch, xóa timeOut
+          if(item.onActive) clearInterval(item.timeOut);
+          //Nếu bật switch, khởi tạo lại timeOut
+          else {
+            const timeDifference = item.date.getTime() - new Date().getTime();
+            if (timeDifference > 0) {
+              const newTimeout = setTimeout(() => {
+                console.log("Tưới nước được kích hoạt vào: ", item.date);
+                handleRepeatLogic(item.date, item.repeat);
+              }, timeDifference);
+              item.timeOut = newTimeout;
             }
           }
           return {...item, onActive: !item.onActive };
+        }
+        return {...item};
       })
     );
   };
@@ -226,7 +227,7 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ isScheduling, setIsSc
                     value={timer.onActive} 
                     style = {styles.switch}
                     onValueChange={() => {
-                      toggleSwitch(timer.date)
+                      toggleSwitch(timer._id)
                     }} 
                     trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                   />

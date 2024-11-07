@@ -21,9 +21,9 @@ export const fieldSlice = createSlice({
         state.plantDate = action.payload.day;
         state.plantStage = action.payload.stagePlant;
     },
-    incrementByAmount: (state, action: PayloadAction<fieldType>) => {
+    // incrementByAmount: (state, action: PayloadAction<fieldType>) => {
 
-    },
+    // },
   },
   extraReducers(builder) {
     builder.addCase(getFieldDetail.fulfilled, (state, action) => {
