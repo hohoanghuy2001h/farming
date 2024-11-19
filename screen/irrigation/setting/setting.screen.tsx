@@ -1,4 +1,4 @@
-import { Text, SafeAreaView, StyleSheet, Image ,Dimensions, Switch} from 'react-native';
+import { Text, View, StyleSheet, Image ,Dimensions, Switch} from 'react-native';
 import React, { useState, useEffect } from 'react';
 import Gauge from '@/components/shared/Chart/Gauge';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
@@ -97,26 +97,26 @@ export default function SettingScreen() {
   return (
   <GestureHandlerRootView>
     <BottomSheetModalProvider>
-      <SafeAreaView style={styles.container}>
-        <SafeAreaView style={styles.wrapper}>
-          <SafeAreaView style= {styles.mainContainer}>
-            <SafeAreaView style={styles.chartContainer}>
+      <View style={styles.container}>
+        <View style={styles.wrapper}>
+          <View style= {styles.mainContainer}>
+            <View style={styles.chartContainer}>
               <Gauge data={humidity || 0} />
-            </SafeAreaView>
-            <SafeAreaView style={styles.imageContainer}>
+            </View>
+            <View style={styles.imageContainer}>
             <Image 
                 style={styles.image} 
                 source={require('@/assets/images/Watering.png')}
             />
-            </SafeAreaView>
-          </SafeAreaView>
-          <SafeAreaView style={styles.buttonContainer}>
-            <SafeAreaView style={styles.btnItem}>
-              <SafeAreaView style={styles.btnTitleContain}>
-                <SafeAreaView style={styles.btnTitleRight}>
+            </View>
+          </View>
+          <View style={styles.buttonContainer}>
+            <View style={styles.btnItem}>
+              <View style={styles.btnTitleContain}>
+                <View style={styles.btnTitleRight}>
                   <Text style={styles.btnTitle}>Automic</Text>
                   <Text style={styles.subbtnTitle}>Next irrigates in 8:00</Text>
-                </SafeAreaView>
+                </View>
                 <TouchableOpacity 
                   style={styles.btnTitleLeft} 
                   onPress={onClickScheduleBtn}
@@ -125,8 +125,8 @@ export default function SettingScreen() {
                     source={require('@/assets/images/setting.png')}
                   />
                 </TouchableOpacity>
-              </SafeAreaView>
-              <SafeAreaView>
+              </View>
+              <View>
                 <Switch 
                   value={isSchedualing} 
                   style = {styles.button}
@@ -135,20 +135,20 @@ export default function SettingScreen() {
                   }} 
                   trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                 />
-              </SafeAreaView>
-            </SafeAreaView>
-            <SafeAreaView style={styles.btnItem}>
-              <SafeAreaView style={styles.btnTitleContain}>
-                <SafeAreaView style={styles.btnTitleRight}>
+              </View>
+            </View>
+            <View style={styles.btnItem}>
+              <View style={styles.btnTitleContain}>
+                <View style={styles.btnTitleRight}>
                   <Text style={styles.btnTitle}>Manually</Text>
                   <Text style={styles.subbtnTitle}>System will turn of after</Text>
                   <Text style={{color: 'black', fontWeight: 'bold', fontSize: 10}}>{minutes}:{seconds}</Text>
-                </SafeAreaView>
-                <SafeAreaView style={styles.btnTitleLeft}>
+                </View>
+                <View style={styles.btnTitleLeft}>
 
-                </SafeAreaView>
-              </SafeAreaView>
-              <SafeAreaView>
+                </View>
+              </View>
+              <View>
                 <Switch 
                   value={isOn} 
                   style = {styles.button}
@@ -158,12 +158,12 @@ export default function SettingScreen() {
                   }} 
                   trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                 />
-              </SafeAreaView>
-            </SafeAreaView>
-          </SafeAreaView>
-        </SafeAreaView>
-      </SafeAreaView>
-      <SafeAreaView>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+      <View>
         <BottomSheetModal 
           ref={BottomSheetModalRef}
           index={0}
@@ -179,7 +179,7 @@ export default function SettingScreen() {
             />
           </BottomSheetView>
         </BottomSheetModal>
-      </SafeAreaView>
+      </View>
     </BottomSheetModalProvider>
   </GestureHandlerRootView>
 

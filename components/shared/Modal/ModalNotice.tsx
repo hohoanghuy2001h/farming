@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, Modal, ModalProps, StatusBar, KeyboardAvoidingView, Platform } from 'react-native'
+import { SafeAreaView, StyleSheet, View, Text, Modal, ModalProps, StatusBar, KeyboardAvoidingView, Platform } from 'react-native'
 import React from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
@@ -13,15 +13,15 @@ const ModalNotice = ({isOpen, setIsOpen, children, ...rest}: PROPS) => {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{ flex: 1 }}
     >
-    <SafeAreaView style={styles.container}>
-       <SafeAreaView style={styles.wrapper}>
+    <View style={styles.container}>
+       <View style={styles.wrapper}>
           {children}
-       </SafeAreaView>
-    </SafeAreaView>
-    <SafeAreaView 
+       </View>
+    </View>
+    <View 
       style={styles.backgroundModal}    
     >
-    </SafeAreaView>
+    </View>
     </KeyboardAvoidingView>
   );
   return (

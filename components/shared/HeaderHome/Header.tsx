@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { windowWidth } from '@/utils/Dimensions';
@@ -25,10 +25,9 @@ const Header: React.FC<HeaderProps> = ({avatar = null, action, logOut}) => {
         pathname: '/(routes)/notices',
         params: { },
     })}
-    
     return (
-        <SafeAreaView style={styles.container}>
-            <SafeAreaView style={styles.left}>
+        <View style={styles.container}>
+            <View style={styles.left}>
                 <TouchableOpacity style={{
                     flexDirection: 'row',
                     gap: 10,
@@ -44,14 +43,14 @@ const Header: React.FC<HeaderProps> = ({avatar = null, action, logOut}) => {
                     />   
                     <Text>{data?.name ? data?.name : 'Chọn field ở đây'}</Text>
                 </TouchableOpacity>
-            </SafeAreaView>
-            <SafeAreaView style={styles.right}>
-               <SafeAreaView style={styles.notice}>
+            </View>
+            <View style={styles.right}>
+               <View style={styles.notice}>
                 <TouchableOpacity onPress={redictPage}>
                   <Icon name='bell' size={30}/>
                 </TouchableOpacity>
-                  <SafeAreaView style ={styles.dot}/>
-               </SafeAreaView>
+                  <View style ={styles.dot}/>
+               </View>
               <TouchableOpacity
                 onPress={logOut}
               >
@@ -60,8 +59,8 @@ const Header: React.FC<HeaderProps> = ({avatar = null, action, logOut}) => {
                    source={require('@/assets/images/location.png')}
                />
               </TouchableOpacity>
-            </SafeAreaView>
-        </SafeAreaView>
+            </View>
+        </View>
     )
 }
 

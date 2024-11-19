@@ -29,7 +29,7 @@ export const CardState = () => {
 
   const getStageProgress = () => {
     stageDefault.forEach((stage, index) => {
-      if(stage === item.plantStage) setCurrentPage(index)
+      if(stage === item.plantStage) setCurrentPage(index);
     })
   }
   useEffect(() => {

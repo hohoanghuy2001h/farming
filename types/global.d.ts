@@ -39,11 +39,16 @@ type fieldType = {
     _id: string,
     image: any,
     name: string,
-    size: number, //Theo hecta
-    device: string
-    latitude: number, //location của thiết bị
+    size: number, // Theo hecta
+    device: Array<string>, // Mảng chuỗi (Array of strings)
+    latitude: number, // Location của thiết bị
     longitude: number,
     timePlant: any, 
+    apiReadKey: string,
+    isPlanted: boolean,
+    channelID: string,
+    isHarvest: boolean,
+    apiWriteKey: string,
 };
 type dateScheduleType = {
     _id: string,

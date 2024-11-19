@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, Button, Platform, TouchableOpacity  } from 'react-native'
+import { StyleSheet, Text, View, Button, Platform, TouchableOpacity  } from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useEffect, useState} from 'react';
 import ModalSelector from 'react-native-modal-selector';
@@ -187,8 +187,8 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ isScheduling, setIsSc
     );
   };
   return (
-    <SafeAreaView style={styles.container}>
-        <SafeAreaView style={styles.titleContainer}>
+    <View style={styles.container}>
+        <View style={styles.titleContainer}>
           <Text style={styles.title}>Thời Gian Biểu</Text>
           <TouchableOpacity
             onPress={() => {
@@ -198,13 +198,13 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ isScheduling, setIsSc
           >
             <Icon name="plus" size={20}></Icon>
           </TouchableOpacity>
-        </SafeAreaView>
-      <SafeAreaView style={styles.listtimerContainer}>
+        </View>
+      <View style={styles.listtimerContainer}>
         {timers.map((timer, index) => (
           <Item onDelete={() =>{deleteTimer(timer._id)}} key={index}>
-            <SafeAreaView style={styles.timerContainer}>
-              <SafeAreaView style={styles.left}>
-              <SafeAreaView 
+            <View style={styles.timerContainer}>
+              <View style={styles.left}>
+              <View 
                   style={{
                       flexDirection: 'row',
                       gap: 10,
@@ -214,15 +214,15 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ isScheduling, setIsSc
                 <Text key={index} style={styles.timerText}>{timer.date.toLocaleString().split(", ")[1]}</Text>
                 {
                   timer.repeat !== 'none' ?  
-                  <SafeAreaView style={styles.repeatWrapper}>
+                  <View style={styles.repeatWrapper}>
                     <Text style={styles.repeatText}>{timer.repeat}</Text>
-                  </SafeAreaView>
+                  </View>
                   : ''
                 }
-                </SafeAreaView>
+                </View>
                 <Text style={styles.dateText}>{`${getDayofWeek(timer.date)}, ${timer.date.toLocaleString().split(", ")[0]}`}</Text>
-              </SafeAreaView>
-              <SafeAreaView style={styles.right}>
+              </View>
+              <View style={styles.right}>
                 <Switch 
                     value={timer.onActive} 
                     style = {styles.switch}
@@ -231,29 +231,29 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ isScheduling, setIsSc
                     }} 
                     trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                   />
-              </SafeAreaView>
-          </SafeAreaView>
+              </View>
+          </View>
           </Item>
         ))}
-      </SafeAreaView>
+      </View>
       <ModalQuestion isOpen = {visible} setIsOpen={setVisible} 
             submit={() => {
               scheduleIrrigation()
               setVisible(false)
             }}
       >
-        <SafeAreaView>
+        <View>
           <Text style={styles.modalTitle}>
               Edit Planting Time
           </Text>
-          <SafeAreaView style={styles.datePickerWrapper}>
+          <View style={styles.datePickerWrapper}>
             <DateTimePicker
               value={date}
               mode="datetime"
               display="default"
               onChange={onChange}
             />
-            <SafeAreaView style={styles.repeatOptionWrapper}>
+            <View style={styles.repeatOptionWrapper}>
               <Text style={styles.repeateTitle}>Lặp lại:</Text>
               <ModalSelector
                 data={dataOption}
@@ -267,11 +267,11 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ isScheduling, setIsSc
                 keyExtractor={(item) => item.key.toString()} // Sử dụng key để xác định giá trị
                 labelExtractor={(item) => item.label} // Hiển thị label cho mỗi option
               />
-            </SafeAreaView>
-          </SafeAreaView>
-        </SafeAreaView>
+            </View>
+          </View>
+        </View>
       </ModalQuestion>
-    </SafeAreaView>
+    </View>
   )
 }
 

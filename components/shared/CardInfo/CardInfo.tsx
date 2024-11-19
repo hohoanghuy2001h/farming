@@ -1,4 +1,4 @@
-import { Text, SafeAreaView, StyleSheet, Image } from 'react-native';
+import { Text, View, StyleSheet, Image } from 'react-native';
 interface CardInfoProps {
   label: string;
   value: string;
@@ -8,18 +8,18 @@ interface CardInfoProps {
 }
 export const CardInfo: React.FC<CardInfoProps> = ({label, value, type, warning=false, date}) => {
   return (
-    <SafeAreaView style={styles.container}>
-      <SafeAreaView style= {styles.labelContainer}>
-        <SafeAreaView style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+    <View style={styles.container}>
+      <View style= {styles.labelContainer}>
+        <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
           <Text style={[styles.label,warning? styles.warning:null]}>{label}</Text>
           {warning? <Image style={styles.warningIcon} source={require('@/assets/icons/alertIcon.png')}></Image> : null}
-        </SafeAreaView>
-        {/* <SafeAreaView>
+        </View>
+        {/* <View>
           <Text style={styles.smallText}>{date}</Text>
-        </SafeAreaView> */}
-      </SafeAreaView>
+        </View> */}
+      </View>
       <Text style={[styles.value, warning? styles.warning:null]}>{value}{type}</Text>
-    </SafeAreaView>
+    </View>
   );
 }
 

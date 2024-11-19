@@ -1,13 +1,13 @@
-import { StyleSheet, Text, SafeAreaView, Platform } from 'react-native'
+import { StyleSheet, Text, View, Platform } from 'react-native'
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-
 import React, { useEffect, useState } from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import ModalQuestion from '../Modal/ModalQuestion';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
-import { useFieldDetail } from '@/hooks/field';
+import { updateField, useFieldDetail } from '@/hooks/field';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {convertToTimestamp} from '@/utils/Timestamp'
 const getStageDay = (date: Date) => {
   const day = new Date(date); // Tạo bản sao để không thay đổi inputDate
   // Bước 2: Lấy thời gian hiện tại
@@ -23,7 +23,7 @@ const HeaderMyFarm = () => {
   const [visible, setVisible] = useState(false);
   const item = useSelector((state: RootState) => state.field);
   const {data}= useFieldDetail(item.fieldID); //Tìm kiếm thông tin của field dựa trên fieldID
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date(data?.timePlant));
   const [day, setDay] = useState(0)
   const [show, setShow] = useState(false);
   useEffect(() => {
@@ -37,13 +37,23 @@ const HeaderMyFarm = () => {
   };
   //Change Planting date of field
   const changeDateField = () =>  {
-    setVisible(false);
+    if(data){
+      const firebaseTime = convertToTimestamp(date);
+      const { timePlant, ...rest } = data; // Tách `timePlant` và các thuộc tính còn lại
+      const updateFieldData = {
+        ...rest,  
+        timePlant: firebaseTime, // Thay thế `timePlant` bằng giá trị mới
+      };
+      if(data) updateField(data._id, updateFieldData);
+      setVisible(false);
+    }
+    else {}
   }
   return (
-    <SafeAreaView style={styles.container}>
-        <SafeAreaView style={styles.headerName}>
+    <View style={styles.container}>
+        <View style={styles.headerName}>
         <Text style={styles.plantName}>Capsicum</Text>
-        <SafeAreaView style={styles.headerTime}>
+        <View style={styles.headerTime}>
             <Text style={styles.weeks}>{Math.round(day / 7)} weeks, {day%7} days</Text>
             <TouchableOpacity
               onPress={() => {
@@ -52,13 +62,13 @@ const HeaderMyFarm = () => {
             >
               <FontAwesome name="pencil" size={20} color="gray" />   
             </TouchableOpacity>
-        </SafeAreaView>
-        </SafeAreaView>
-        <SafeAreaView style={styles.statusPlant}>
+        </View>
+        </View>
+        <View style={styles.statusPlant}>
           <Text style={styles.statusText}>Good Health</Text>
-        </SafeAreaView>
+        </View>
         <ModalQuestion isOpen = {visible} setIsOpen={setVisible} submit={changeDateField}>
-        <SafeAreaView>
+        <View>
           <Text style={styles.modalTitle}>
               Edit Planting Time
           </Text>
@@ -67,10 +77,11 @@ const HeaderMyFarm = () => {
               mode="date"
               display="inline"
               onChange={onChange}
+              maximumDate={new Date()}
           />
-        </SafeAreaView>
+        </View>
       </ModalQuestion>
-    </SafeAreaView>
+    </View>
   )
 }
 

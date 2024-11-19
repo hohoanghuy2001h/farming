@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, Image, KeyboardAvoidingView, KeyboardAvoidingViewBase, Platform, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, SafeAreaView, Image, KeyboardAvoidingView, View, KeyboardAvoidingViewBase, Platform, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { windowWidth, windowHeight } from '@/utils/Dimensions'
 import PrimaryButton from '@/components/shared/Button'
@@ -29,19 +29,19 @@ const LoginScreen = () => {
   }
   return (
     <SafeAreaView style={styles.container}>
-      <SafeAreaView style = {styles.wrapper}>
-        <SafeAreaView style={styles.logoContainer}>
+      <View style = {styles.wrapper}>
+        <View style={styles.logoContainer}>
           <Image
             source={require('@/assets/images/Introduce.png')}  // replace with your image path
             style={styles.image}
           />
-        </SafeAreaView>
-        <SafeAreaView style={styles.form}>
+        </View>
+        <View style={styles.form}>
           <KeyboardAvoidingView
             style= {{gap: 20}}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // Cách xử lý bàn phím khác nhau cho iOS và Android
           >
-            <SafeAreaView style ={styles.formInput}>
+            <View style ={styles.formInput}>
               <Icon name="user" size={24} />
               <TextInput
                 style={styles.input}
@@ -49,8 +49,8 @@ const LoginScreen = () => {
                 value={email}
                 onChangeText={setEmail}
               />
-            </SafeAreaView>
-            <SafeAreaView style ={styles.formInput}>
+            </View>
+            <View style ={styles.formInput}>
               <Icon name="lock" size={24} />
               <TextInput
                 style={styles.input}
@@ -59,22 +59,22 @@ const LoginScreen = () => {
                 onChangeText={setPassword}
                 secureTextEntry 
               />
-            </SafeAreaView>
+            </View>
           </KeyboardAvoidingView>
           <PrimaryButton content='SIGN IN' action={resolveLogin}/>
-        </SafeAreaView>
-        <SafeAreaView style={styles.divided}>
-          <SafeAreaView style={styles.line} />
+        </View>
+        <View style={styles.divided}>
+          <View style={styles.line} />
               <Text>or</Text>
-          <SafeAreaView style={styles.line} />
-        </SafeAreaView>
-        <SafeAreaView style={styles.otherContainer}>
+          <View style={styles.line} />
+        </View>
+        <View style={styles.otherContainer}>
           <SecondButton content='Login with Facebook' leftIcon='facebook' colorIcon='#475993'/>
           <SecondButton content='Login with Email' leftIcon='envelope' colorIcon='red'/>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
       <ModalNotice isOpen = {visible} setIsOpen={setVisible} >
-        <SafeAreaView style={{
+        <View style={{
           flexDirection: 'row',
           justifyContent:'space-between',
           marginBottom: 20,
@@ -87,10 +87,10 @@ const LoginScreen = () => {
           >
             <Icon name='close' size={20} />
           </TouchableOpacity>
-        </SafeAreaView>
-        <SafeAreaView>
+        </View>
+        <View style={styles.notification}>
           <Text>Tên user hoặc mật khẩu của bạn không đúng. Vui lòng hãy kiểm tra lại.</Text>
-        </SafeAreaView>
+        </View>
       </ModalNotice>
     </SafeAreaView>
   )
@@ -135,8 +135,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     flexDirection: 'row',
     gap: 10,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    padding: 20,
   },
   input: {
     flex: 1,
@@ -162,5 +161,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: 'red',
+  },
+  notification: {
+    
   }
 })

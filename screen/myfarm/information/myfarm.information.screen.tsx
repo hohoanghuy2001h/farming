@@ -1,4 +1,4 @@
-import { Text, SafeAreaView, StyleSheet, TouchableOpacity, Image, FlatList} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList} from 'react-native';
 import {CardInfo} from '@/components/shared/CardInfo/CardInfo';
 import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
 import { windowWidth } from '@/utils/Dimensions';
@@ -89,26 +89,26 @@ export default function InformationScreen() {
   }
   return (
     loading? <LoadingScreen/> :
-    <SafeAreaView style={styles.container}>
-      <SafeAreaView style={styles.wrapper}>
+    <View style={styles.container}>
+      <View style={styles.wrapper}>
         <HeaderMyFarm />
-        <SafeAreaView style = {styles.contentContainer}>
-          <SafeAreaView style={styles.leftContainer}>
+        <View style = {styles.contentContainer}>
+          <View style={styles.leftContainer}>
             <FlatList
               data={dataTemplate} 
               renderItem={renderItem}
               contentContainerStyle={styles.cardContainer} // Áp dụng gap cho container
               />
-          </SafeAreaView>
-          <SafeAreaView style={styles.rightContainer}>
+          </View>
+          <View style={styles.rightContainer}>
               <Image 
                 style={styles.plantImage} 
                 source={stageImages[currentPage]}
               />
-          </SafeAreaView>
-        </SafeAreaView>
-      </SafeAreaView>
-    </SafeAreaView>
+          </View>
+        </View>
+      </View>
+    </View>
   );
 }
 

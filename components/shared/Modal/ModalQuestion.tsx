@@ -1,4 +1,4 @@
-import { SafeAreaView, StyleSheet, Text, Modal, ModalProps, StatusBar, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, StyleSheet, Text, Modal, ModalProps, StatusBar, KeyboardAvoidingView, Platform } from 'react-native'
 import React from 'react'
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
@@ -13,10 +13,10 @@ const ModalQuestion = ({isOpen, setIsOpen,submit, children, ...rest}: PROPS) => 
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={{ flex: 1 }}
     >
-    <SafeAreaView style={styles.container}>
-       <SafeAreaView style={styles.wrapper}>
+    <View style={styles.container}>
+       <View style={styles.wrapper}>
           {children}
-          <SafeAreaView style={styles.buttonWrapper}>
+          <View style={styles.buttonWrapper}>
             <TouchableOpacity
               onPress={submit}
               style={[styles.button, {backgroundColor: '#59C36A'}]}
@@ -29,13 +29,13 @@ const ModalQuestion = ({isOpen, setIsOpen,submit, children, ...rest}: PROPS) => 
             >
               <Text>Close</Text>
             </TouchableOpacity>
-          </SafeAreaView>
-       </SafeAreaView>
-    </SafeAreaView>
-    <SafeAreaView 
+          </View>
+       </View>
+    </View>
+    <View 
       style={styles.backgroundModal}    
     >
-    </SafeAreaView>
+    </View>
     </KeyboardAvoidingView>
   );
   return (

@@ -8,20 +8,20 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentField } from '@/store/fieldReducer'
 const FieldScreen = () => {
   const {data, loading} = useField();
-  const item = useSelector((state: RootState) => state.field);
-  const [activeIndex, setActiveIndex] = useState(item.fieldID ? Number(item.fieldID) - 1: -1);
+  const field = useSelector((state: RootState) => state.field);
+  const [activeIndex, setActiveIndex] = useState(field.fieldID);
   const dispatch = useDispatch();
-  const activeItem = (index: number, item: fieldType) => {
-    setActiveIndex(index);
+  const activeItem = (item: fieldType) => {
+    setActiveIndex(item._id);
     dispatch(getCurrentField(item._id));
   }
 
   const renderFieldItem = ({ item, index }: { item: fieldType; index: number }) => {
     return (
       <TouchableOpacity 
-        onPress={() => activeItem(index, item)}
+        onPress={() => activeItem(item)}
       >
-        <FieldItem item={item} active ={index === activeIndex}/>
+        <FieldItem item={item} active ={item._id === field.fieldID}/>
       </TouchableOpacity>
     )
   }
