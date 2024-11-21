@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, TouchableOpacity, Image, FlatList} from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList} from 'react-native'
 import React, {useState} from 'react'
 import menu from '@/constants/menu'
 import { useRouter } from 'expo-router'
@@ -37,9 +37,9 @@ const Menu = () => {
         );
     };
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
         <Text style={styles.titleMenu}>Manage Your Field</Text>
-        <SafeAreaView style={styles.menuContainer}>
+        <View style={styles.menuContainer}>
             <FlatList
                 data={menu}
                 renderItem={renderItemMenu}  
@@ -48,8 +48,8 @@ const Menu = () => {
                 numColumns={numColumns} // Dynamic number of columns
                 columnWrapperStyle = {styles.column}
             />
-        </SafeAreaView>
-    </SafeAreaView>
+        </View>
+    </View>
   )
 }
 

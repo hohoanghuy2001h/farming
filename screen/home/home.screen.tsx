@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView} from 'react-native'
+import { StyleSheet, Text, View} from 'react-native'
 import React, { useMemo, useState } from 'react'
 import CardWeather from '@/components/shared/cardWeather'
 import Header from '@/components/shared/HeaderHome/Header'
@@ -46,15 +46,15 @@ const HomeScreen = () => {
   return (
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
-      <SafeAreaView style={styles.container}>
-        <SafeAreaView style={styles.header}>
+      <View style={styles.container}>
+        <View style={styles.header}>
           <Header action={openPresentFieldBottomSheetModal} logOut={logout}/>      
-        </SafeAreaView>
-        <SafeAreaView style={styles.content}>
+        </View>
+        <View style={styles.content}>
             <CardWeather />
             <CardState />
-        </SafeAreaView>
-        <SafeAreaView style={styles.footer}>
+        </View>
+        <View style={styles.footer}>
           <BottomSheetModal 
             ref={BottomSheetModalRef}
             index={0}
@@ -75,8 +75,8 @@ const HomeScreen = () => {
               <FieldScreen />
             </BottomSheetView>
           </BottomSheetModal>
-        </SafeAreaView>
-      </SafeAreaView>
+        </View>
+      </View>
     </BottomSheetModalProvider>
     </GestureHandlerRootView>
   )

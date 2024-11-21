@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, TouchableOpacity, Image, FlatList} from 'react-native';
+import { View, StyleSheet, Image, FlatList} from 'react-native';
 import {CardInfo} from '@/components/shared/CardInfo/CardInfo';
 import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
 import { windowWidth } from '@/utils/Dimensions';

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, FlatList, ScrollView, Image } from 'react-native'
+import { StyleSheet, Text, View, FlatList, ScrollView, Image } from 'react-native'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import StepIndicator from 'react-native-step-indicator';
 import stageDefault from '@/constants/stage.template';
@@ -44,16 +44,16 @@ const StagesScreen = () => {
 
 
   return (
-    <SafeAreaView style={styles.container}>
-      <SafeAreaView style={styles.wrapper}>
+    <View style={styles.container}>
+      <View style={styles.wrapper}>
         <HeaderMyFarm />
-        <SafeAreaView style ={{flexDirection: 'row'}}>
+        <View style ={{flexDirection: 'row'}}>
           <ScrollView 
             contentContainerStyle = {styles.left}
             showsVerticalScrollIndicator={false} // Ẩn thanh cuộn dọc
             showsHorizontalScrollIndicator={false} // Ẩn thanh cuộn ngang nếu có
           >
-            <SafeAreaView style={styles.stepIndicator}>
+            <View style={styles.stepIndicator}>
                 <StepIndicator
                   customStyles={stepIndicatorStyles}
                   stepCount={stageDefault.length}
@@ -64,7 +64,7 @@ const StagesScreen = () => {
                     const stage = stageDefault[position];
                     return (
                       (
-                        <SafeAreaView style={styles.progressText}>
+                        <View style={styles.progressText}>
                           <Text
                             style={[
                               styles.progresslabel,
@@ -74,18 +74,18 @@ const StagesScreen = () => {
                             {label}
                           </Text>
                           <Text style={styles.progressDay}>{stage.days} days</Text>
-                        </SafeAreaView>
+                        </View>
                       )
                     )
                   }
                   }
                 /> 
-            </SafeAreaView >
+            </View >
           </ScrollView>
           <Image source={stageImages[currentPage]} style={styles.right} />
-        </SafeAreaView>
-      </SafeAreaView>
-    </SafeAreaView>
+        </View>
+      </View>
+    </View>
   );
 }
 

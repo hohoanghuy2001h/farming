@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, Image } from 'react-native'
+import { StyleSheet, Text, View, Image } from 'react-native'
 import React, { useState, useRef } from 'react'
 import Carousel from 'react-native-reanimated-carousel';
 import { windowWidth,windowHeight } from '@/utils/Dimensions';
@@ -46,43 +46,43 @@ const WelcomeIntroScreen = () => {
     });
   };
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Carousel
         ref={carouselRef} // Gán ref cho carousel
         width={windowWidth}
         data={carouselItems}
         onSnapToItem={(index) => setCurrentIndex(index)}
         renderItem={({ item, index }) => (
-          <SafeAreaView style={styles.slideItem} key={index}>
+          <View style={styles.slideItem} key={index}>
               <Image
                 style={styles.image}
                 // source={{ uri: item.image }}
                 source={require('@/assets/images/Introduce.png')}
               />
-              <SafeAreaView style={styles.textContainer}>
+              <View style={styles.textContainer}>
                 <Text style={styles.text}>{item.text}</Text>
-              </SafeAreaView>
-          </SafeAreaView>
+              </View>
+          </View>
         )}
       />
-      <SafeAreaView style={styles.pagination}>
+      <View style={styles.pagination}>
         {carouselItems.map((_, index) => (
-          <SafeAreaView key={index} 
+          <View key={index} 
             style={[
               styles.dot,
               currentIndex === index ? styles.activeDot : styles.inactiveDot, // Change style based on active/inactive
             ]}
           />
         ))}
-      </SafeAreaView>
-      <SafeAreaView style = {styles.buttonContainer}>
+      </View>
+      <View style = {styles.buttonContainer}>
         {
           currentIndex === 4 ? 
           <PrimaryButton  content='JOIN NOW' action={redictNewPage}/>:
           <PrimaryButton  content='SKIP NOW' action={skip}/>
         }
-      </SafeAreaView>
-    </SafeAreaView>
+      </View>
+    </View>
   )
 }
 

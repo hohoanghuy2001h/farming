@@ -1,5 +1,5 @@
 import { Link } from 'expo-router';
-import { SafeAreaView, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import CardName from '@/components/shared/CardName/CardName';
 import { windowWidth } from '@/utils/Dimensions';
 import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
@@ -113,26 +113,26 @@ export default function StatisticalScreen() {
   }
   return (
     loading ? <LoadingScreen />:
-    <SafeAreaView style={styles.container}>
-    <SafeAreaView style={styles.wrapper}>
+    <View style={styles.container}>
+    <View style={styles.wrapper}>
       <HeaderMyFarm />
-      <SafeAreaView style={styles.graphContainer}>
+      <View style={styles.graphContainer}>
         {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={cardNameArray[activeItem].unit}/>}
-      </SafeAreaView>
-      <SafeAreaView style={styles.swipperContainer}>
+      </View>
+      <View style={styles.swipperContainer}>
           <FlatList 
              data={cardNameArray}
              contentContainerStyle ={styles.swipperWrapper}
              renderItem={({item, index}) => itemRender(item, index)}
              horizontal
              showsHorizontalScrollIndicator={false}
-             ItemSeparatorComponent={() => <SafeAreaView style={{ width: 20 }} />}  // 20px spacing between items
+             ItemSeparatorComponent={() => <View style={{ width: 20 }} />}  // 20px spacing between items
           />
-      </SafeAreaView>
+      </View>
 
-       <SafeAreaView style={styles.desContainer}>
+       <View style={styles.desContainer}>
           <Text style={styles.desTitle}>Best Conditions:</Text>
-          <SafeAreaView style={styles.desTextContainer}>
+          <View style={styles.desTextContainer}>
             <Text style = {styles.text}>
               {`Các thông số ở điều kiện lý tưởng khi cây đang trong giai đoạn ${item.plantStage.stage}:
 
@@ -141,10 +141,10 @@ export default function StatisticalScreen() {
 - Ánh sáng: ${item.plantStage.maxLight}lux - ${item.plantStage.maxLight}lux
               `}
             </Text>
-          </SafeAreaView>
-      </SafeAreaView>       
-      </SafeAreaView>
-  </SafeAreaView>
+          </View>
+      </View>       
+      </View>
+  </View>
   );
 }
 

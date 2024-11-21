@@ -29,7 +29,7 @@ const useField = () => {
             channelID: docData.channelID,
             isHarvest: docData.isHarvest,
             apiWriteKey: docData.apiWriteKey,
-            image: docData.image,
+            image: docData.image === ""? require('@/assets/images/fields/field 1.png') : docData.image,
           };
         });
         setData(data)

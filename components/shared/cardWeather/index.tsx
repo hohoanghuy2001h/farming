@@ -1,43 +1,43 @@
-import { StyleSheet, Text, SafeAreaView, ImageBackground  } from 'react-native'
+import { StyleSheet, Text, View, ImageBackground  } from 'react-native'
 import React from 'react'
 import useWeather from '@/hooks/useWeather'
 const CardWeather = () => {
   const {forecast,loading}  = useWeather();
   return (
     loading? 
-    <SafeAreaView>
+    <View>
       <Text>Loading</Text>
-    </SafeAreaView>
+    </View>
   :    
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <ImageBackground 
         style={styles.content}
         source={require('@/assets/images/weather/bg-Cloudy.png')}
       >
-        <SafeAreaView style={styles.title}>
+        <View style={styles.title}>
           <Text style={styles.bigText}>{Math.round(forecast?.temperature? forecast?.temperature : 0)}°C</Text>
           <Text style={styles.smallText}>{forecast?.type}</Text>
-        </SafeAreaView>
-        <SafeAreaView style={styles.subtitle}>
-          <SafeAreaView style={styles.subtitleItem}>
+        </View>
+        <View style={styles.subtitle}>
+          <View style={styles.subtitleItem}>
             <Text style={styles.titleData}>Humidity</Text>
-            <SafeAreaView style={styles.dataWrapper}>
+            <View style={styles.dataWrapper}>
               <Text style={styles.data}>{Math.round(forecast?.humidity? forecast?.humidity : 0)}%</Text>
-            </SafeAreaView>
-          </SafeAreaView>
-          <SafeAreaView style={styles.subtitleItem}>
+            </View>
+          </View>
+          <View style={styles.subtitleItem}>
             <Text style={styles.titleData}>Wind Speed</Text>
-            <SafeAreaView style={styles.dataWrapper}>
+            <View style={styles.dataWrapper}>
               <Text style={styles.data}>{Math.round(forecast?.wind? forecast?.wind : 0)}</Text>
-            </SafeAreaView>
-          </SafeAreaView>
-          <SafeAreaView style={styles.subtitleItem}>
+            </View>
+          </View>
+          <View style={styles.subtitleItem}>
             <Text style={styles.titleData}>Tempurate</Text>
-            <SafeAreaView style={styles.dataWrapper}>
+            <View style={styles.dataWrapper}>
               <Text style={styles.data}>{Math.round(forecast?.feellike? forecast?.feellike : 0)}%</Text>
-            </SafeAreaView>
-          </SafeAreaView>
-        </SafeAreaView>
+            </View>
+          </View>
+        </View>
       </ImageBackground>
       <ImageBackground 
         source={require('@/assets/images/weather/Cloudy.png')}
@@ -45,7 +45,7 @@ const CardWeather = () => {
         resizeMode="contain" 
       >
       </ImageBackground>
-    </SafeAreaView>
+    </View>
   )
 }
 

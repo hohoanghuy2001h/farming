@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, FlatList, TouchableOpacity  } from 'react-native'
+import { StyleSheet, Text, View, FlatList, TouchableOpacity  } from 'react-native'
 import FieldItem from '../FieldItem'
 import { useField } from '@/hooks/field'
 import React, { useEffect, useState } from 'react'
@@ -26,8 +26,8 @@ const FieldScreen = () => {
     )
   }
   return (
-    <SafeAreaView style ={styles.container}>
-      <SafeAreaView style={styles.wrapper}>
+    <View style ={styles.container}>
+      <View style={styles.wrapper}>
         <Text style={styles.title}>List of Fields</Text>
         <FlatList 
           data={data}
@@ -37,8 +37,8 @@ const FieldScreen = () => {
           columnWrapperStyle = {styles.column}
           keyExtractor={item => item._id}
         />
-      </SafeAreaView>
-    </SafeAreaView>
+      </View>
+    </View>
   )
 }
 

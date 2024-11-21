@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, Image } from 'react-native'
+import { StyleSheet, Text, View, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import useStage from '@/hooks/useStage'
 import stageImages from '@/assets/images/stages'
@@ -44,24 +44,24 @@ export const CardState = () => {
   }, [day, stagePlant]); 
   return (
     item.fieldID !== '' ? 
-    <SafeAreaView style={styles.container}>
-      <SafeAreaView style={styles.wrapper}>
-        <SafeAreaView style={styles.left}>
+    <View style={styles.container}>
+      <View style={styles.wrapper}>
+        <View style={styles.left}>
           <Image 
             style={styles.image}
             source={stageImages[currentPage]}
           />
-        </SafeAreaView>
-        <SafeAreaView style={styles.right}>
+        </View>
+        <View style={styles.right}>
           <Text style={styles.title}>The Chilli Plant</Text>
           <Text style={styles.text}>Growth stage: {stagePlant?.stage}</Text>
           <Text style={styles.text}>{getStageDay(fieldCurrent?.timePlant)} days</Text>
-        </SafeAreaView>
-      </SafeAreaView>
-    </SafeAreaView> :
-    <SafeAreaView style={styles.container}>
+        </View>
+      </View>
+    </View> :
+    <View style={styles.container}>
         <Text style={styles.textLoading}>Vui lòng hãy chọn field.</Text>
-   </SafeAreaView>
+   </View>
   )
 }
 
