@@ -37,17 +37,7 @@ const HeaderMyFarm = () => {
   };
   //Change Planting date of field
   const changeDateField = () =>  {
-    if(data){
-      const firebaseTime = convertToTimestamp(date);
-      const { timePlant, ...rest } = data; // Tách `timePlant` và các thuộc tính còn lại
-      const updateFieldData = {
-        ...rest,  
-        timePlant: firebaseTime, // Thay thế `timePlant` bằng giá trị mới
-      };
-      if(data) updateField(data._id, updateFieldData);
-      setVisible(false);
-    }
-    else {}
+    setVisible(false);
   }
   return (
     <View style={styles.container}>
@@ -72,13 +62,13 @@ const HeaderMyFarm = () => {
           <Text style={styles.modalTitle}>
               Edit Planting Time
           </Text>
-          <DateTimePicker
-              value={date}
-              mode="date"
-              display="inline"
-              onChange={onChange}
-              maximumDate={new Date()}
-          />
+          {/* <DateTimePicker
+            value={date}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'inline' : 'default'} // 'inline' cho iOS, 'default' cho Android
+            onChange={onChange}
+            maximumDate={new Date()}  // Không cho chọn ngày sau ngày hiện tại
+          /> */}
         </View>
       </ModalQuestion>
     </View>

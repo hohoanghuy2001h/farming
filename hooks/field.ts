@@ -1,7 +1,5 @@
 
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import FieldsAPI from "@/constants/fields.api";
 import { db } from "@/firebaseConfig";
 import { collection, getDocs, addDoc, getDoc, doc, updateDoc } from "firebase/firestore";
 

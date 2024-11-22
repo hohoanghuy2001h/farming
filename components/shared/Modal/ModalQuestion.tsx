@@ -1,13 +1,12 @@
-import { View, StyleSheet, Text, Modal, ModalProps, StatusBar, KeyboardAvoidingView, Platform } from 'react-native'
+import { View, StyleSheet, Text, Modal, ModalProps, StatusBar, KeyboardAvoidingView, Platform, TouchableOpacity } from 'react-native'
 import React from 'react'
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
 type PROPS = ModalProps & {
     isOpen: boolean,
     setIsOpen: (value: boolean) => void;
     submit: () => void,
 }
-const ModalQuestion = ({isOpen, setIsOpen,submit, children, ...rest}: PROPS) => {
+const ModalQuestion = ({isOpen, setIsOpen, submit, children, ...rest}: PROPS) => {
   const content = (
     <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -23,12 +22,12 @@ const ModalQuestion = ({isOpen, setIsOpen,submit, children, ...rest}: PROPS) => 
             >
               <Text style={[styles.buttonText, {color: 'white'}]}>Submit</Text>
             </TouchableOpacity>
-            <TouchableOpacity
+            <TouchableOpacity 
               style={styles.button}
               onPress={() => setIsOpen(false)}
             >
               <Text>Close</Text>
-            </TouchableOpacity>
+            </TouchableOpacity >
           </View>
        </View>
     </View>

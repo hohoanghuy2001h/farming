@@ -8,19 +8,14 @@ import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@go
 import { useRef, useCallback, useMemo } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Import GestureHandlerRootView
 import DatePickerModal from '@/components/shared/DatePickerModal';
+import { useUpdateAllSchedulewithOnActive } from '@/hooks/schedule';
 export default function SettingScreen() {
   const {data} = useNewestFieldData('field2'); //field humidity
-  const [isOn, setIsOn] = useState(false);
-  const [isSchedualing, setIsSchedualing] = useState(false);
-  const [seconds, setSeconds] = useState(0);
-  const [minutes, setMinutes] = useState(5);
-  const [isRunning, setIsRunning] = useState(false); // Trạng thái của timer
-  const [visibilityturnOn, setVisibilityturnOn] = useState(false);
-  const [visibilityturnOff, setVisibilityturnOff] = useState(false);
+  const [manual, setManual] = useState(false);
+  const [auto, setAuto] = useState(false);
   const [humidity, setHumidity] = useState(0);
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['100%'], []); 
-  const [isOpen, setIsOpen] = useState(false);
 
 
   //Hàm lấy API độ ẩm         //CODE THÊM NHA
@@ -29,64 +24,28 @@ export default function SettingScreen() {
   }, [humidity, data])
   
 
-  //Đây là hàm tính đếm ngược
-  useEffect(() => {
-    let interval: NodeJS.Timeout | null = null; 
-    if (isRunning && seconds > 0) {
-      interval = setInterval(() => {
-        setSeconds(prevSeconds => prevSeconds - 1);
-      }, 1000);
-    }
-    if (seconds === 0) {
-      setMinutes(prevMinutes => prevMinutes - 1);
-      setSeconds(59);
-      if(minutes === 0){
-        if(interval !== null)
-        clearInterval(interval);
-        resetTimer();
-      }
-    }
-    if(!isRunning) resetTimer()
-    return () => {
-      if (interval !== null) clearInterval(interval); // Xóa interval khi unmount
-    };
-  }, [isRunning, seconds]);
-  const resetTimer = () => {
-    setSeconds(59);
-    setMinutes(5);
-    setIsRunning(false);
-    setIsOn(false);
-  };
+  const toggleAuto = (value: boolean) => {
+    setAuto(value);
+    useUpdateAllSchedulewithOnActive(value);
+    //Chưa giải quyết vấn đề khi bật tắt thì tắt cái onActive
+  }
 
-  //Đây là hàm bật nước
-  const turnOn = () => {
-    setIsOn(true);
-    setVisibilityturnOn(false);
-  }
-  //Đây là hàm tắt nước
-  const turnOff = () => {
-    setIsOn(false);
-    setVisibilityturnOff(false);
-  }
-  //Đây là hàm tắt lên lịch
-  const turnOffSchedule = () => {
-    setIsSchedualing(false);
-  }
-  //Đây là hàm bật lên lịch
-  const turnOnSchedule = () => {
-    setIsSchedualing(true);
+  const toggleManual = (value: boolean) => {
+    setManual(value);
+    //Nếu active gửi data cho pump
+    if(value === true) {
+
+    }
   }
 
   //Đây là hàm mở màn hình schedule - irrigation
   const openPresentBottomSheetModal = useCallback(() => {
     BottomSheetModalRef.current?.present();
     BottomSheetModalRef.current?.snapToIndex(0);
-    setIsOpen(true);
   }, []);
   // Hàm đóng BottomSheetModal
   const handleDismissModal = () => {
     BottomSheetModalRef.current?.dismiss();
-    setIsOpen(false);
   };
   //Đây là hàm onclick để mở schedule
   const onClickScheduleBtn = () => {
@@ -128,10 +87,11 @@ export default function SettingScreen() {
               </View>
               <View>
                 <Switch 
-                  value={isSchedualing} 
+                  value={auto} 
                   style = {styles.button}
                   onValueChange={(value) => {
-                    setIsSchedualing(value)
+                    setAuto(value)
+                    toggleAuto(value)
                   }} 
                   trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                 />
@@ -141,8 +101,7 @@ export default function SettingScreen() {
               <View style={styles.btnTitleContain}>
                 <View style={styles.btnTitleRight}>
                   <Text style={styles.btnTitle}>Manually</Text>
-                  <Text style={styles.subbtnTitle}>System will turn of after</Text>
-                  <Text style={{color: 'black', fontWeight: 'bold', fontSize: 10}}>{minutes}:{seconds}</Text>
+                  <Text style={styles.subbtnTitle}>System will turn of after the soil moisture is enough.</Text>
                 </View>
                 <View style={styles.btnTitleLeft}>
 
@@ -150,11 +109,11 @@ export default function SettingScreen() {
               </View>
               <View>
                 <Switch 
-                  value={isOn} 
+                  value={manual} 
                   style = {styles.button}
                   onValueChange={(value) => {
-                    setIsOn(value)
-                    setIsRunning(value)
+                    setManual(value)
+                    toggleManual(value)
                   }} 
                   trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                 />
@@ -173,10 +132,7 @@ export default function SettingScreen() {
           onDismiss={handleDismissModal} // Xử lý khi modal đóng
         >
           <BottomSheetView style={styles.contentContainer}>
-            <DatePickerModal 
-              isScheduling ={isSchedualing}
-              setIsScheduling={setIsSchedualing}
-            />
+            <DatePickerModal />
           </BottomSheetView>
         </BottomSheetModal>
       </View>

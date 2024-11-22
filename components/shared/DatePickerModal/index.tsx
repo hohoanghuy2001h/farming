@@ -1,12 +1,13 @@
 import { StyleSheet, Text, View, Button, Platform, TouchableOpacity  } from 'react-native'
-import DateTimePicker from '@react-native-community/datetimepicker';
 import React, { useEffect, useState} from 'react';
 import ModalSelector from 'react-native-modal-selector';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Switch } from 'react-native-gesture-handler';
 import ModalQuestion from '../Modal/ModalQuestion';
-import { useSchedule, useAddSchedule, useRemoveSchedule } from '@/hooks/schedule';
+import { useSchedule, useAddSchedule, useRemoveSchedule, useUpdateSchedule } from '@/hooks/schedule';
 import Item from '../Item';
+import LoadingScreen from '@/screen/loading/loading.screen';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 const dataOption = [
   { key: 0, label: 'Không lập lại', type:'none'},
   { key: 1, label: 'Lặp lại hằng phút', type:'minute'},
@@ -14,106 +15,88 @@ const dataOption = [
   { key: 3, label: 'Lặp lại hằng tuần', type:'weekly' },
   { key: 4, label: 'Lặp lại hằng tháng', type:'monthly' },
 ];
-interface DatePickerModalProps {
-  isScheduling: boolean;
-  setIsScheduling: (value: boolean) => void; // Function that takes a boolean value
-}
-const DatePickerModal: React.FC<DatePickerModalProps> = ({ isScheduling, setIsScheduling }) => {
-  const {data} = useSchedule();
+const DatePickerModal = () => {
+
+  const {data, loading} = useSchedule();
   const [visible, setVisible] = useState(false);
   const [date, setDate] = useState(new Date());
+  const [time, setTime] = useState({
+    hours: new Date().getHours(),
+    minutes: new Date().getMinutes(),
+  });
   const [timers, setTimers] = useState<dateScheduleType[]>([]); // Mảng lưu các thời gian đã được đặt
-  const [show, setShow] = useState(false);
-  const [repeat, setRepeat] = useState('none'); // Lưu kiểu lặp lại: 'daily', 'weekly', 'monthly'
+  const [repeat, setRepeat] = useState('none'); // Lưu kiểu lặp lại: 'daily', 'weekly', 'monthly', 'minutely'
+  const [scheduleStack, setScheduleStack] = useState<dateScheduleType[]>([]);
   useEffect(() => {
     setTimers(data)
   }, [data])
-  
   //Hàm này để lưu ngày của schedule
-  const onChange = (event: any, selectedDate: any) => {
+  const onChangeDay = (event: any, selectedDate: any) => {
     const currentDate = selectedDate || date;
-    setShow(Platform.OS === 'ios');
     setDate(currentDate);
   };
+  const onChangeTime = (event: any, selectedDate: any) => {
+    const currentTime = selectedDate || time;
+    setTime({
+      hours: currentTime.getHours(),
+      minutes: currentTime.getMinutes(),
+    });    
+  };
   //Hàm này để hiện tắt giao diện schedule
-  const showDatepicker = () => {
-    setShow(true);
+  const showDatePicker = () => {
+    DateTimePickerAndroid.open({
+      value: new Date(),
+      onChange: onChangeDay,
+      mode: 'date',
+    });
   };
-  const unShowDatePicker = () => {
-    setShow(false);
-  }
-  //Hàm này dùng để reset lại giá trị repeat
-  const resetRepeat = () => {
-    setRepeat('none');
-  }
-  //Hàm này sẽ dùng để gán giá trị repeat khi người dùng chọn có lập lại ngày.
-  const handleRepeat = (type: string) => {
-    setRepeat(type)
-  };
-  //Hàm này sẽ thêm thời gian date vào mảng timer và sort theo dạng tăng dần 
-  const addTimer = (date: Date, repeat: string, timeOut: NodeJS.Timeout | number = 0) => {
-    // useAddSchedule(date, repeat, timeOut);
-    const newDay = new Date(date);
-    setTimers((prevTimers: any) => {
-      //Kiểm tra thời gian trung của thời gian biểu
-      const isDuplicate = prevTimers.some((dateSchedule: dateScheduleType) => {
-        return dateSchedule.date.getTime() === newDay.getTime();
-      });
-      //Nếu không trùng thì thêm vào array
-      if(isDuplicate !== true) {
-        const updatedTimers = [...prevTimers, { date: new Date(date), repeat: repeat, onActive: timeOut != 0, timeOut: timeOut, _id: timeOut}];
-        setIsScheduling(true),
-        console.log('=> [+]', updatedTimers);
-        return updatedTimers.sort((a, b) => a.date.getTime() - b.date.getTime()); // Sắp xếp theo thứ tự thời gian tăng dần
-      }
-      //ngược lại
-      else return prevTimers;
+  const showTimePicker = () => {
+    DateTimePickerAndroid.open({
+      value: new Date(),
+      onChange: onChangeTime,
+      mode: 'time',
+      is24Hour: false, // Sử dụng định dạng 12 giờ (AM/PM)
     });
   }
-  //Hàm này dùng để xóa timer ra khỏi Timers array và trả timer đã xóa về.
-  //Hàm này sẽ gọi và kiểm tra nếu vượt qua thời gian hiện tại thì xóa.
-  //Xóa auto
-  const removeTimer = (): dateScheduleType | null => {
-    const now = new Date();
-    let removeDate :  dateScheduleType | null = null;
-    setTimers((prevTimers: dateScheduleType[]) => {
-      prevTimers.forEach(timer => {
-        if(timer.date < now) removeDate = timer;
-      })
-      const updatedTimers = prevTimers.filter(timer => timer.date > now);
-      console.log('=> [-]', updatedTimers);
-      return updatedTimers; // Cập nhật state với mảng mới
-    });
-    return removeDate;
+  //Reset time 
+  const resetTime = () => {
+    setDate(new Date());
+    setTime({
+      hours: new Date().getHours(),
+      minutes: new Date().getMinutes(),
+    }); 
+    setRepeat('none'); 
   }
-  //Hàm này dùng để chỉnh sửa thời gian timer được chọn trong mảng Timers
-  const updatedTimers = (date: Date) => {}
-
-  //Hàm này kiểm tra date được set và gọi hàm addTimers để add vào mảng và sau đó đổi repeat lại = none
-  const scheduleIrrigation = () => {
-      const now = new Date();
-      const timeDifference = date.getTime() - now.getTime();
-      if (timeDifference > 0) {
-        // Đặt thời gian chờ cho thời gian đã lên lịch
-        const timerId = setTimeout(() => {
-          console.log("Tưới nước được kích hoạt vào: ", date);
-          const removeDate = removeTimer();
-          if(removeDate) 
-            handleRepeatLogic(removeDate.date, removeDate.repeat);
-        }, timeDifference);
-        // Thêm thời gian mới vào mảng timers và sắp xếp lại
-        console.log("Đặt hẹn giờ tưới nước vào: ", date);
-        addTimer(date, repeat, timerId);
-        resetRepeat();
-      } else {
-        console.log("Thời gian đã chọn phải ở tương lai");
-      }
-  };
-
-  //Xử lý việc repeat date
-  const handleRepeatLogic = (initialDate: Date, repeatType: string) => {
-    let newDate = new Date(initialDate);
-    switch (repeatType) {
+  //Create a schedule
+  const createSchedule = (date: Date, time: any, repeat: string) => {
+    //Combine the time
+    const combinedDate = new Date(date); // Tạo bản sao của đối tượng date
+    combinedDate.setHours(time.hours); // Gán giờ từ time
+    combinedDate.setMinutes(time.minutes); // Gán phút từ time
+    combinedDate.setSeconds(0); // Đặt giây về 0 (nếu cần)
+    combinedDate.setMilliseconds(0);
+    const newSchedule = {
+      _id: `schedule_${Math.floor(Math.random() * 2000)}`, //Đây là giá trị không có ở database
+      date: combinedDate,
+      onActive: true,
+      repeat: repeat,
+      timeOut: 0,  //Đây là giá trị không có ở database
+    }
+    useAddSchedule(newSchedule);
+    addStack(newSchedule)
+    resetTime();
+    setVisible(false);
+  }
+  
+  //Delete a schedule
+  const deleteSchedule = (_id: string) => {
+    useRemoveSchedule(_id)
+    deleteStack(_id)
+  }
+  const deleteSchedulehasRepeat = (timer: dateScheduleType) => {
+    let newDate = new Date(timer.date);
+    deleteSchedule(timer._id);
+    switch (timer.repeat) {
       case 'minute': 
         newDate = new Date(newDate.getTime() + 1 * 60 * 1000);
         break;
@@ -130,148 +113,150 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ isScheduling, setIsSc
         console.log("Don't have repeatType");
         return; // No repetition
     }
-    console.log("Lần tưới tiếp theo sẽ vào: ", newDate);
+    createSchedule(newDate, 
+    {
+      hours: newDate.getHours(),
+      minutes: newDate.getMinutes(),
+    }, 
+    timer.repeat)
+  }
+  //Add a item stack schedule
+  const addStack = (schedule: dateScheduleType) => {
+    if(schedule.onActive === true) {
+      const timeDifference = schedule.date.getTime() - new Date().getTime();
+      if (timeDifference > 0) {
+        const timerId = setTimeout(() => {
+          activeIrrigation(schedule); //Khi tới thời gian kích hoạt active
+        }, timeDifference);
 
-    const timeDifference = newDate.getTime() - new Date().getTime();
-    if(timeDifference > 0) {
-      const timerId = setTimeout(() => {
-        console.log("Tưới nước được kích hoạt vào: ", newDate);
-        handleRepeatLogic(newDate, repeatType);
-      }, timeDifference)
-         //Thêm timer 
-      removeTimer();
-      addTimer(newDate, repeatType, timerId);
+        //Không đủ thời gian cho nó vào hàng đợi
+        setScheduleStack((prev) => [
+          ...prev, 
+          {
+            ...schedule,
+            timeOut: timerId
+          }
+        ])
+        console.log(`Đã thêm schedule ${schedule._id} vào stack.`);
+      }
     }
   }
-
-  //Đây là hàm xử lí setTimeout khi đã hoàn thành một schedule nào đó.
-  //Xóa manual
-  const deleteTimer = (timerId: string) => {
-    timers.forEach((timer) => {
-      if(timer._id === timerId) {
-        console.log("Đã hủy hẹn giờ tưới nước lúc: ", timer.date);
-        clearTimeout(timer.timeOut);
-      }
-    }) 
-    setTimers(prevTimer => prevTimer.filter(timer => timer._id !== timerId));
-  };  
-  
-  //Đây là hàm lấy thứ trong tuần của timer
+  const deleteStack = (_id: string) => {
+    setScheduleStack((prev) => 
+      prev.filter((item) => {
+        if(item._id === _id) clearInterval(item.timeOut)
+          return item._id !== _id;
+      })
+    )
+    console.log(`Đã xóa schedule ${_id} ra khỏi stack`);
+  }
+  //Đây là hàm active một schedule, và tự động xóa cái schedule đó ra khỏi server
+  const activeIrrigation = (schedule: dateScheduleType) => {
+    //Kích hoạt tưới nước
+    console.log("Đã kích hoạt", schedule.date);
+    //Xóa khỏi server
+    deleteSchedulehasRepeat(schedule);
+  }
+  // //Đây là hàm lấy thứ trong tuần của timer
   const getDayofWeek = (date: Date) =>  {
     const daysOfWeek: string[] = ["Chủ nhật", "Thứ hai", "Thứ ba", "Thứ tư", "Thứ năm", "Thứ sáu", "Thứ bảy"];
     const dayOfWeek: string = daysOfWeek[date.getDay()]; // Lấy tên thứ trong tuần
     return dayOfWeek;
   }
-  // Hàm để xử lý thay đổi trạng thái của switch
-  const toggleSwitch = (timerId: string) => {
-    setTimers((prevData) =>
-      prevData.map((item) => {
-        if(item._id  === timerId) {
-          //Nếu tắt switch, xóa timeOut
-          if(item.onActive) clearInterval(item.timeOut);
-          //Nếu bật switch, khởi tạo lại timeOut
-          else {
-            const timeDifference = item.date.getTime() - new Date().getTime();
-            if (timeDifference > 0) {
-              const newTimeout = setTimeout(() => {
-                console.log("Tưới nước được kích hoạt vào: ", item.date);
-                handleRepeatLogic(item.date, item.repeat);
-              }, timeDifference);
-              item.timeOut = newTimeout;
-            }
-          }
-          return {...item, onActive: !item.onActive };
-        }
-        return {...item};
-      })
-    );
+  // // Hàm để xử lý thay đổi trạng thái của switch
+  const toggleSwitch = (timerId: string, schedule: dateScheduleType) => {
+      useUpdateSchedule(timerId, schedule);
+      if(schedule.onActive === true) {
+        addStack(schedule)
+      }
+      else {
+        deleteStack(timerId);
+      }
   };
   return (
+    loading? <LoadingScreen />:
     <View style={styles.container}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>Thời Gian Biểu</Text>
-          <TouchableOpacity
-            onPress={() => {
-              //hiển thị modal tạo giờ
-              setVisible(true)
-            }} 
-          >
-            <Icon name="plus" size={20}></Icon>
-          </TouchableOpacity>
-        </View>
-      <View style={styles.listtimerContainer}>
-        {timers.map((timer, index) => (
-          <Item onDelete={() =>{deleteTimer(timer._id)}} key={index}>
-            <View style={styles.timerContainer}>
-              <View style={styles.left}>
-              <View 
-                  style={{
-                      flexDirection: 'row',
-                      gap: 10,
-                      alignItems: 'center'
-                  }}
-                >
-                <Text key={index} style={styles.timerText}>{timer.date.toLocaleString().split(", ")[1]}</Text>
-                {
-                  timer.repeat !== 'none' ?  
-                  <View style={styles.repeatWrapper}>
-                    <Text style={styles.repeatText}>{timer.repeat}</Text>
-                  </View>
-                  : ''
-                }
-                </View>
-                <Text style={styles.dateText}>{`${getDayofWeek(timer.date)}, ${timer.date.toLocaleString().split(", ")[0]}`}</Text>
-              </View>
-              <View style={styles.right}>
-                <Switch 
-                    value={timer.onActive} 
-                    style = {styles.switch}
-                    onValueChange={() => {
-                      toggleSwitch(timer._id)
-                    }} 
-                    trackColor={{false: '#D9D9D9' , true: '#13852F'}}
-                  />
-              </View>
-          </View>
-          </Item>
-        ))}
-      </View>
-      <ModalQuestion isOpen = {visible} setIsOpen={setVisible} 
-            submit={() => {
-              scheduleIrrigation()
-              setVisible(false)
-            }}
+    <View style={styles.titleContainer}>
+      <Text style={styles.title}>Thời Gian Biểu</Text>
+      <TouchableOpacity
+        onPress={() => {
+          //hiển thị modal tạo giờ
+          setVisible(true)
+        }} 
       >
-        <View>
-          <Text style={styles.modalTitle}>
-              Edit Planting Time
-          </Text>
-          <View style={styles.datePickerWrapper}>
-            <DateTimePicker
-              value={date}
-              mode="datetime"
-              display="default"
-              onChange={onChange}
-            />
-            <View style={styles.repeatOptionWrapper}>
-              <Text style={styles.repeateTitle}>Lặp lại:</Text>
-              <ModalSelector
-                data={dataOption}
-                initValue="Chọn kiểu lặp lại"
-                onChange={(option) => {handleRepeat(option.type)}}
-                style={styles.repeatbtn}
-                selectTextStyle={styles.selectionText} // Style cho text đã chọn
-                optionTextStyle={styles.optionText} // Style cho text của các option
-                cancelTextStyle={styles.cancelText} // Style cho text của nút hủy
-                overlayStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }} // Style cho overlay
-                keyExtractor={(item) => item.key.toString()} // Sử dụng key để xác định giá trị
-                labelExtractor={(item) => item.label} // Hiển thị label cho mỗi option
-              />
-            </View>
-          </View>
-        </View>
-      </ModalQuestion>
+        <Icon name="plus" size={20}></Icon>
+      </TouchableOpacity>
     </View>
+  <View style={styles.listtimerContainer}>
+    {timers.map((timer, index) => (
+      <Item onDelete={() =>{
+        deleteSchedule(timer._id)
+      }} key={index}>
+        <View style={styles.timerContainer}>
+          <View style={styles.left}>
+          <View 
+              style={{
+                  flexDirection: 'row',
+                  gap: 10,
+                  alignItems: 'center'
+              }}
+            >
+            <Text key={index} style={styles.timerText}>{timer.date.toLocaleString()}</Text>
+            {
+              timer.repeat !== 'none' ?  
+              <View style={styles.repeatWrapper}>
+                <Text style={styles.repeatText}>{timer.repeat}</Text>
+              </View>
+              : ''
+            }
+            </View>
+            <Text style={styles.dateText}>{`${getDayofWeek(timer.date)}, ${timer.date.toLocaleDateString()}`}</Text>
+          </View>
+          <View style={styles.right}>
+            <Switch 
+                value={timer.onActive} 
+                style = {styles.switch}
+                onValueChange={(value) => {
+                  toggleSwitch(timer._id, {...timer, onActive: value});
+                }} 
+                trackColor={{false: '#D9D9D9' , true: '#13852F'}}
+              />
+          </View>
+      </View>
+      </Item>
+    ))}
+  </View>
+  <ModalQuestion isOpen = {visible} setIsOpen={setVisible} 
+        submit={() => {
+          createSchedule(date, time, repeat)
+        }}
+  >
+    <View>
+      <Text style={styles.modalTitle}>
+          Edit Planting Time
+      </Text>
+      <View style={styles.datePickerWrapper}>
+        <Button title={`${date.toLocaleDateString()}`} onPress={showDatePicker} />
+        <Button title={`${time.hours}:${time.minutes}`} onPress={showTimePicker} />
+        <View style={styles.repeatOptionWrapper}>
+          <Text style={styles.repeateTitle}>Lặp lại:</Text>
+          <ModalSelector
+            data={dataOption}
+            initValue="Chọn kiểu lặp lại"
+            onChange={(option) => {setRepeat(option.type)}}
+            style={styles.repeatbtn}
+            selectTextStyle={styles.selectionText} // Style cho text đã chọn
+            optionTextStyle={styles.optionText} // Style cho text của các option
+            cancelTextStyle={styles.cancelText} // Style cho text của nút hủy
+            overlayStyle={{ backgroundColor: 'rgba(0, 0, 0, 0.5)' }} // Style cho overlay
+            keyExtractor={(item) => item.key.toString()} // Sử dụng key để xác định giá trị
+            labelExtractor={(item) => item.label} // Hiển thị label cho mỗi option
+          />
+        </View>
+      </View>
+    </View>
+  </ModalQuestion>
+</View>
   )
 }
 
