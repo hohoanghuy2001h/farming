@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "458723023861",
+    "firebase_url": "https://myfarming-65306-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "myfarming-65306",
+    "storage_bucket": "myfarming-65306.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458723023861:android:534f342585d0669aca5ebc",
+        "android_client_info": {
+          "package_name": "com.mycorp.farmingapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "458723023861-7ign4tve84ib6n4n45kd2ld0b8ufu0fo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-XcXGxtAMdLMAxVPFCpJEve7e6qBc_AQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "458723023861-7ign4tve84ib6n4n45kd2ld0b8ufu0fo.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "458723023861-qi876och3l1828omrpph00s079uletfh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.mycorp.farmingapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

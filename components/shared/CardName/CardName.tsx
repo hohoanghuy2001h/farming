@@ -4,20 +4,20 @@ import { FontAwesome6 } from '@expo/vector-icons';
 
 interface CardNameProps {
     iconName?: string;
-    onclick?: boolean;
+    active?: boolean;
     warning?: number;
 }
 // Định nghĩa kiểu cho các component icon
 
-const CardName: React.FC<CardNameProps> = ({iconName = 'temperature-half', onclick = false, warning= 0}) => {
+const CardName: React.FC<CardNameProps> = ({iconName = 'temperature-half', active = false, warning= 0}) => {
     // Tạo đối tượng để ánh xạ các loại icon
-    const colorIcon = onclick? 'white': '#13852F';
+    const colorIcon = active? 'white': '#13852F';
 
     return (
-    <View style={[styles.container, onclick ? styles.onclick : null]}>
+    <View style={[styles.container, active ? styles.active : null]}>
         <FontAwesome6 name={iconName} size={40} color={colorIcon} />
         <Text style={[styles.state,
-                      onclick ? styles.onclickState : null,
+                      active ? styles.activeState : null,
                       warning == 1? styles.stateLow : warning == 2 ? styles.stateHigh : null 
         ]}>
             {warning  == 0 ? 'GOOD': warning == 2 ? 'HIGH': 'LOW'}
@@ -49,10 +49,10 @@ const styles = StyleSheet.create({
         shadowRadius: 4,        
         elevation: 5,
     },
-    onclick: {
+    active: {
         backgroundColor: '#13852F',
     },
-    onclickState: {
+    activeState: {
         backgroundColor: 'white',
         color: '#13852F',
     },

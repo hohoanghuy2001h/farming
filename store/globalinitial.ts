@@ -5,6 +5,10 @@ export interface stateType {
   health: string, 
   plantStage: stagePlant,
   feed: feedType[],
+  irrigation: {
+    auto: boolean,
+    manual: boolean,
+  },
 }
 
 export const initialState: stateType = {
@@ -61,6 +65,10 @@ export const initialState: stateType = {
       icon: 'seedling',
       key: '',
     },
-  ]
+  ],
+  irrigation: {
+    auto: true,
+    manual: false,
+  }
 }
 

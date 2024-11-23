@@ -8,6 +8,10 @@ import { useSchedule, useAddSchedule, useRemoveSchedule, useUpdateSchedule } fro
 import Item from '../Item';
 import LoadingScreen from '@/screen/loading/loading.screen';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { useFieldDetail } from '@/hooks/field';
+import { useAddData } from '@/hooks/data';
 const dataOption = [
   { key: 0, label: 'Không lập lại', type:'none'},
   { key: 1, label: 'Lặp lại hằng phút', type:'minute'},
@@ -16,7 +20,8 @@ const dataOption = [
   { key: 4, label: 'Lặp lại hằng tháng', type:'monthly' },
 ];
 const DatePickerModal = () => {
-
+  const field = useSelector((state: RootState) => state.field);
+  const fieldDetail = useFieldDetail(field.fieldID);
   const {data, loading} = useSchedule();
   const [visible, setVisible] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -154,6 +159,7 @@ const DatePickerModal = () => {
   const activeIrrigation = (schedule: dateScheduleType) => {
     //Kích hoạt tưới nước
     console.log("Đã kích hoạt", schedule.date);
+    useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', "PUMP_ON_0xCC")
     //Xóa khỏi server
     deleteSchedulehasRepeat(schedule);
   }
@@ -201,7 +207,7 @@ const DatePickerModal = () => {
                   alignItems: 'center'
               }}
             >
-            <Text key={index} style={styles.timerText}>{timer.date.toLocaleString()}</Text>
+            <Text key={index} style={styles.timerText}>{timer.date.toLocaleString().split(', ')[1]}</Text>
             {
               timer.repeat !== 'none' ?  
               <View style={styles.repeatWrapper}>

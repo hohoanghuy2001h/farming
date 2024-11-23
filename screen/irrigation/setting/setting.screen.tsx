@@ -9,17 +9,20 @@ import { useRef, useCallback, useMemo } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Import GestureHandlerRootView
 import DatePickerModal from '@/components/shared/DatePickerModal';
 import { useUpdateAllSchedulewithOnActive } from '@/hooks/schedule';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useFieldDetail } from '@/hooks/field';
 import LoadingScreen from '@/screen/loading/loading.screen';
-
+import { setManualIrrgation, setAutoIrrgation } from '@/store/irrigationReducer';
 export default function SettingScreen() {
   const field = useSelector((state: RootState) => state.field);
+  const irrigation = useSelector((state: RootState) => state.irrigation);
+  const dispatch = useDispatch()
   const fieldDetail = useFieldDetail(field.fieldID);
   const soil = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'field-1.soil-moisturizer');
-  const irrigation = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed');
-  const [auto, setAuto] = useState(false);
+  const irrigationData = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed');
+  const [auto, setAuto] = useState(irrigation.irrigation.auto);
+  const [manual, setManual] = useState(irrigation.irrigation.manual);
   const [humidity, setHumidity] = useState(0);
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['100%'], []); 
@@ -27,17 +30,19 @@ export default function SettingScreen() {
   useEffect(() => {
     setHumidity(parseInt(soil.data));
   }, [humidity, soil])
-
-  const toggleAuto = (value: boolean) => {
-    setAuto(value);
-    useUpdateAllSchedulewithOnActive(value);
+  const toggleAuto = (value: string) => {
+    setAuto(value !== "PUMP_OFF_0xCC");
+    useUpdateAllSchedulewithOnActive(value !== "PUMP_OFF_0xCC");
+    dispatch(setAutoIrrgation(value !== "PUMP_OFF_0xCC"))
     //Chưa giải quyết vấn đề khi bật tắt thì tắt cái onActive
   }
 
-  const toggleManual = (value: boolean) => {
+  const toggleManual = (value: string) => {
     //Nếu active gửi data cho pump
+      setManual(value !== "PUMP_OFF_0xCC")
       useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', value)
-  }
+      dispatch(setManualIrrgation(value !== "PUMP_OFF_0xCC"))
+    }
 
   //Đây là hàm mở màn hình schedule - irrigation
   const openPresentBottomSheetModal = useCallback(() => {
@@ -55,7 +60,7 @@ export default function SettingScreen() {
   //Đây là hàm mở tắt chế độ schedule irrigation
 
   return (
-    soil.loading && irrigation.loading ? <LoadingScreen /> :
+    soil.loading && irrigationData.loading ? <LoadingScreen /> :
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
         <View style={styles.container}>
@@ -92,8 +97,7 @@ export default function SettingScreen() {
                     value={auto} 
                     style = {styles.button}
                     onValueChange={(value) => {
-                      setAuto(value)
-                      toggleAuto(value)
+                      toggleAuto(value === true ? "PUMP_ON_0xCC": "PUMP_OFF_0xCC")
                     }} 
                     trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                   />
@@ -111,10 +115,10 @@ export default function SettingScreen() {
                 </View>
                 <View>
                   <Switch 
-                    value={irrigation.data == "true"} 
+                    value={manual} 
                     style = {styles.button}
                     onValueChange={(value) => {
-                      toggleManual(value)
+                      toggleManual(value === true? "PUMP_ON_0xCC": "PUMP_OFF_0xCC")
                     }} 
                     trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                   />

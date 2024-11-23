@@ -40,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({title = 'Default', right = false, backgr
             : <></>
             }
           </SafeAreaView>
-          <ModalNotice isOpen = {visible} setIsOpen={setVisible} submit={() => setVisible(false)}>
+          <ModalNotice isOpen = {visible} setIsOpen={setVisible}>
           <SafeAreaView>
             <SafeAreaView style={{flexDirection: 'row', justifyContent: 'space-between'}}>
               <Text style={styles.modalTitle}>

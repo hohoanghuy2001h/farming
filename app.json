@@ -20,7 +20,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.hohoanghuy2001.FarmingApp"
+      "package": "com.hohoanghuy2001.FarmingApp",
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",

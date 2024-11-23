@@ -3,6 +3,17 @@ import { ToastProvider } from "react-native-toast-notifications";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import Header from '@/components/shared/Header/Header';
+// Ignore the specific warning related to Reanimated value access during render
+import {
+  configureReanimatedLogger,
+  ReanimatedLogLevel,
+} from 'react-native-reanimated';
+
+// This is the default configuration
+configureReanimatedLogger({
+  level: ReanimatedLogLevel.warn,
+  strict: false, // Reanimated runs in strict mode by default
+});
 import { store } from '@/store/store';
 import { Provider } from 'react-redux';
 export default function RootLayout() {

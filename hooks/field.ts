@@ -84,12 +84,11 @@ const useFieldDetail = (_id: string) => {
       };
 
       fetchData(); // Gọi hàm tải dữ liệu
-
       // Cleanup function
       return () => {
           setLoading(false); // Đảm bảo `loading` không bị treo
       };
-  }, [_id, refetch, data]);
+  }, [_id]);
 
   return { loading, data, error, setRefetch, refetch };
 };

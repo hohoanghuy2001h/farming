@@ -13,6 +13,7 @@ import { useFieldDetail } from '@/hooks/field';
 import configFeed from '@/utils/ConfigFeed';
 
 const configDataChart = (rawData: any) => {
+  // console.log(rawData);
   let data = {};
   if(rawData != null){
     data = {
@@ -29,7 +30,7 @@ const configDataChart = (rawData: any) => {
       }),  
       datasets: [
         {
-          data: rawData.map((item: any) => parseFloat(item.field)),  // Chuyển field thành số thực
+          data: rawData.map((item: any) => parseFloat(item.value)),  // Chuyển field thành số thực
           color: () => '#37B84F', // Mã màu hex cho đường
           strokeWidth: 3, // Độ dày của đường
         },
@@ -41,7 +42,8 @@ const configDataChart = (rawData: any) => {
 export default function StatisticalScreen() {
   const field = useSelector((state: RootState) => state.field);
   const feed = useSelector((state: RootState) => state.feed);
-  const [activeFeed, setActiveFeed] = useState('field-1.temp')
+  const [activeFeed, setActiveFeed] = useState('field-1.temp');
+  const [activeItem, setActiveItem] = useState(0)
   const fieldDetail = useFieldDetail(field.fieldID);
   const {data, loading} = useData(
     fieldDetail.data?.aio_username||'',
@@ -50,16 +52,19 @@ export default function StatisticalScreen() {
   // useEffect(() => {
   //   console.log(feed.feed)
   // }, [])
-  // const [dataChart, setDataChart] = useState({})
-  // useEffect(() => {
-  //   setDataChart(configDataChart(data));
-  // }, [data])  
+  const [dataChart, setDataChart] = useState({})
+  useEffect(() => {
+    if(fieldDetail.data?.aio_username != '') {
+    }
+      // setDataChart(configDataChart(data));
+  }, [])
+  useEffect(()=>{
+  },[data])  
   const itemRender = (item: any, index: number) => {
-    console.log(item);
     return (
       <TouchableOpacity 
         onPress={() => {
-          // setActiveItem(index)
+          setActiveItem(index)
           setActiveFeed(feed.feed[index].key)
         }}
         key={index}
@@ -67,7 +72,7 @@ export default function StatisticalScreen() {
       >
           <CardName iconName={item.icon} key={index} 
                     warning={item.warning} 
-                    onclick={item.key == activeFeed ? true : false} 
+                    active={index === activeItem} 
           />
       </TouchableOpacity>
     );
@@ -78,7 +83,9 @@ export default function StatisticalScreen() {
       <View style={styles.wrapper}>
         <HeaderMyFarm />
         <View style={styles.graphContainer}>
-          {/* {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={feedList[activeItem].unit}/>} */}
+          {/* {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={feed.feed[activeItem].unit}/>} */}
+          {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Text>Loading</Text>} 
+
         </View>
         <View style={styles.swipperContainer}>
             <FlatList 

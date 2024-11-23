@@ -12,7 +12,7 @@ const useData = (aio_username: string, aio_key: string, feed_key: string) => {
   const [refetch, setRefetch] = useState(false);
   useEffect(() => {
     if(aio_username !== '' && aio_key !== '' && feed_key !== '') {
-      const URL = `https://io.adafruit.com/api/v2/${aio_username}/feeds/${feed_key}/data?limit=100`;
+      const URL = `https://io.adafruit.com/api/v2/${aio_username}/feeds/${feed_key}/data?limit=30`;
       const subscription = async () => {
         try {
           const response = await axios.get(URL, {
@@ -34,7 +34,7 @@ const useData = (aio_username: string, aio_key: string, feed_key: string) => {
       }
       subscription();
     }
-  }, [aio_username, aio_key, feed_key, refetch]);
+  }, [refetch, feed_key, aio_username]);
   return { loading, data, error, setRefetch, refetch };
 
 }
@@ -74,7 +74,7 @@ const useNewestData = (aio_username: string, aio_key: string) => {
       };
       subscription();
       }
-    }, [refetch, data]);
+    }, [refetch, aio_username, aio_key]);
   
     return { loading, data, error, setRefetch, refetch };
 }
@@ -110,11 +110,11 @@ const useNewestFieldData = (aio_username: string, aio_key: string, feed_key: str
     return () => {
       client.end();
     };
-  }, [refetch, data, aio_username, aio_key, feed_key]);
+  }, [refetch, aio_username, aio_key, feed_key]);
 
   return { loading, data, error, setRefetch, refetch };
 }
-const useAddData = (aio_username: string, aio_key: string, feed_key: string, value: any) => {
+const useAddData = (aio_username: string, aio_key: string, feed_key: string, value: string) => {
    // MQTT Client Options
    const options = {
     username: aio_username,
@@ -128,7 +128,7 @@ const useAddData = (aio_username: string, aio_key: string, feed_key: string, val
   });
   client.on("connect", () => {
     // Push the data to the feed
-    client.publish(`${aio_username}/feeds/${feed_key}`, value.toString(), () => {
+    client.publish(`${aio_username}/feeds/${feed_key}`, value, () => {
       console.log("Data sent to Adafruit IO:", value);
     });
   });
