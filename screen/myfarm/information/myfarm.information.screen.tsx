@@ -4,87 +4,39 @@ import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
 import { windowWidth } from '@/utils/Dimensions';
 import { useNewestData } from '@/hooks/data';
 import { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import stageImages from '@/assets/images/stages';
 import stageDefault from '@/constants/stage.template';
 import LoadingScreen from '@/screen/loading/loading.screen';
-const dataTemplate = [
-  {
-    label: 'Temperature',
-    value: 0,
-    unit: '°C',
-    warning: false,
-    timeUpdate: '',
-  },
-  {
-    label: 'Humidity',
-    value: 0,
-    unit: '%',
-    warning: true,
-    timeUpdate: '',
-  },
-  {
-    label: 'Light Intensity',
-    value: 0,
-    unit: '',
-    warning: false,
-    timeUpdate: '',
-  },
-  {
-    label: 'Soil Moisturize',
-    value: 0,
-    unit: '',
-    warning: false,
-    timeUpdate: '',
-  },
-]
-const changeValue = (data: any)  => {
-  if(Object.keys(data).length !== 0){
-    dataTemplate.map((item, index) => {
-      item.value = data.data[index];
-      item.timeUpdate = new Date(data.created_at).toLocaleString();
-    })   
-  }
-  return dataTemplate;
-}
-const changeWarning = (data: number, label: string, stagePlant: stagePlant) => {
-  let warning = false;
-  switch(label) {
-    case 'Temperature':
-      warning = ( data < stagePlant.maxTemperature || data > stagePlant.minTemperature);
-      break;
-    case 'Humidity':
-      warning = ( data < stagePlant.maxHumidity || data > stagePlant.minHumidity);
-      break;
-    case 'Light Intensity':
-      warning = ( data < stagePlant.maxLight || data > stagePlant.minLight);
-      break;
-    case 'Soil Moisturize':
-      break;
-    default:
-      break;
-  }
-  return warning;
-}
+import { useFieldDetail } from '@/hooks/field';
+import configFeed from '@/utils/ConfigFeed';
+import { setFeed } from '@/store/feedReducer';
 export default function InformationScreen() {
-  const item = useSelector((state: RootState) => state.field);
+  const field = useSelector((state: RootState) => state.field);
+  const fieldDetail = useFieldDetail(field.fieldID);
+  const {data, loading} = useNewestData(fieldDetail.data?.aio_username || "",fieldDetail.data?.aio_key || "")
+  const [feedList, setFeedList] = useState<feedType[]>([]);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    setFeedList(configFeed(data, field.plantStage))
+  }, [data])
+  useEffect(() => {
+    dispatch(setFeed(feedList));
+  }, [feedList])
   const [currentPage, setCurrentPage] = useState<number>(0);
   const getStageProgress = () => {
     stageDefault.forEach((stage, index) => {
-      if(stage === item.plantStage) setCurrentPage(index)
+      if(stage === field.plantStage) setCurrentPage(index)
     })
   }
-  const {data, loading} = useNewestData();
-  useEffect(() => {
-    changeValue(data);
-  }, [data])
   useEffect(() => {
     getStageProgress();
-  }, [item,currentPage])
+  }, [field,currentPage])
   const renderItem = (data: any) => {
     return (
-      <CardInfo label={data.item.label} type={data.item.unit} value={data.item.value} warning={changeWarning(data.item.value, data.item.label, item.plantStage)} date={data.item.timeUpdate} />
+      <CardInfo label={data.item.label} type={data.item.unit} value={data.item.value} warning={data.item.warning} date={data.item.timeUpdate} />
     );
   }
   return (
@@ -95,7 +47,7 @@ export default function InformationScreen() {
         <View style = {styles.contentContainer}>
           <View style={styles.leftContainer}>
             <FlatList
-              data={dataTemplate} 
+              data={feedList} 
               renderItem={renderItem}
               contentContainerStyle={styles.cardContainer} // Áp dụng gap cho container
               />
@@ -110,6 +62,7 @@ export default function InformationScreen() {
       </View>
     </View>
   );
+
 }
 
 const styles = StyleSheet.create({

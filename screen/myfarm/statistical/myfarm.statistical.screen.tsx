@@ -3,63 +3,14 @@ import { View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native'
 import CardName from '@/components/shared/CardName/CardName';
 import { windowWidth } from '@/utils/Dimensions';
 import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
-import { useData } from '@/hooks/data';
+import { useData, useNewestData } from '@/hooks/data';
 import Line from '@/components/shared/Chart/Line';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import LoadingScreen from '@/screen/loading/loading.screen';
-
-//FAKE API
-const cardNameArray = [
-  {
-    iconName: 'temperature-half',
-    cardName: "Temperature",
-    fieldName: 'field1',
-    warning: 0,
-    unit: '°C',
-  },
-  {
-    iconName: 'water',
-    cardName: "Humidity",
-    fieldName: 'field2',
-    warning: 1,
-    unit: '%',
-  },
-  {
-    iconName: 'sun',
-    cardName: "Light Intensity",
-    fieldName: 'field3',
-    warning: 0,
-    unit: '',
-  },
-  {
-    iconName: 'seedling',
-    cardName: "Soil Moisturize",
-    fieldName: 'field4',
-    warning: 2,
-    unit: '',
-  },
-]
-const changeWarning = (data: number, label: string, stagePlant: stagePlant) => {
-  let warning = 0;
-  switch(label) {
-    case 'Temperature':
-      warning = data < stagePlant.maxTemperature ? 1 : data > stagePlant.minTemperature ? 2 : 0;
-      break;
-    case 'Humidity':
-      warning = data < stagePlant.maxHumidity ? 1 : data > stagePlant.minHumidity ? 2 : 0;
-      break;
-    case 'Light Intensity':
-      warning = data < stagePlant.maxLight ? 1 : data > stagePlant.minLight ? 2 : 0;
-      break;
-    case 'Soil Moisturize':
-      break;
-    default:
-      break;
-  }
-  return warning;
-}  
+import { useFieldDetail } from '@/hooks/field';
+import configFeed from '@/utils/ConfigFeed';
 
 const configDataChart = (rawData: any) => {
   let data = {};
@@ -88,63 +39,73 @@ const configDataChart = (rawData: any) => {
   return data;
 }
 export default function StatisticalScreen() {
-  const item = useSelector((state: RootState) => state.field);
-  const [activeItem, setActiveItem] = useState(0); // State để lưu vị trí của item active
-  const {data, loading} = useData(cardNameArray[activeItem].fieldName)
-  const [dataChart, setDataChart] = useState({})
-  useEffect(() => {
-    setDataChart(configDataChart(data));
-  }, [data])  
-  const itemRender = (itemData: any, index: number) => {
+  const field = useSelector((state: RootState) => state.field);
+  const feed = useSelector((state: RootState) => state.feed);
+  const [activeFeed, setActiveFeed] = useState('field-1.temp')
+  const fieldDetail = useFieldDetail(field.fieldID);
+  const {data, loading} = useData(
+    fieldDetail.data?.aio_username||'',
+    fieldDetail.data?.aio_key||'', 
+    activeFeed);
+  // useEffect(() => {
+  //   console.log(feed.feed)
+  // }, [])
+  // const [dataChart, setDataChart] = useState({})
+  // useEffect(() => {
+  //   setDataChart(configDataChart(data));
+  // }, [data])  
+  const itemRender = (item: any, index: number) => {
+    console.log(item);
     return (
       <TouchableOpacity 
         onPress={() => {
-          setActiveItem(index)
+          // setActiveItem(index)
+          setActiveFeed(feed.feed[index].key)
         }}
         key={index}
         style = {styles.itemContainer}
       >
-          <CardName iconName={itemData.iconName} key={index} 
-                    warning={changeWarning(24, itemData.cardName, item.plantStage )} 
-                    onclick={index == activeItem? true : false} 
+          <CardName iconName={item.icon} key={index} 
+                    warning={item.warning} 
+                    onclick={item.key == activeFeed ? true : false} 
           />
       </TouchableOpacity>
     );
   }
   return (
-    loading ? <LoadingScreen />:
+    loading ?  <LoadingScreen /> : 
     <View style={styles.container}>
-    <View style={styles.wrapper}>
-      <HeaderMyFarm />
-      <View style={styles.graphContainer}>
-        {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={cardNameArray[activeItem].unit}/>}
-      </View>
-      <View style={styles.swipperContainer}>
-          <FlatList 
-             data={cardNameArray}
-             contentContainerStyle ={styles.swipperWrapper}
-             renderItem={({item, index}) => itemRender(item, index)}
-             horizontal
-             showsHorizontalScrollIndicator={false}
-             ItemSeparatorComponent={() => <View style={{ width: 20 }} />}  // 20px spacing between items
-          />
-      </View>
+      <View style={styles.wrapper}>
+        <HeaderMyFarm />
+        <View style={styles.graphContainer}>
+          {/* {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={feedList[activeItem].unit}/>} */}
+        </View>
+        <View style={styles.swipperContainer}>
+            <FlatList 
+              data={feed.feed}
+              contentContainerStyle ={styles.swipperWrapper}
+              renderItem={({item, index}) => itemRender(item, index)}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              ItemSeparatorComponent={() => <View style={{ width: 20 }} />}  // 20px spacing between items
+            />
+        </View>
 
-       <View style={styles.desContainer}>
-          <Text style={styles.desTitle}>Best Conditions:</Text>
-          <View style={styles.desTextContainer}>
-            <Text style = {styles.text}>
-              {`Các thông số ở điều kiện lý tưởng khi cây đang trong giai đoạn ${item.plantStage.stage}:
+        <View style={styles.desContainer}>
+            <Text style={styles.desTitle}>Best Conditions:</Text>
+            <View style={styles.desTextContainer}>
+              <Text style = {styles.text}>
+                {`Các thông số ở điều kiện lý tưởng khi cây đang trong giai đoạn ${field.plantStage.stage}:
 
-- Nhiệt độ: ${item.plantStage.minTemperature}°C - ${item.plantStage.maxTemperature}°C
-- Độ ẩm: ${item.plantStage.minHumidity}% - ${item.plantStage.minHumidity}%
-- Ánh sáng: ${item.plantStage.maxLight}lux - ${item.plantStage.maxLight}lux
-              `}
-            </Text>
-          </View>
-      </View>       
-      </View>
-  </View>
+  - Nhiệt độ: ${field.plantStage.minTemperature}°C - ${field.plantStage.maxTemperature}°C
+  - Độ ẩm: ${field.plantStage.minHumidity}% - ${field.plantStage.minHumidity}%
+  - Ánh sáng: ${field.plantStage.maxLight}lux - ${field.plantStage.maxLight}lux
+                `}
+              </Text>
+            </View>
+        </View>       
+        </View>
+    </View>
   );
 }
 

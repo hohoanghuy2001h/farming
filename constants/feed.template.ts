@@ -1,30 +1,4 @@
-export interface stateType {
-  userID: string,
-  fieldID: string,
-  plantDate: number,
-  health: string, 
-  plantStage: stagePlant,
-  feed: feedType[],
-}
-
-export const initialState: stateType = {
-  fieldID: '',
-  userID: '',
-  plantDate: 0,
-  health: '',
-  plantStage: {
-    id: -1,
-    maxHumidity:-1,
-    days: -1,
-    description:'',
-    maxLight: -1,
-    maxTemperature: -1,
-    minHumidity: -1,
-    minLight: -1,
-    minTemperature: -1,
-    stage: '',
-  },
-  feed: [
+const feedTemplate = [
     {
       label: 'Temperature',
       value: 0,
@@ -50,7 +24,7 @@ export const initialState: stateType = {
       warning: 0,
       timeUpdate: '',
       icon: 'sun',
-      key: ''
+      key: '',
     },
     {
       label: 'Soil moisturize',
@@ -61,6 +35,5 @@ export const initialState: stateType = {
       icon: 'seedling',
       key: '',
     },
-  ]
-}
-
+];
+export default feedTemplate;

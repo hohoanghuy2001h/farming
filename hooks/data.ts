@@ -1,135 +1,139 @@
-import React, { useEffect, useState } from "react";
-import stageDefault from '@/constants/stage.template'
+import { useEffect, useState } from "react";
+import mqtt from "mqtt";
 import axios from "axios";
-const useData = (field: string) => {
+interface DataItem {
+  created_at: Date; // Hoặc kiểu dữ liệu chính xác (nếu không phải string)
+  value: string; // Thay đổi kiểu `any` thành kiểu cụ thể nếu biết rõ
+}
+const useData = (aio_username: string, aio_key: string, feed_key: string) => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState()
+  const [data, setData] = useState<DataItem[]>([])
   const [error, setError] = useState("");
   const [refetch, setRefetch] = useState(false);
-  const channelID = process.env.EXPO_PUBLIC_CHANNEL_ID;
-  const apiKeyRead = process.env.EXPO_PUBLIC_API_KEY_READ;
-  const URL = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${apiKeyRead}&results=20`;
   useEffect(() => {
-    const subscription = async () => {
-      setLoading(false);
-      await axios
-        .get(`${URL}`, {})
-        .then((res: any) => {
+    if(aio_username !== '' && aio_key !== '' && feed_key !== '') {
+      const URL = `https://io.adafruit.com/api/v2/${aio_username}/feeds/${feed_key}/data?limit=100`;
+      const subscription = async () => {
+        try {
+          const response = await axios.get(URL, {
+            headers: {
+              'X-AIO-Key': aio_key, // Thêm header
+            },
+          });
+          response.data.forEach((item: any) => {
+            setData((prev) => [...prev, {
+              value: item.value,
+              created_at: item.created_at
+            }])
+          })
+        } catch (err) {
+          console.error('Error fetching data:', err);
+        } finally {
           setLoading(false);
-          const feeds = res.data.feeds;
-          const filteredData = feeds
-          .filter((feed: any) => feed[field] !== null)
-          .map((feed: any) => ({
-            field: Math.round(parseInt(feed[field])),
-            created_at:  new Date(feed.created_at),
-          }))
-          setData(filteredData);
-        })
-        .catch((error: any) => {
-          setError(error?.message);
-          setLoading(false);
-        });
-    };
-    subscription();
-  }, [refetch, field]);
-  const getNextSchedule = () => {
-    const now = new Date();
-    const hoursToSchedule = [6, 12, 18];
-    const targetTimes = hoursToSchedule.map(hour => {
-      const target = new Date();
-      target.setHours(hour, 0, 0, 0);
-      if (target <= now) target.setDate(target.getDate() + 1); // Nếu đã qua giờ, đặt cho ngày tiếp theo
-      return target.getTime();
-    });
-    return Math.min(...targetTimes) - now.getTime();
-  };
-  useEffect(() => {
-    const scheduleNextRefetch = () => {
-      const timeUntilNext = getNextSchedule();
-      const timeout = setTimeout(() => {
-        setRefetch(prev => !prev); // Gọi lại API vào giờ đã lên lịch
-        scheduleNextRefetch(); // Tái thiết lập cho lần gọi tiếp theo
-      }, timeUntilNext);
-      return () => clearTimeout(timeout);
-    };
-    const cancelTimeout = scheduleNextRefetch(); // Bắt đầu lịch trình
-    return cancelTimeout; // Hủy lịch khi unmount
-  }, []);
+        }
+      }
+      subscription();
+    }
+  }, [aio_username, aio_key, feed_key, refetch]);
   return { loading, data, error, setRefetch, refetch };
+
 }
-const useNewestData = () => {
+const useNewestData = (aio_username: string, aio_key: string) => {
     const [loading, setLoading] = useState(true);
-    const [data, setData] = useState({})
+    const [data, setData] = useState<dataNewestType[]>([])
     const [error, setError] = useState("");
     const [refetch, setRefetch] = useState(false);
-    const channelID = process.env.EXPO_PUBLIC_CHANNEL_ID;
-    const apiKeyRead = process.env.EXPO_PUBLIC_API_KEY_READ;
-    const URL = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${apiKeyRead}&results=20`;
     useEffect(() => {
+      if(aio_username !== '' && aio_key !== '' ) {
+      const URL = `https://io.adafruit.com/api/v2/${aio_username}/feeds`;
       const subscription = async () => {
-        setLoading(false);
-        await axios
-          .get(`${URL}`, {})
-          .then((res: any) => {
-            const feeds = res.data.feeds;
-            const filteredData = feeds
-            .filter((feed: any) => feed['field1'] !== null)
-            const lastConfigvalue = {
-                'created_at': filteredData[filteredData.length - 1].created_at,
-                'data': [
-                    parseInt(filteredData[filteredData.length - 1].field1), //Tempurature
-                    parseInt(filteredData[filteredData.length - 1].field2), //Humidity
-                    parseInt(filteredData[filteredData.length - 1].field3), //Light Intensity
-                    parseInt(filteredData[filteredData.length - 1].field4)  //Soil moisturize
-                ],
-            }
-            setData(lastConfigvalue);
-            setLoading(false);
-          })
-          .catch((error: any) => {
-            setError(error?.message);
-            setLoading(false);
+        try {
+          const response = await axios.get(URL, {
+            headers: {
+              "X-AIO-Key": aio_key, // Thêm header
+            },
           });
+          const fetchData = response.data.map((data: any) => {
+            return (
+              {
+                created_at: data.created_at,
+                data: {
+                  key: data.key,
+                  name: data.name,
+                  last_value: data.last_value,
+                }
+              }
+            )
+          })
+          setData(fetchData);
+        } catch (err) {
+          console.error(err);
+        } finally {
+          setLoading(false);
+        }
       };
       subscription();
-    }, [refetch]);
+      }
+    }, [refetch, data]);
   
     return { loading, data, error, setRefetch, refetch };
 }
-const useNewestFieldData = (field: string) => {
+const useNewestFieldData = (aio_username: string, aio_key: string, feed_key: string) => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState({})
+  const [data, setData] = useState("")
   const [error, setError] = useState("");
   const [refetch, setRefetch] = useState(false);
-  const channelID = process.env.EXPO_PUBLIC_CHANNEL_ID;
-  const apiKeyRead = process.env.EXPO_PUBLIC_API_KEY_READ;
-  const URL = `https://api.thingspeak.com/channels/${channelID}/feeds.json?api_key=${apiKeyRead}&results=20`;
   useEffect(() => {
-    const subscription = async () => {
-      setLoading(false);
-      await axios
-        .get(`${URL}`, {})
-        .then((res: any) => {
-          setLoading(false);
-          const feeds = res.data.feeds;
-          const filteredData = feeds
-          .filter((feed: any) => feed[field] !== null)
-          .filter((feed: any) => feed[field] !== null)
-          .map((feed: any) => ({
-            field: Math.round(parseInt(feed[field])),
-            created_at:  new Date(feed.created_at),
-          }))
-          const lastConfigvalue = filteredData [filteredData.length - 1];
-          setData(lastConfigvalue);
-        })
-        .catch((error: any) => {
-          setError(error?.message);
-          setLoading(false);
-        });
+    const options = {
+      username: aio_username,
+      password: aio_key,
     };
-    subscription();
-  }, [refetch, field]);
+    // Connect to Adafruit IO
+    const client = mqtt.connect("wss://io.adafruit.com:443/mqtt", options);
+    client.on("connect", () => {
+      // Subscribe to the feed
+      client.subscribe(`${aio_username}/feeds/${feed_key}`);
+    });
+    client.on("message", (topic, message) => {
+      try {
+        const incomingData = message.toString();
+        console.log("Message received:", incomingData);
+        setData(incomingData); // Update state with new data
+      } catch (err) {
+        setError("Failed to parse message");
+        console.error("Error parsing message:", err);
+      } finally {
+        setLoading(false);
+      }
+    });
+    // Clean up the MQTT client connection when the component unmounts
+    return () => {
+      client.end();
+    };
+  }, [refetch, data, aio_username, aio_key, feed_key]);
 
   return { loading, data, error, setRefetch, refetch };
 }
-export {useData, useNewestData, useNewestFieldData}
+const useAddData = (aio_username: string, aio_key: string, feed_key: string, value: any) => {
+   // MQTT Client Options
+   const options = {
+    username: aio_username,
+    password: aio_key,
+  };
+  // Connect to Adafruit IO
+  const client = mqtt.connect("wss://io.adafruit.com:443/mqtt", options);
+      // Subscribe to the feed
+  client.on("connect", () => {
+    client.subscribe(`${aio_username}/feeds/${feed_key}`);
+  });
+  client.on("connect", () => {
+    // Push the data to the feed
+    client.publish(`${aio_username}/feeds/${feed_key}`, value.toString(), () => {
+      console.log("Data sent to Adafruit IO:", value);
+    });
+  });
+  return () => {
+    client.end();
+  };
+}
+export {useData, useNewestData, useNewestFieldData, useAddData}

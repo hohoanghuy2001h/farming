@@ -3,10 +3,10 @@ interface CardInfoProps {
   label: string;
   value: string;
   type: string;
-  warning?: boolean;
+  warning?: number;
   date: string,
 }
-export const CardInfo: React.FC<CardInfoProps> = ({label, value, type, warning=false, date}) => {
+export const CardInfo: React.FC<CardInfoProps> = ({label, value, type, warning=0, date}) => {
   return (
     <View style={styles.container}>
       <View style= {styles.labelContainer}>

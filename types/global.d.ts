@@ -44,11 +44,11 @@ type fieldType = {
     latitude: number, // Location của thiết bị
     longitude: number,
     timePlant: any, 
-    apiReadKey: string,
     isPlanted: boolean,
-    channelID: string,
     isHarvest: boolean,
-    apiWriteKey: string,
+    aio_key: string,
+    aio_username: string,
+
 };
 type dateScheduleType = {
     _id: string,
@@ -56,4 +56,21 @@ type dateScheduleType = {
     repeat: string,
     onActive: boolean,
     timeOut: NodeJS.Timeout | number,
+}
+type dataNewestType = {
+    created_at: Date,
+    data: {
+      key: string,
+      last_value: string,
+      name: string
+    }
+}
+type feedType =  { 
+    label: string,
+    value: number,
+    unit: string, 
+    warning: number, 
+    timeUpdate: string,
+    icon: string,
+    key: string
 }

@@ -22,11 +22,10 @@ const useField = () => {
             latitude: docData.latitude,
             longitude: docData.longitude,
             timePlant: docData.timePlant?.toDate(),
-            apiReadKey: docData.apiReadKey,
             isPlanted: docData.isPlanted,
-            channelID: docData.channelID,
             isHarvest: docData.isHarvest,
-            apiWriteKey: docData.apiWriteKey,
+            aio_key: docData.aio_key,
+            aio_username: docData.aio_username,
             image: docData.image === ""? require('@/assets/images/fields/field 1.png') : docData.image,
           };
         });
@@ -65,12 +64,11 @@ const useFieldDetail = (_id: string) => {
                       latitude: docData.latitude,
                       longitude: docData.longitude,
                       timePlant: docData.timePlant?.toDate(),
-                      apiReadKey: docData.apiReadKey,
                       isPlanted: docData.isPlanted,
-                      channelID: docData.channelID,
                       isHarvest: docData.isHarvest,
-                      apiWriteKey: docData.apiWriteKey,
                       image: docData.image,
+                      aio_key: docData.aio_key,
+                      aio_username: docData.aio_username,
                   };
 
                   setData(fieldData); // Cập nhật dữ liệu

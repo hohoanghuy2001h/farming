@@ -3,26 +3,30 @@ import React, { useState, useEffect } from 'react';
 import Gauge from '@/components/shared/Chart/Gauge';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useNewestFieldData } from '@/hooks/data';
+import { useAddData, useNewestFieldData } from '@/hooks/data';
 import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet'
 import { useRef, useCallback, useMemo } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Import GestureHandlerRootView
 import DatePickerModal from '@/components/shared/DatePickerModal';
 import { useUpdateAllSchedulewithOnActive } from '@/hooks/schedule';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { useFieldDetail } from '@/hooks/field';
+import LoadingScreen from '@/screen/loading/loading.screen';
+
 export default function SettingScreen() {
-  const {data} = useNewestFieldData('field2'); //field humidity
-  const [manual, setManual] = useState(false);
+  const field = useSelector((state: RootState) => state.field);
+  const fieldDetail = useFieldDetail(field.fieldID);
+  const soil = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'field-1.soil-moisturizer');
+  const irrigation = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed');
   const [auto, setAuto] = useState(false);
   const [humidity, setHumidity] = useState(0);
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['100%'], []); 
-
-
   //Hàm lấy API độ ẩm         //CODE THÊM NHA
   useEffect(() => {
-    setHumidity(data.field);
-  }, [humidity, data])
-  
+    setHumidity(parseInt(soil.data));
+  }, [humidity, soil])
 
   const toggleAuto = (value: boolean) => {
     setAuto(value);
@@ -31,11 +35,8 @@ export default function SettingScreen() {
   }
 
   const toggleManual = (value: boolean) => {
-    setManual(value);
     //Nếu active gửi data cho pump
-    if(value === true) {
-
-    }
+      useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', value)
   }
 
   //Đây là hàm mở màn hình schedule - irrigation
@@ -54,91 +55,90 @@ export default function SettingScreen() {
   //Đây là hàm mở tắt chế độ schedule irrigation
 
   return (
-  <GestureHandlerRootView>
-    <BottomSheetModalProvider>
-      <View style={styles.container}>
-        <View style={styles.wrapper}>
-          <View style= {styles.mainContainer}>
-            <View style={styles.chartContainer}>
-              <Gauge data={humidity || 0} />
+    soil.loading && irrigation.loading ? <LoadingScreen /> :
+    <GestureHandlerRootView>
+      <BottomSheetModalProvider>
+        <View style={styles.container}>
+          <View style={styles.wrapper}>
+            <View style= {styles.mainContainer}>
+              <View style={styles.chartContainer}>
+                <Gauge data={humidity || 0} />
+              </View>
+              <View style={styles.imageContainer}>
+              <Image 
+                  style={styles.image} 
+                  source={require('@/assets/images/Watering.png')}
+              />
+              </View>
             </View>
-            <View style={styles.imageContainer}>
-            <Image 
-                style={styles.image} 
-                source={require('@/assets/images/Watering.png')}
-            />
-            </View>
-          </View>
-          <View style={styles.buttonContainer}>
-            <View style={styles.btnItem}>
-              <View style={styles.btnTitleContain}>
-                <View style={styles.btnTitleRight}>
-                  <Text style={styles.btnTitle}>Automic</Text>
-                  <Text style={styles.subbtnTitle}>Next irrigates in 8:00</Text>
+            <View style={styles.buttonContainer}>
+              <View style={styles.btnItem}>
+                <View style={styles.btnTitleContain}>
+                  <View style={styles.btnTitleRight}>
+                    <Text style={styles.btnTitle}>Automic</Text>
+                    <Text style={styles.subbtnTitle}>Next irrigates in 8:00</Text>
+                  </View>
+                  <TouchableOpacity 
+                    style={styles.btnTitleLeft} 
+                    onPress={onClickScheduleBtn}
+                  >
+                    <Image 
+                      source={require('@/assets/images/setting.png')}
+                    />
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity 
-                  style={styles.btnTitleLeft} 
-                  onPress={onClickScheduleBtn}
-                >
-                  <Image 
-                    source={require('@/assets/images/setting.png')}
+                <View>
+                  <Switch 
+                    value={auto} 
+                    style = {styles.button}
+                    onValueChange={(value) => {
+                      setAuto(value)
+                      toggleAuto(value)
+                    }} 
+                    trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                   />
-                </TouchableOpacity>
-              </View>
-              <View>
-                <Switch 
-                  value={auto} 
-                  style = {styles.button}
-                  onValueChange={(value) => {
-                    setAuto(value)
-                    toggleAuto(value)
-                  }} 
-                  trackColor={{false: '#D9D9D9' , true: '#13852F'}}
-                />
-              </View>
-            </View>
-            <View style={styles.btnItem}>
-              <View style={styles.btnTitleContain}>
-                <View style={styles.btnTitleRight}>
-                  <Text style={styles.btnTitle}>Manually</Text>
-                  <Text style={styles.subbtnTitle}>System will turn of after the soil moisture is enough.</Text>
                 </View>
-                <View style={styles.btnTitleLeft}>
+              </View>
+              <View style={styles.btnItem}>
+                <View style={styles.btnTitleContain}>
+                  <View style={styles.btnTitleRight}>
+                    <Text style={styles.btnTitle}>Manually</Text>
+                    <Text style={styles.subbtnTitle}>System will turn of after the soil moisture is enough.</Text>
+                  </View>
+                  <View style={styles.btnTitleLeft}>
 
+                  </View>
                 </View>
-              </View>
-              <View>
-                <Switch 
-                  value={manual} 
-                  style = {styles.button}
-                  onValueChange={(value) => {
-                    setManual(value)
-                    toggleManual(value)
-                  }} 
-                  trackColor={{false: '#D9D9D9' , true: '#13852F'}}
-                />
+                <View>
+                  <Switch 
+                    value={irrigation.data == "true"} 
+                    style = {styles.button}
+                    onValueChange={(value) => {
+                      toggleManual(value)
+                    }} 
+                    trackColor={{false: '#D9D9D9' , true: '#13852F'}}
+                  />
+                </View>
               </View>
             </View>
           </View>
         </View>
-      </View>
-      <View>
-        <BottomSheetModal 
-          ref={BottomSheetModalRef}
-          index={0}
-          snapPoints={snapPoints}
-          backgroundStyle ={styles.bottomModal}
-          enablePanDownToClose={true}
-          onDismiss={handleDismissModal} // Xử lý khi modal đóng
-        >
-          <BottomSheetView style={styles.contentContainer}>
-            <DatePickerModal />
-          </BottomSheetView>
-        </BottomSheetModal>
-      </View>
-    </BottomSheetModalProvider>
-  </GestureHandlerRootView>
-
+        <View>
+          <BottomSheetModal 
+            ref={BottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints}
+            backgroundStyle ={styles.bottomModal}
+            enablePanDownToClose={true}
+            onDismiss={handleDismissModal} // Xử lý khi modal đóng
+          >
+            <BottomSheetView style={styles.contentContainer}>
+              <DatePickerModal />
+            </BottomSheetView>
+          </BottomSheetModal>
+        </View>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }
 

@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import fieldReducer from './fieldReducer';
 import userReducer from './userReducer';
+import feedReducer from './feedReducer'
 export const store = configureStore({
   reducer: {
     field: fieldReducer,
     user: userReducer,
+    feed: feedReducer,
   },
   
 })
