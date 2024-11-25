@@ -33,10 +33,10 @@ const configFeed = (data: dataNewestType[], stage: stagePlant) => {
                      value: parseFloat(dataItem.data.last_value), // Lấy giá trị từ data
                      warning: changeWarning(parseFloat(dataItem.data.last_value), feed.label, stage), // Tạo cảnh báo
                      timeUpdate: new Date(dataItem.created_at).toISOString(), // Đảm bảo rằng create_at là một Date
-                     key:  dataItem.data.key,
+                     key:  dataItem.data.key.split('.')[1],
                  };
              }
- 
+             console.log(feed);
              return feed; // Trả về feed nếu không tìm thấy đối tượng tương ứng
         })
     return matchedFeeds;

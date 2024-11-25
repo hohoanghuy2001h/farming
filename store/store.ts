@@ -2,13 +2,13 @@ import { configureStore } from '@reduxjs/toolkit';
 import fieldReducer from './fieldReducer';
 import userReducer from './userReducer';
 import feedReducer from './feedReducer'
-import irrigationReducer from './irrigationReducer'
+import controllerReducer from './controllerReducer'
 export const store = configureStore({
   reducer: {
     field: fieldReducer,
     user: userReducer,
     feed: feedReducer,
-    irrigation: irrigationReducer,
+    controller: controllerReducer,
   },
   
 })

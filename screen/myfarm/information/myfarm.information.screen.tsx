@@ -15,7 +15,7 @@ import { setFeed } from '@/store/feedReducer';
 export default function InformationScreen() {
   const field = useSelector((state: RootState) => state.field);
   const fieldDetail = useFieldDetail(field.fieldID);
-  const {data, loading} = useNewestData(fieldDetail.data?.aio_username || "",fieldDetail.data?.aio_key || "")
+  const {data, loading} = useNewestData(fieldDetail.data?.aio_username || "",fieldDetail.data?.aio_key || "", fieldDetail.data?.aio_fieldname || "")
   const [feedList, setFeedList] = useState<feedType[]>([]);
   const dispatch = useDispatch();
 

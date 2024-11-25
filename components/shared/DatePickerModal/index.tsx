@@ -19,7 +19,10 @@ const dataOption = [
   { key: 3, label: 'Lặp lại hằng tuần', type:'weekly' },
   { key: 4, label: 'Lặp lại hằng tháng', type:'monthly' },
 ];
-const DatePickerModal = () => {
+interface DatePickerModalProps {
+  activePumpAuto: () => void;
+}
+const DatePickerModal: React.FC<DatePickerModalProps> = ({ activePumpAuto }) => {
   const field = useSelector((state: RootState) => state.field);
   const fieldDetail = useFieldDetail(field.fieldID);
   const {data, loading} = useSchedule();
@@ -159,7 +162,7 @@ const DatePickerModal = () => {
   const activeIrrigation = (schedule: dateScheduleType) => {
     //Kích hoạt tưới nước
     console.log("Đã kích hoạt", schedule.date);
-    useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', "PUMP_ON_0xCC")
+    activePumpAuto();
     //Xóa khỏi server
     deleteSchedulehasRepeat(schedule);
   }

@@ -6,8 +6,8 @@ const menu = [
     },
     {
         image: require('@/assets/images/menu/irrigation.png'),
-        page: "/(routes)/irrigation",
-        namepage: "Irrigation",
+        page: "/(routes)/controller",
+        namepage: "Controller",
 
     },
     {

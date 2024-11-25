@@ -20,8 +20,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.hohoanghuy2001.FarmingApp",
-      "googleServicesFile": "./google-services.json"
+      "package": "com.hohoanghuy2001.FarmingApp"
     },
     "web": {
       "bundler": "metro",
@@ -44,6 +43,12 @@
         "projectId": "a00154e3-d064-4cfc-b5e0-e28b340801db"
       }
     },
-    "owner": "hohoanghuy2001"
+    "owner": "hohoanghuy2001",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/a00154e3-d064-4cfc-b5e0-e28b340801db"
+    }
   }
 }

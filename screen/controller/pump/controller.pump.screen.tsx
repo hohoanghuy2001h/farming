@@ -1,6 +1,6 @@
 import { Text, View, StyleSheet, Image ,Dimensions, Switch} from 'react-native';
 import React, { useState, useEffect } from 'react';
-import Gauge from '@/components/shared/Chart/Gauge';
+// import Gauge from '@/components/shared/Chart/Gauge';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useAddData, useNewestFieldData } from '@/hooks/data';
@@ -13,34 +13,41 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useFieldDetail } from '@/hooks/field';
 import LoadingScreen from '@/screen/loading/loading.screen';
-import { setManualIrrgation, setAutoIrrgation } from '@/store/irrigationReducer';
-export default function SettingScreen() {
+import { setManualIrrgation, setAutoIrrgation } from '@/store/controllerReducer';
+import Gauge from '@/components/shared/Chart/Gauge';
+export default function PumpScreen() {
   const field = useSelector((state: RootState) => state.field);
-  const irrigation = useSelector((state: RootState) => state.irrigation);
+  const irrigation = useSelector((state: RootState) => state.controller);
   const dispatch = useDispatch()
   const fieldDetail = useFieldDetail(field.fieldID);
-  const soil = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'field-1.soil-moisturizer');
-  const irrigationData = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed');
-  const [auto, setAuto] = useState(irrigation.irrigation.auto);
-  const [manual, setManual] = useState(irrigation.irrigation.manual);
-  const [humidity, setHumidity] = useState(0);
+  const soil = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'soil-moisturizer', fieldDetail.data?.aio_fieldname || '');
+  const irrigationData = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', fieldDetail.data?.aio_fieldname || '');
+  const [auto, setAuto] = useState(irrigation.controller.pump.auto);
+  const [manual, setManual] = useState(irrigation.controller.pump.manual);
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['100%'], []); 
-  //Hàm lấy API độ ẩm         //CODE THÊM NHA
+
   useEffect(() => {
-    setHumidity(parseInt(soil.data));
-  }, [humidity, soil])
+    unactivePumpAuto()
+  }, [soil])
+
   const toggleAuto = (value: string) => {
     setAuto(value !== "PUMP_OFF_0xCC");
-    useUpdateAllSchedulewithOnActive(value !== "PUMP_OFF_0xCC");
-    dispatch(setAutoIrrgation(value !== "PUMP_OFF_0xCC"))
+    useUpdateAllSchedulewithOnActive(value !== "AUTO_PUMP_OFF_0xCC");
+    dispatch(setAutoIrrgation(value !== "AUTO_PUMP_OFF_0xCC"))
     //Chưa giải quyết vấn đề khi bật tắt thì tắt cái onActive
   }
-
+  const activePumpAuto = () => {
+    useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'auto-irrigation-feed', "AUTO_PUMP_ON_0xCC", fieldDetail.data?.aio_fieldname || '')
+  }
+  const unactivePumpAuto = () => {
+    if(parseFloat(soil.data) > field.plantStage.maxSoil)
+      useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'auto-irrigation-feed', "AUTO_PUMP_OFF_0xCC", fieldDetail.data?.aio_fieldname || '')
+  }
   const toggleManual = (value: string) => {
     //Nếu active gửi data cho pump
       setManual(value !== "PUMP_OFF_0xCC")
-      useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', value)
+      useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', value, fieldDetail.data?.aio_fieldname || '')
       dispatch(setManualIrrgation(value !== "PUMP_OFF_0xCC"))
     }
 
@@ -67,7 +74,7 @@ export default function SettingScreen() {
           <View style={styles.wrapper}>
             <View style= {styles.mainContainer}>
               <View style={styles.chartContainer}>
-                <Gauge data={humidity || 0} />
+                <Gauge data={ parseFloat(soil.data) || 0}  title='Soil Moiturizer'/>
               </View>
               <View style={styles.imageContainer}>
               <Image 
@@ -97,7 +104,7 @@ export default function SettingScreen() {
                     value={auto} 
                     style = {styles.button}
                     onValueChange={(value) => {
-                      toggleAuto(value === true ? "PUMP_ON_0xCC": "PUMP_OFF_0xCC")
+                      toggleAuto(value === true ? "AUTO_PUMP_ON_0xCC": "AUTO_PUMP_OFF_0xCC")
                     }} 
                     trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                   />
@@ -137,7 +144,7 @@ export default function SettingScreen() {
             onDismiss={handleDismissModal} // Xử lý khi modal đóng
           >
             <BottomSheetView style={styles.contentContainer}>
-              <DatePickerModal />
+              <DatePickerModal activePumpAuto={activePumpAuto}/>
             </BottomSheetView>
           </BottomSheetModal>
         </View>

@@ -27,6 +27,7 @@ const useField = () => {
             aio_key: docData.aio_key,
             aio_username: docData.aio_username,
             image: docData.image === ""? require('@/assets/images/fields/field 1.png') : docData.image,
+            aio_fieldname: docData.aio_fieldname
           };
         });
         setData(data)
@@ -69,6 +70,7 @@ const useFieldDetail = (_id: string) => {
                       image: docData.image,
                       aio_key: docData.aio_key,
                       aio_username: docData.aio_username,
+                      aio_fieldname: docData.aio_fieldname
                   };
 
                   setData(fieldData); // Cập nhật dữ liệu

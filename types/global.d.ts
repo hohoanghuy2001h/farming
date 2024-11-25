@@ -26,6 +26,8 @@ type stagePlant = {
     maxHumidity: number,
     minLight: number,
     maxLight: number,
+    minSoil: number,
+    maxSoil: number
     days: number,
 }
 type listDataType = {
@@ -48,6 +50,7 @@ type fieldType = {
     isHarvest: boolean,
     aio_key: string,
     aio_username: string,
+    aio_fieldname: string
 
 };
 type dateScheduleType = {

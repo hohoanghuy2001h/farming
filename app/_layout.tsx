@@ -36,12 +36,12 @@ export default function RootLayout() {
             }}
           />
           <Stack.Screen
-            name="(routes)/irrigation"
+            name="(routes)/controller"
             options={{
               headerShown: true,
               // title: "My Farm",
               // headerBackTitle: "Back",
-              header: () => <Header title='Irrigation'/>
+              header: () => <Header title='Controller'/>
             }}
           />
           <Stack.Screen

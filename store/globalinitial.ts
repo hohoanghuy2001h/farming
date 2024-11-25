@@ -5,9 +5,15 @@ export interface stateType {
   health: string, 
   plantStage: stagePlant,
   feed: feedType[],
-  irrigation: {
-    auto: boolean,
-    manual: boolean,
+  controller: {
+    pump: {
+      auto: boolean,
+      manual: boolean,
+    },
+    fan: {
+      right: boolean,
+      left: boolean,
+    }
   },
 }
 
@@ -26,6 +32,8 @@ export const initialState: stateType = {
     minHumidity: -1,
     minLight: -1,
     minTemperature: -1,
+    minSoil: -1,
+    maxSoil: -1,
     stage: '',
   },
   feed: [
@@ -66,9 +74,15 @@ export const initialState: stateType = {
       key: '',
     },
   ],
-  irrigation: {
-    auto: true,
-    manual: false,
+  controller: {
+    pump: {
+      auto: true,
+      manual: false,
+    },
+    fan: {
+      right: false,
+      left: false,
+    }
   }
 }
 

@@ -1,20 +1,24 @@
+import { RootState } from '@/store/store';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, Text, StyleSheet } from 'react-native';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import { useSelector } from 'react-redux';
 interface GaugeChartProps {
   data: number,
   title?: string
 }
 
 const Gauge: React.FC<GaugeChartProps> = ({data, title = ''})  => {
+  const field = useSelector((state: RootState) => state.field);
+
  // Khởi tạo trạng thái warning với giá trị mặc định là 'normal'
   const [warning, setWarning] = useState('Good');
 
   // Hàm để thay đổi giá trị warning
   const compareNumber = (numberToCompare: number) => {
-    if (numberToCompare > 80) {
+    if (numberToCompare > field.plantStage.maxSoil) {
       setWarning('High');
-    } else if (numberToCompare < 60) {
+    } else if (numberToCompare < field.plantStage.minSoil) {
       setWarning('Low');
     } else {
       setWarning('Good');
@@ -48,7 +52,7 @@ const Gauge: React.FC<GaugeChartProps> = ({data, title = ''})  => {
         )}
         
       />
-      <Text style={styles.label}>SOIL MOISTURE</Text>
+      <Text style={styles.label}>{title}</Text>
     </SafeAreaView>
   );
 };

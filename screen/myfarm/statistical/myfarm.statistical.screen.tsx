@@ -4,62 +4,77 @@ import CardName from '@/components/shared/CardName/CardName';
 import { windowWidth } from '@/utils/Dimensions';
 import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
 import { useData, useNewestData } from '@/hooks/data';
-import Line from '@/components/shared/Chart/Line';
+// import Line from '@/components/shared/Chart/Line';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import LoadingScreen from '@/screen/loading/loading.screen';
 import { useFieldDetail } from '@/hooks/field';
 import configFeed from '@/utils/ConfigFeed';
+import Line from '@/components/shared/Chart/Line';
 
 const configDataChart = (rawData: any) => {
-  // console.log(rawData);
-  let data = {};
-  if(rawData != null){
-    data = {
-      labels: rawData.map((item: any)=> {
-        //const date = new Date(item.created_at).toLocaleString();
-        const date = new Date(item.created_at).toLocaleString();
-        // Tách phần thời gian từ chuỗi
-        const timePart = date.split(", ")[1];
-
-        // Tách giờ và phút
-        const [hour, minute] = timePart.split(":");   
-        // Định dạng giờ và phút
-        return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`
-      }),  
+  if (!rawData || rawData.length === 0) {
+    // Nếu không có dữ liệu, trả về đối tượng trống hoặc một giá trị mặc định
+    return {
+      labels: [],
       datasets: [
         {
-          data: rawData.map((item: any) => parseFloat(item.value)),  // Chuyển field thành số thực
-          color: () => '#37B84F', // Mã màu hex cho đường
+          data: [],
+          color: () => '#37B84F', // Màu mặc định cho đường
           strokeWidth: 3, // Độ dày của đường
         },
       ],
     };
   }
+    // Xử lý dữ liệu hợp lệ
+    const data = {
+      labels: rawData.map((item: any) => {
+        try {
+          const date = new Date(item.created_at);
+          // Kiểm tra xem có lỗi khi chuyển đổi ngày không
+          if (isNaN(date.getTime())) {
+            throw new Error('Invalid date');
+          }
+  
+          const timePart = date.toLocaleString().split(", ")[1];
+          const [hour, minute] = timePart.split(":");
+          return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`; // Định dạng giờ phút
+        } catch (error) {
+          console.error("Error processing date:", item.created_at, error);
+          return ''; // Trả về chuỗi trống nếu có lỗi
+        }      }),
+      datasets: [
+        {
+          data: rawData.map((item: any) => {
+            // Kiểm tra item.value có phải là số hợp lệ không, nếu không thì gán giá trị mặc định (ví dụ: 0)
+            return isNaN(parseInt(item.value)) ? 0 : parseInt(item.value);
+          }),
+          color: () => '#37B84F', // Mã màu hex cho đường
+          strokeWidth: 3, // Độ dày của đường
+        },
+      ],
+    };
   return data;
 }
 export default function StatisticalScreen() {
   const field = useSelector((state: RootState) => state.field);
   const feed = useSelector((state: RootState) => state.feed);
-  const [activeFeed, setActiveFeed] = useState('field-1.temp');
+  const [activeFeed, setActiveFeed] = useState('temp');
   const [activeItem, setActiveItem] = useState(0)
   const fieldDetail = useFieldDetail(field.fieldID);
   const {data, loading} = useData(
     fieldDetail.data?.aio_username||'',
     fieldDetail.data?.aio_key||'', 
-    activeFeed);
+    activeFeed, fieldDetail.data?.aio_fieldname || '');
   // useEffect(() => {
   //   console.log(feed.feed)
   // }, [])
   const [dataChart, setDataChart] = useState({})
   useEffect(() => {
-    if(fieldDetail.data?.aio_username != '') {
-    }
-      // setDataChart(configDataChart(data));
-  }, [])
-  useEffect(()=>{
-  },[data])  
+      setDataChart(configDataChart(data));
+  }, [data])
+
   const itemRender = (item: any, index: number) => {
     return (
       <TouchableOpacity 
@@ -83,9 +98,10 @@ export default function StatisticalScreen() {
       <View style={styles.wrapper}>
         <HeaderMyFarm />
         <View style={styles.graphContainer}>
-          {/* {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={feed.feed[activeItem].unit}/>} */}
-          {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Text>Loading</Text>} 
+          {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={feed.feed[activeItem].unit}/>}
+          {/* {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line/>} */}
 
+          {/* {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Text>Loading</Text>}  */}
         </View>
         <View style={styles.swipperContainer}>
             <FlatList 
