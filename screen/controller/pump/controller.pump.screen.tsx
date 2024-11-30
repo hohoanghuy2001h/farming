@@ -1,4 +1,4 @@
-import { Text, View, StyleSheet, Image ,Dimensions, Switch} from 'react-native';
+import { Text, View, StyleSheet, Image ,Dimensions, Switch, Button} from 'react-native';
 import React, { useState, useEffect } from 'react';
 // import Gauge from '@/components/shared/Chart/Gauge';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
@@ -15,6 +15,9 @@ import { useFieldDetail } from '@/hooks/field';
 import LoadingScreen from '@/screen/loading/loading.screen';
 import { setManualIrrgation, setAutoIrrgation } from '@/store/controllerReducer';
 import Gauge from '@/components/shared/Chart/Gauge';
+import Toast from 'react-native-toast-message';
+import notificationsTemplate from '@/constants/notifications.template';
+import ModalQuestion from '@/components/shared/Modal/ModalQuestion';
 export default function PumpScreen() {
   const field = useSelector((state: RootState) => state.field);
   const irrigation = useSelector((state: RootState) => state.controller);
@@ -24,9 +27,20 @@ export default function PumpScreen() {
   const irrigationData = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', fieldDetail.data?.aio_fieldname || '');
   const [auto, setAuto] = useState(irrigation.controller.pump.auto);
   const [manual, setManual] = useState(irrigation.controller.pump.manual);
+  const [visibleAcceptManual, setVisibleAcceptManual] = useState(false);
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['100%'], []); 
-
+  const soildData = 500;
+  const showToast = (type: string, text1: string, text2: string) => {
+    Toast.show({
+      type,
+      text1,
+      text2,
+      visibilityTime: 3000,
+      autoHide: true,
+      position:'top',
+    });
+  };
   useEffect(() => {
     unactivePumpAuto()
   }, [soil])
@@ -39,17 +53,46 @@ export default function PumpScreen() {
   }
   const activePumpAuto = () => {
     useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'auto-irrigation-feed', "AUTO_PUMP_ON_0xCC", fieldDetail.data?.aio_fieldname || '')
+    showToast('success', 'Turn ON PUMP', 'Hệ thông đang bật pump');
   }
   const unactivePumpAuto = () => {
-    if(parseFloat(soil.data) > field.plantStage.maxSoil)
+    if(parseFloat(soil.data) > field.plantStage.maxSoil) {
       useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'auto-irrigation-feed', "AUTO_PUMP_OFF_0xCC", fieldDetail.data?.aio_fieldname || '')
-  }
-  const toggleManual = (value: string) => {
-    //Nếu active gửi data cho pump
-      setManual(value !== "PUMP_OFF_0xCC")
-      useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', value, fieldDetail.data?.aio_fieldname || '')
-      dispatch(setManualIrrgation(value !== "PUMP_OFF_0xCC"))
+      showToast('error', 'Turn OFF PUMP', 'Hệ thông đã tắt pump');
     }
+  }
+  const activePumpManual = () => {
+      // useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', "PUMP_ON_0xCC", fieldDetail.data?.aio_fieldname || '')
+      showToast('success', 'Turn ON PUMP', 'Hệ thông đang bật pump');
+  }
+  const unactivePumpManual = () => {
+      // useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', "PUMP_OFF_0xCC", fieldDetail.data?.aio_fieldname || '')
+      showToast('error', 'Turn OFF PUMP', 'Hệ thông đã tắt pump');
+  }
+  const toggleManual = (value: boolean) => {
+    setManual(value)
+    if(value) activePumpManual();
+    else unactivePumpManual();
+    dispatch(setManualIrrgation(value))
+  }
+  const toggleManualLogic = (value: boolean) => {
+    if(value === true) {
+      if(soildData < field.plantStage.maxSoil ) {
+        toggleManual(value)
+      }
+      else {
+        setVisibleAcceptManual(true)
+      }
+    } 
+    else {
+      if(soildData > field.plantStage.minSoil) {
+        toggleManual(value)
+      }
+      else {
+        setVisibleAcceptManual(true)
+      }
+    }
+  }
 
   //Đây là hàm mở màn hình schedule - irrigation
   const openPresentBottomSheetModal = useCallback(() => {
@@ -67,7 +110,7 @@ export default function PumpScreen() {
   //Đây là hàm mở tắt chế độ schedule irrigation
 
   return (
-    soil.loading && irrigationData.loading ? <LoadingScreen /> :
+    // soil.loading && irrigationData.loading ? <LoadingScreen /> :
     <GestureHandlerRootView>
       <BottomSheetModalProvider>
         <View style={styles.container}>
@@ -125,7 +168,7 @@ export default function PumpScreen() {
                     value={manual} 
                     style = {styles.button}
                     onValueChange={(value) => {
-                      toggleManual(value === true? "PUMP_ON_0xCC": "PUMP_OFF_0xCC")
+                      toggleManualLogic(value)
                     }} 
                     trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                   />
@@ -147,6 +190,32 @@ export default function PumpScreen() {
               <DatePickerModal activePumpAuto={activePumpAuto}/>
             </BottomSheetView>
           </BottomSheetModal>
+          <ModalQuestion isOpen = {visibleAcceptManual} setIsOpen={setVisibleAcceptManual} 
+                submit={() => {
+                  //Turn on when
+                  if(soildData > field.plantStage.maxSoil) {
+                    toggleManual(true)
+                  }
+                  //Turn off when
+                  else if (soildData < field.plantStage.minSoil) {
+                    toggleManual(false)
+                  }
+                  setVisibleAcceptManual(false);
+                }}
+          >
+            <View>
+              <Text style={styles.modalTitle}>
+                  { soildData > field.plantStage.maxSoil ? 'Vượt quá độ ẩm' : soildData < field.plantStage.minSoil ? 'Chưa đủ ẩm' : ''}
+              </Text>
+              <View style={styles.datePickerWrapper}>
+                  <Text>                  
+                    { soildData > field.plantStage.maxSoil ? `Độ ẩm đang vượt quá cho phép \nbạn vẫn muốn bật máy bơm?` : 
+                      soildData < field.plantStage.minSoil ? `Độ ẩm đang chưa đủ \nbạn vẫn muốn tắt máy bơm?` : ''
+                    }
+                  </Text>
+              </View>
+            </View>
+          </ModalQuestion>
         </View>
       </BottomSheetModalProvider>
     </GestureHandlerRootView>
@@ -221,5 +290,16 @@ const styles = StyleSheet.create({
 
     // Shadow cho Android
     elevation: 5, 
-  }
+  }, 
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: 'red'
+  },
+  datePickerWrapper: {
+    marginBottom: 20,
+    gap: 20,
+    justifyContent: 'center',
+  },
 });

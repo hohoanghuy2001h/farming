@@ -16,6 +16,7 @@ configureReanimatedLogger({
 });
 import { store } from '@/store/store';
 import { Provider } from 'react-redux';
+import Toast from 'react-native-toast-message';
 export default function RootLayout() {
   return (
     <GestureHandlerRootView>
@@ -92,6 +93,7 @@ export default function RootLayout() {
           />
         </Stack>
       </ToastProvider>
+      <Toast />
     </Provider>
     </GestureHandlerRootView>
   );

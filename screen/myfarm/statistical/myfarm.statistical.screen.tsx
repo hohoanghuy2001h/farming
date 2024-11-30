@@ -10,7 +10,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import LoadingScreen from '@/screen/loading/loading.screen';
 import { useFieldDetail } from '@/hooks/field';
-import configFeed from '@/utils/ConfigFeed';
 import Line from '@/components/shared/Chart/Line';
 
 const configDataChart = (rawData: any) => {
@@ -36,8 +35,7 @@ const configDataChart = (rawData: any) => {
           if (isNaN(date.getTime())) {
             throw new Error('Invalid date');
           }
-  
-          const timePart = date.toLocaleString().split(", ")[1];
+          const timePart = date.toLocaleString().split(", ")[0];
           const [hour, minute] = timePart.split(":");
           return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`; // Định dạng giờ phút
         } catch (error) {
@@ -67,13 +65,10 @@ export default function StatisticalScreen() {
     fieldDetail.data?.aio_username||'',
     fieldDetail.data?.aio_key||'', 
     activeFeed, fieldDetail.data?.aio_fieldname || '');
-  // useEffect(() => {
-  //   console.log(feed.feed)
-  // }, [])
   const [dataChart, setDataChart] = useState({})
   useEffect(() => {
-      setDataChart(configDataChart(data));
-  }, [data])
+      if(data.length !== 0)setDataChart(configDataChart(data));
+  }, [fieldDetail])
 
   const itemRender = (item: any, index: number) => {
     return (
@@ -98,11 +93,7 @@ export default function StatisticalScreen() {
       <View style={styles.wrapper}>
         <HeaderMyFarm />
         <View style={styles.graphContainer}>
-          {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={feed.feed[activeItem].unit}/>}
-          {/* {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line/>} */}
-
-          {/* {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Text>Loading</Text>}  */}
-        </View>
+          {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={feed.feed[activeItem].unit}/>}</View>
         <View style={styles.swipperContainer}>
             <FlatList 
               data={feed.feed}

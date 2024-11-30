@@ -21,6 +21,9 @@ export const fieldSlice = createSlice({
         state.plantDate = action.payload.day;
         state.plantStage = action.payload.stagePlant;
     },
+    getCurrentHealth: (state, action) => {
+      state.health = action.payload;
+  },
     // incrementByAmount: (state, action: PayloadAction<fieldType>) => {
 
     // },
@@ -32,6 +35,6 @@ export const fieldSlice = createSlice({
   },
 });
 // Action creators are generated for each case reducer function
-export const { getCurrentField, getCurrentStage } = fieldSlice.actions
+export const { getCurrentField, getCurrentStage, getCurrentHealth } = fieldSlice.actions
 
 export default fieldSlice.reducer

@@ -45,7 +45,7 @@ type fieldType = {
     device: Array<string>, // Mảng chuỗi (Array of strings)
     latitude: number, // Location của thiết bị
     longitude: number,
-    timePlant: any, 
+    timePlant: Date, 
     isPlanted: boolean,
     isHarvest: boolean,
     aio_key: string,
@@ -76,4 +76,13 @@ type feedType =  {
     timeUpdate: string,
     icon: string,
     key: string
+}
+type notificationType = {
+    _id: string,
+    date: Date,
+    label: string,
+    content: string,
+    image: string,
+    isRead: boolean,
+    navigateLink: string,
 }

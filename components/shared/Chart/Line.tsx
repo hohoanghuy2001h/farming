@@ -14,7 +14,6 @@ interface ChartProps {
 const Line: React.FC<ChartProps> = ({data, title = '', unit = ''})  => {
   return (
     <SafeAreaView style={styles.container}>
-      {title === '' ? '' : <Text style={styles.title}>{title}</Text>}
       <LineChart
         data={data}
         width={screenWidth-40} // from react-native

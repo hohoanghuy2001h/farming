@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { db } from "@/firebaseConfig";
 import { collection, getDocs, addDoc, getDoc, doc, updateDoc } from "firebase/firestore";
+import { convertFromTimestamp, convertToTimestamp } from "@/utils/Timestamp";
 
 const useField = () => {
     const [loading, setLoading] = useState(true);
@@ -21,7 +22,7 @@ const useField = () => {
             device: docData.device,
             latitude: docData.latitude,
             longitude: docData.longitude,
-            timePlant: docData.timePlant?.toDate(),
+            timePlant: convertFromTimestamp(docData.timePlant),
             isPlanted: docData.isPlanted,
             isHarvest: docData.isHarvest,
             aio_key: docData.aio_key,
@@ -48,41 +49,43 @@ const useFieldDetail = (_id: string) => {
           setLoading(true); // Bắt đầu tải dữ liệu
           setError(""); // Đặt lại lỗi
 
+         if(_id.trim() !== '') {
           try {
-              const docId = _id.trim() === '' ? 'field_1' : _id; // Kiểm tra `_id`
-              const docRef = doc(db, 'field', docId);
-              const querySnapshot = await getDoc(docRef);
+            const docId = _id; // Kiểm tra `_id`
+            const docRef = doc(db, 'field', docId);
+            const querySnapshot = await getDoc(docRef);
 
-              if (querySnapshot.exists()) {
-                  const docData = querySnapshot.data();
+            if (querySnapshot.exists()) {
+                const docData = querySnapshot.data();
 
-                  // Tạo đối tượng `fieldType`
-                  const fieldData: fieldType = {
-                      _id: querySnapshot.id,
-                      name: docData.name,
-                      size: docData.size,
-                      device: docData.device,
-                      latitude: docData.latitude,
-                      longitude: docData.longitude,
-                      timePlant: docData.timePlant?.toDate(),
-                      isPlanted: docData.isPlanted,
-                      isHarvest: docData.isHarvest,
-                      image: docData.image,
-                      aio_key: docData.aio_key,
-                      aio_username: docData.aio_username,
-                      aio_fieldname: docData.aio_fieldname
-                  };
+                // Tạo đối tượng `fieldType`
+                const fieldData: fieldType = {
+                    _id: querySnapshot.id,
+                    name: docData.name,
+                    size: docData.size,
+                    device: docData.device,
+                    latitude: docData.latitude,
+                    longitude: docData.longitude,
+                    timePlant: convertFromTimestamp(docData.timePlant),
+                    isPlanted: docData.isPlanted,
+                    isHarvest: docData.isHarvest,
+                    image: docData.image,
+                    aio_key: docData.aio_key,
+                    aio_username: docData.aio_username,
+                    aio_fieldname: docData.aio_fieldname
+                };
 
-                  setData(fieldData); // Cập nhật dữ liệu
-              } else {
-                  setError('Document does not exist');
-              }
-          } catch (err) {
-              setError('Failed to fetch data'); // Xử lý lỗi
-              console.error(err);
-          } finally {
-              setLoading(false); // Kết thúc tải dữ liệu
-          }
+                setData(fieldData); // Cập nhật dữ liệu
+            } else {
+                setError('Document does not exist');
+            }
+        } catch (err) {
+            setError('Failed to fetch data'); // Xử lý lỗi
+            console.error(err);
+        } finally {
+            setLoading(false); // Kết thúc tải dữ liệu
+        }
+        }
       };
 
       fetchData(); // Gọi hàm tải dữ liệu
@@ -98,7 +101,8 @@ const useFieldDetail = (_id: string) => {
 const updateField = async (_id: string, updatedData: fieldType) => {
   const fieldRef = doc(db, "field", _id); // Tạo tham chiếu đến tài liệu
   try {
-    await updateDoc(fieldRef, updatedData); // Cập nhật dữ liệu
+    await updateDoc(fieldRef, {...updatedData, timePlant: convertToTimestamp(updatedData.timePlant)});
+    // await updateDoc(fieldRef, updatedData); // Cập nhật dữ liệu
     console.log("Document updated successfully!");
   } catch (error) {
     console.error("Error updating document: ", error);

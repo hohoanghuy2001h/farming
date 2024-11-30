@@ -12,6 +12,7 @@ import { useFieldDetail } from '@/hooks/field';
 import LoadingScreen from '@/screen/loading/loading.screen';
 import { setRightFan, setLeftFan} from '@/store/controllerReducer';
 import Gauge from '@/components/shared/Chart/Gauge';
+import Toast from 'react-native-toast-message';
 export default function FanScreen() {
   const field = useSelector((state: RootState) => state.field);
   const irrigation = useSelector((state: RootState) => state.controller);
@@ -23,11 +24,27 @@ export default function FanScreen() {
   const [left, setLeft] = useState(irrigation.controller.fan.left);
   const [right, setRight] = useState(irrigation.controller.fan.right);
 
-
+  const showToast = (type: string, text1: string, text2: string) => {
+    Toast.show({
+      type,
+      text1,
+      text2,
+      visibilityTime: 3000,
+      autoHide: true,
+      position:'top',
+    });
+  };
   const toggleLeft = (value: string) => {
     setLeft(value !== "FAN_OFF_0xCC");
     useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'fan', value,fieldDetail.data?.aio_fieldname || '')
     dispatch(setLeftFan(value !== "FAN_OFF_0xCC"))
+    if(value !== "FAN_OFF_0xCC") {
+      showToast('success', 'Turn ON FAN', 'Hệ thông đang bật Fan.')
+    }
+    else {
+      showToast('success', 'Turn OFF FAN', 'Hệ thông đã tắt Fan.')
+    }
+
     //Chưa giải quyết vấn đề khi bật tắt thì tắt cái onActive
   }
 
@@ -36,6 +53,12 @@ export default function FanScreen() {
     setRight(value !== "FAN_OFF_0xCC")
     useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'fan', value,fieldDetail.data?.aio_fieldname || '')
     dispatch(setRightFan(value !== "FAN_OFF_0xCC"))
+    if(value !== "FAN_OFF_0xCC") {
+      showToast('success', 'Turn ON FAN', 'Hệ thông đang bật Fan.')
+    }
+    else {
+      showToast('success', 'Turn OFF FAN', 'Hệ thông đã tắt Fan.')
+    }
   }
 
   return (

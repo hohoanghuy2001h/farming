@@ -6,8 +6,9 @@ import ModalQuestion from '../Modal/ModalQuestion';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { updateField, useFieldDetail } from '@/hooks/field';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
 import {convertToTimestamp} from '@/utils/Timestamp'
+import { Button } from 'react-native';
 const getStageDay = (date: Date) => {
   const day = new Date(date); // Tạo bản sao để không thay đổi inputDate
   // Bước 2: Lấy thời gian hiện tại
@@ -22,21 +23,31 @@ const getStageDay = (date: Date) => {
 const HeaderMyFarm = () => {
   const [visible, setVisible] = useState(false);
   const item = useSelector((state: RootState) => state.field);
-  const {data}= useFieldDetail(item.fieldID); //Tìm kiếm thông tin của field dựa trên fieldID
-  const [date, setDate] = useState(new Date(data?.timePlant));
+  const {data, loading}= useFieldDetail(item.fieldID); //Tìm kiếm thông tin của field dựa trên fieldID
+  const [date, setDate] = useState(new Date());
   const [day, setDay] = useState(0)
   const [show, setShow] = useState(false);
   useEffect(() => {
-    setDay(getStageDay(data?.timePlant));
+    setDay(getStageDay(data?.timePlant || new Date()));
+    setDate(data?.timePlant || new Date());
   }, [data])
     //Hàm này để lưu ngày của schedule
-  const onChange = (event: any, selectedDate: any) => {
+    const onChangeDay = (event: any, selectedDate: any) => {
       const currentDate = selectedDate || date;
-      setShow(Platform.OS === 'ios');
       setDate(currentDate);
+    };
+  const showDatePicker = () => {
+    DateTimePickerAndroid.open({
+      value: data?.timePlant || new Date(),
+      onChange: onChangeDay,
+      mode: 'date',
+    });
   };
   //Change Planting date of field
   const changeDateField = () =>  {
+    if(data) updateField(data._id, {
+      ...data, timePlant: date
+    });
     setVisible(false);
   }
   return (
@@ -55,20 +66,14 @@ const HeaderMyFarm = () => {
         </View>
         </View>
         <View style={styles.statusPlant}>
-          <Text style={styles.statusText}>Good Health</Text>
+          <Text style={styles.statusText}>{item.health}</Text>
         </View>
         <ModalQuestion isOpen = {visible} setIsOpen={setVisible} submit={changeDateField}>
         <View>
           <Text style={styles.modalTitle}>
               Edit Planting Time
           </Text>
-          {/* <DateTimePicker
-            value={date}
-            mode="date"
-            display={Platform.OS === 'ios' ? 'inline' : 'default'} // 'inline' cho iOS, 'default' cho Android
-            onChange={onChange}
-            maximumDate={new Date()}  // Không cho chọn ngày sau ngày hiện tại
-          /> */}
+          <Button title={`${date.toLocaleDateString()}`} onPress={showDatePicker} />
         </View>
       </ModalQuestion>
     </View>

@@ -5,14 +5,12 @@ import { getFirestore } from "firebase/firestore";
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCtu5B8wn9cejDd26R2xy6RkWSsqOyfnWI",
-  authDomain: "myfarming-65306.firebaseapp.com",
-  databaseURL: "https://myfarming-65306-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "myfarming-65306",
-  storageBucket: "myfarming-65306.firebasestorage.app",
-  messagingSenderId: "458723023861",
-  appId: "1:458723023861:web:43d1498d72b2f2ddca5ebc",
-  measurementId: "G-ML1314NEG1"
+  apiKey: "AIzaSyBaZgVDNG2DPbOQw2pXmpMAMVCtLj9Vhh0",
+  authDomain: "farmingapp-d1407.firebaseapp.com",
+  projectId: "farmingapp-d1407",
+  storageBucket: "farmingapp-d1407.firebasestorage.app",
+  messagingSenderId: "133154069330",
+  appId: "1:133154069330:web:d568893dfd59176be7f88b"
 };
 
 // Initialize Firebase

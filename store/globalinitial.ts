@@ -21,7 +21,7 @@ export const initialState: stateType = {
   fieldID: '',
   userID: '',
   plantDate: 0,
-  health: '',
+  health: 'Good Health',
   plantStage: {
     id: -1,
     maxHumidity:-1,

@@ -1,22 +1,30 @@
 import { StyleSheet, Text, SafeAreaView, FlatList } from 'react-native';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNew } from '@/hooks/new';
-import ListItem from '@/components/shared/ListItem';
+import ListItem from './notices.item';
 import { windowWidth } from '@/utils/Dimensions';
-
+import { useNotification } from '@/hooks/notification';
+import LoadingScreen from '../loading/loading.screen';
+import configNotification from '@/utils/ConfigNotification';
 const NoticesScreen = () => {
-  const {data, loading} = useNew();
-  const renderItem = ({ item }: { item: listDataType }) => {
+  const {data, loading} = useNotification();
+  const [arrayConfig, setArrayConfig] = useState<notificationType[]>([])
+  useEffect(() => {
+    setArrayConfig(configNotification(data));
+  }, [data])
+  const renderItem = ({item}: any) => {
+    // console.log(item);
     return (
       <SafeAreaView style = {{marginBottom: 20}}>
-        <ListItem _id={item._id} detail={item.detail} image={item.image} title={item.title} summary={item.summary} route='cultivation'/>
+        <ListItem _id={item._id} date={item.date} key={item._id} image={item.image} title={item.label} summary={item.content} route='cultivation'/>
       </SafeAreaView>
     )
   }
   return (
+    loading? <LoadingScreen />: 
     <SafeAreaView style={styles.container}>
       <FlatList 
-        data={data}
+        data={arrayConfig}
         renderItem={renderItem}
         style={styles.itemContainer}
       />

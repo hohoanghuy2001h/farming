@@ -10,12 +10,6 @@ export default function RootLayout() {
               headerShown: false,
             }}
           />
-          <Stack.Screen
-            name="[id]"
-            options={{
-              headerShown: false,
-            }}
-          />
         </Stack>
     </ToastProvider>
   );
