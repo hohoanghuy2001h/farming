@@ -1,4 +1,4 @@
-import { StyleSheet, Text, SafeAreaView, Image } from 'react-native'
+import { StyleSheet, Text, SafeAreaView, Image, View } from 'react-native'
 import React from 'react'
 interface FieldItemProps {
   item: fieldType,
@@ -36,8 +36,19 @@ const FieldItem: React.FC<FieldItemProps> = ({item, active=false}) =>  {
           style={styles.image}
         />
       <SafeAreaView style={styles.titleContainer}>
-        <Text style={styles.title}>{item.name}</Text>
-        <Text style={styles.size}>{item.size} ha</Text>
+        <View style={styles.titleWrapper}>
+          <Text style={styles.title}>{item.name}</Text>
+          <Text style={styles.size}>{item.size} ha</Text>
+        </View>
+        {
+          !item.isPlanted && item.isHarvest ? 
+          <View style={styles.stateWrapper}>
+            <View style={styles.statusPlant}>
+              <Text style={styles.statusText}>{!item.isPlanted ? 'Not Planted': item.isHarvest ? 'Harvest' : ''}</Text>
+            </View>
+          </View> 
+          :  ''
+        }
       </SafeAreaView>
       </SafeAreaView>
       <SafeAreaView style={styles.contentContainer}>
@@ -82,6 +93,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 20,
     left: 15,
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+  },
+  titleWrapper: {
+
+  },
+  stateWrapper: {
+
   },
   title: {
     fontWeight: 'bold',
@@ -108,5 +127,18 @@ const styles = StyleSheet.create({
   },
   smallText: {
     fontSize: 13,
+  },
+  statusPlant: {
+    backgroundColor: '#59C36A',
+    borderRadius: 20,
+    paddingHorizontal: 5,
+    height: 25,
+    justifyContent: 'center',
+    marginLeft: 10,
+  },
+  statusText: {
+    textAlign: 'center',
+    color: 'white',
+    fontSize: 12,
   },
 })

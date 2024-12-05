@@ -2,6 +2,7 @@ const diseaseAPI = [
     {
         _id: '1',
         image: require('@/assets/images/disease/domla.png'),
+        label: 'bercak_daun',
         title: 'Bệnh đóm lá vi khuẩn',
         summary: 'Các dấu hiệu đầu tiên của bệnh thường là những chấm nhỏ màu vàng xanh trên lá non, có thể thấy lá bị méo và co rúm. ',
         detail: `Ớt có khả năng được trồng xuyên suốt năm tại các khu vực có điều kiện khí hậu ổn định, đặc biệt là ở những nơi có nhiệt độ dao động từ 25 đến 30 độ C.
@@ -15,6 +16,7 @@ Vụ Hè Thu: Gieo hạt vào tháng 4 và 5, tiếp tục trồng vào tháng 5
     {
         _id: '2',
         image: require('@/assets/images/disease/domla.png'),
+        label: 'thrips',
         title: 'Bệnh bọ trĩ',
         summary: 'Bọ trĩ gây ra hậu quả nghiêm trọng đối với cây trồng do chúng lây lan và tăng mật số nhanh chóng. Bọ trĩ không ...',
         detail: `1. Yêu cầu đất:
@@ -32,6 +34,7 @@ Sử dụng màng phủ nông nghiệp (Plastic) là phương pháp hiệu quả
     {
         _id: '3',
         image: require('@/assets/images/disease/domla.png'),
+        label: 'virus_kuning',
         title: 'Bệnh héo vàng',
         summary: 'Bệnh thường xuất hiện ở giai đoạn từ cây con đến khi ra hoa. Triệu chứng điển hình thường thấy là ...',
         detail: `1. Yêu cầu đất:

@@ -13,20 +13,23 @@ interface HeaderProps {
   title: string,
   right?: boolean
   backgroundColor?: string,
+  position?: "static" | "relative" | "absolute" | "fixed" | "sticky";
 }
 
-const Header: React.FC<HeaderProps> = ({title = 'Default', right = false, backgroundColor = 'white'}) => {
+const Header: React.FC<HeaderProps> = ({title = 'Default', right = false, backgroundColor = 'white', position = 'static'}) => {
   const item = useSelector((state: RootState) => state.field);
   const {data}= useFieldDetail(item.fieldID); //Tìm kiếm thông tin của field dựa trên fieldID
   const [visible, setVisible] = useState(false);
   const router = useRouter();
   return (
-      <SafeAreaView style={[styles.container, {backgroundColor: backgroundColor}]}>
+      <SafeAreaView style={[styles.container, {backgroundColor: backgroundColor}, {position: position}]}>
           <TouchableOpacity style={styles.left} onPress={() => router.back()}>
             <Icon name="arrow-left" style={styles.icon} size={20} /> 
           </TouchableOpacity>
           <SafeAreaView style={styles.center}>
-            <Text style={styles.title}>{title}</Text>
+            <Text style={[styles.title, 
+              position === 'absolute' ? { color: 'white' } : null 
+            ]}>{title}</Text>
           </SafeAreaView>
           <SafeAreaView style={styles.right}>
             { right? 
@@ -82,6 +85,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     marginLeft: 20,
+    position: 'relative'
   },
   right: {
     width: 40,

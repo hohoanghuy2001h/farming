@@ -69,13 +69,13 @@ const HeaderMyFarm = () => {
           <Text style={styles.statusText}>{item.health}</Text>
         </View>
         <ModalQuestion isOpen = {visible} setIsOpen={setVisible} submit={changeDateField}>
-        <View>
-          <Text style={styles.modalTitle}>
-              Edit Planting Time
-          </Text>
-          <Button title={`${date.toLocaleDateString()}`} onPress={showDatePicker} />
-        </View>
-      </ModalQuestion>
+          <View>
+            <Text style={styles.modalTitle}>
+                Edit Planting Time
+            </Text>
+            <Button title={`${date.toLocaleDateString()}`} onPress={showDatePicker} />
+          </View>
+        </ModalQuestion>
     </View>
   )
 }

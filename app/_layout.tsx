@@ -51,7 +51,7 @@ export default function RootLayout() {
               headerShown: true,
               // title: "My Farm",
               // headerBackTitle: "Back",
-              header: () => <Header title='Diagnostic'/>
+              header: () => <Header title='Diagnostic'backgroundColor='none' position='absolute'/>
             }}
           />
           <Stack.Screen
