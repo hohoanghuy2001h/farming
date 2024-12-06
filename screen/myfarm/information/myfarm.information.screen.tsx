@@ -12,6 +12,7 @@ import LoadingScreen from '@/screen/loading/loading.screen';
 import { useFieldDetail } from '@/hooks/field';
 import configFeed from '@/utils/ConfigFeed';
 import { setFeed } from '@/store/feedReducer';
+import { router } from 'expo-router';
 export default function InformationScreen() {
   const field = useSelector((state: RootState) => state.field);
   const fieldDetail = useFieldDetail(field.fieldID);

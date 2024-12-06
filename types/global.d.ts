@@ -86,3 +86,11 @@ type notificationType = {
     isRead: boolean,
     navigateLink: string,
 }
+type diseaseItem = {
+    _id: string;
+    image: any;
+    label: string;
+    title: string;
+    summary: string;
+    detail: string;
+}

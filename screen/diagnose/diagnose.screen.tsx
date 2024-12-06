@@ -1,16 +1,20 @@
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
 import { CameraView, CameraType, useCameraPermissions, CameraCapturedPicture} from 'expo-camera';
 import { useEffect, useRef, useState  } from 'react';
-import { Button, StyleSheet, Text, TouchableOpacity, View, Alert, Image  } from 'react-native';
-import diseaseAPI from '@/constants/disease.api';
+import { Button, StyleSheet, Text, TouchableOpacity, View, Alert, Image, ImageBackground  } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import uploadImage from '@/hooks/diagnose';
 import ModalNotice from '@/components/shared/Modal/ModalNotice';
-import { ImageBackground } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
+import { findDisease } from '@/utils/findDisease';
 
 import { router } from 'expo-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
+import { getCurrentHealth } from '@/store/fieldReducer';
 const DiagnoseScreen = () => {
+  const field = useSelector((state: RootState) => state.field);
+  const dispatch = useDispatch();
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
   const [visibleModal, setVisibleModal] = useState(false);
@@ -19,7 +23,7 @@ const DiagnoseScreen = () => {
   const [visibleText, setVisibleText] = useState(true);
   const [disease, setDisease] = useState([]);
   const [imagePicker, setImagePicker] = useState<string | null>(null);
-
+  const [diseaseDetail, setDiseaseDetail] = useState<diseaseItem | null>(null);
   useEffect(() => {
     // Dùng setTimeout để thay đổi trạng thái sau 5 giây
     const timer = setTimeout(() => {
@@ -32,6 +36,14 @@ const DiagnoseScreen = () => {
   useEffect(() => {
     requestPermission();
   },[]);
+  useEffect(() =>{
+    if(disease.length !== 0 )  {
+      setDiseaseDetail(findDisease(disease[0]["class"]))
+    }
+  }, [disease])
+  useEffect(() => {
+    if(diseaseDetail)dispatch(getCurrentHealth(diseaseDetail.title));
+  }, [diseaseDetail])
   const takePicture = async () => {
     if (cameraRef.current) {
       try {
@@ -73,13 +85,9 @@ const DiagnoseScreen = () => {
       allowsEditing: true,
       quality: 1,
     });
-
-    console.log(result);
-
     if (!result.canceled) {
       setImagePicker(result.assets[0].uri);
     }
-    console.log(imagePicker)
   };
   return (
     <View style={styles.container}>
@@ -124,7 +132,7 @@ const DiagnoseScreen = () => {
         <ModalNotice isOpen = {visibleModal} setIsOpen={setVisibleModal}>
           <View style={styles.modalTitleWrapper}>
             {
-              disease.length === 0? 
+              diseaseDetail === null ? 
               <View style={styles.modalTitleTextWrapper}>       
                 <Icon name="check-circle" size={30} color="#4CAF50" />       
                 <Text style={[styles.modalTitleText, {color: "#4CAF50"}]}>SỨC KHỎE TỐT</Text>
@@ -143,18 +151,20 @@ const DiagnoseScreen = () => {
           </View>
           <View style={styles.modalTextWrapper}>
             {
-              disease.length === 0 ? 
+              diseaseDetail === null ? 
               <View style={styles.textWrapper}>            
                 <Text style={styles.textModal}>Không có phát hiện được bệnh ở cây.</Text>
                 <Image source={require('@/assets/images/strong.png')} style={{margin: 'auto'}}/>
               </View> :
               <View style={styles.textWrapper}>  
-                <Image />
-                <View style ={styles.contentModalText}>
-                  <Text style={{fontWeight: 'bold'}}>BỆNH MẮC PHẢI: </Text>
-                  <Text>{disease[0]["class"]}</Text>
+                <View style={styles.imageDiseaseWrapper}>
+                  <Image source={diseaseDetail.image} resizeMode='contain'/>
                 </View>
-                <TouchableOpacity onPress={() => redictNewPage('1')}><Text style={styles.textLink}>Xem thông tin chi tiết tại đây</Text></TouchableOpacity>
+                <View style ={styles.contentModalText}>
+                  <Text style={{fontWeight: 'bold', color: '#4CAF50'}}>BỆNH MẮC PHẢI: </Text>
+                  <Text>{diseaseDetail.title}</Text>
+                </View>
+                <TouchableOpacity onPress={() => redictNewPage(diseaseDetail._id)}><Text style={styles.textLink}>Xem thông tin chi tiết tại đây</Text></TouchableOpacity>
               </View>
             }
           </View>
@@ -294,6 +304,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontStyle: 'italic',
     color: '#90CAF9',
+  }, 
+  imageDiseaseWrapper: {
+    width: '100%',
+    overflow:'hidden',
+    height: 150,
+    borderRadius: 20,
   }
 });
 export default DiagnoseScreen

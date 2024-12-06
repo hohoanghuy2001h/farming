@@ -1,4 +1,4 @@
-const diseaseAPI = [
+const diseaseAPI: diseaseItem[] = [
     {
         _id: '1',
         image: require('@/assets/images/disease/domla.png'),

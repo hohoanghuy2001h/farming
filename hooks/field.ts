@@ -101,7 +101,7 @@ const useFieldDetail = (_id: string) => {
 const updateField = async (_id: string, updatedData: fieldType) => {
   const fieldRef = doc(db, "field", _id); // Tạo tham chiếu đến tài liệu
   try {
-    await updateDoc(fieldRef, {...updatedData, timePlant: convertToTimestamp(updatedData.timePlant)});
+    await updateDoc(fieldRef, {...updatedData, timePlant: convertToTimestamp(updatedData.timePlant), isPlanted: updatedData.isPlanted, isHarvest: updatedData.isHarvest });
     // await updateDoc(fieldRef, updatedData); // Cập nhật dữ liệu
     console.log("Document updated successfully!");
   } catch (error) {

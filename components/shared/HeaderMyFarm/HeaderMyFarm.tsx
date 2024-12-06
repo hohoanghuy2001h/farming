@@ -65,7 +65,7 @@ const HeaderMyFarm = () => {
             </TouchableOpacity>
         </View>
         </View>
-        <View style={styles.statusPlant}>
+        <View style={[styles.statusPlant, {backgroundColor: item.health === 'Good Health'? '#59C36A' : '#E13832'}]}>
           <Text style={styles.statusText}>{item.health}</Text>
         </View>
         <ModalQuestion isOpen = {visible} setIsOpen={setVisible} submit={changeDateField}>
@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
       },
       weeks: {},
       statusPlant: {
-        backgroundColor: '#59C36A',
         borderRadius: 20,
         paddingHorizontal: 10,
         height: 25,
