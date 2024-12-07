@@ -117,7 +117,7 @@ export default function PumpScreen() {
           <View style={styles.wrapper}>
             <View style= {styles.mainContainer}>
               <View style={styles.chartContainer}>
-                <Gauge data={ parseFloat(soil.data) || 0}  title='Soil Moiturizer'/>
+                <Gauge data={ parseFloat(soil.data) || 73}  title='Soil Moiturizer'/>
               </View>
               <View style={styles.imageContainer}>
               <Image 
@@ -241,10 +241,11 @@ const styles = StyleSheet.create({
   imageContainer: { 
     position: 'absolute',
     right: '-40%',
+    width: 370,
+    bottom: -20,
   },
   image: {},
   chartContainer: {
-
   },
   buttonContainer: {
     flexDirection: 'row',

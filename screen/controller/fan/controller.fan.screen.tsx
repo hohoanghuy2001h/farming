@@ -62,13 +62,13 @@ export default function FanScreen() {
   }
 
   return (
-    temp.loading && humidity.loading ? <LoadingScreen /> :
+    // temp.loading && humidity.loading ? <LoadingScreen /> :
         <View style={styles.container}>
           <View style={styles.wrapper}>
             <View style= {styles.mainContainer}>
               <View style={styles.chartContainer}>
-                <Gauge data={parseFloat(temp.data) || 0} title='Temperature'/>
-                <Gauge data={parseFloat(humidity.data) || 0} title='Humidity'/>
+                <Gauge data={parseFloat(temp.data) || 27.1} title='Temperature' unit="°C" label='temperature'/>
+                <Gauge data={parseFloat(humidity.data) || 73} title='Humidity' label='humidity'/>
               </View>
               <View style={styles.imageContainer}>
                 {
@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   imageContainer: { 
     position: 'absolute',
-    right: '-20%',
+    right: '-35%',
     top: 40,
   },
   image: {},

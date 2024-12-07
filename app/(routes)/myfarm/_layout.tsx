@@ -12,7 +12,6 @@ export default function MyfarmLayout() {
       <Tabs.Screen name="info/index" options={{title: 'Information'}}/>
       <Tabs.Screen name="statis/index" options={{title: 'Statistical'}}/>
       <Tabs.Screen name='stages/index' options={{title: 'Stages'}} />
-      <Tabs.Screen name='notplanted/index' options={{title: 'Stages'}} />
     </Tabs> 
     : <NofieldScreen />
   );

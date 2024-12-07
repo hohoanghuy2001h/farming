@@ -14,30 +14,30 @@ const CardWeather = () => {
         style={styles.content}
         source={require('@/assets/images/weather/bg-Cloudy.png')}
       >
-        <View style={styles.title}>
-          <Text style={styles.bigText}>{Math.round(forecast?.temperature? forecast?.temperature : 0)}°C</Text>
-          <Text style={styles.smallText}>{forecast?.type}</Text>
-        </View>
-        <View style={styles.subtitle}>
-          <View style={styles.subtitleItem}>
-            <Text style={styles.titleData}>Humidity</Text>
-            <View style={styles.dataWrapper}>
-              <Text style={styles.data}>{Math.round(forecast?.humidity? forecast?.humidity : 0)}%</Text>
-            </View>
-          </View>
-          <View style={styles.subtitleItem}>
-            <Text style={styles.titleData}>Wind Speed</Text>
-            <View style={styles.dataWrapper}>
-              <Text style={styles.data}>{Math.round(forecast?.wind? forecast?.wind : 0)}</Text>
-            </View>
-          </View>
-          <View style={styles.subtitleItem}>
-            <Text style={styles.titleData}>Tempurate</Text>
-            <View style={styles.dataWrapper}>
-              <Text style={styles.data}>{Math.round(forecast?.feellike? forecast?.feellike : 0)}%</Text>
-            </View>
+      <View style={styles.title}>
+        <Text style={styles.bigText}>{Math.round(forecast?.temperature? forecast?.temperature : 0)}°C</Text>
+        <Text style={styles.smallText}>{forecast?.type}</Text>
+      </View>
+      <View style={styles.subtitle}>
+        <View style={styles.subtitleItem}>
+          <Text style={styles.titleData}>Humidity</Text>
+          <View style={styles.dataWrapper}>
+            <Text style={styles.data}>{Math.round(forecast?.humidity? forecast?.humidity : 0)}%</Text>
           </View>
         </View>
+        <View style={styles.subtitleItem}>
+          <Text style={styles.titleData}>Wind Speed</Text>
+          <View style={styles.dataWrapper}>
+            <Text style={styles.data}>{Math.round(forecast?.wind? forecast?.wind : 0)}</Text>
+          </View>
+        </View>
+        <View style={styles.subtitleItem}>
+          <Text style={styles.titleData}>Tempurate</Text>
+          <View style={styles.dataWrapper}>
+            <Text style={styles.data}>{Math.round(forecast?.feellike? forecast?.feellike : 0)}°C</Text>
+          </View>
+        </View>
+      </View>
       </ImageBackground>
       <ImageBackground 
         source={require('@/assets/images/weather/Cloudy.png')}
@@ -65,6 +65,8 @@ const styles = StyleSheet.create({
     height: '100%',
     justifyContent: 'space-around',
     zIndex: -10,
+    overflow: 'hidden',
+    borderRadius: 20,
   },
   title: {
     marginLeft: 110,
@@ -84,7 +86,6 @@ const styles = StyleSheet.create({
   subtitle: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    gap: 45,
     alignContent: 'center',
   },
   subtitleItem: {
@@ -106,9 +107,9 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: 'absolute',
-    top: -80,
-    right: -30,
-    width: 200,
+    top: -50,
+    right: -40,
+    width: 150,
     aspectRatio: 1/1,
     zIndex: -5,
   },

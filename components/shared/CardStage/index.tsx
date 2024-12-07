@@ -37,7 +37,7 @@ export const CardState = () => {
   }, [item,currentPage]);
   useEffect(() => {
     setFieldCurrent(data); //Cho thông tin field current vào biến fieldCurrent
-    setDay(getStageDay(data?.timePlant)); //Lấy thời gian từ thời gian trồng đến hiện tại của fieldCurrent
+    if(data)setDay(getStageDay(data?.timePlant)); //Lấy thời gian từ thời gian trồng đến hiện tại của fieldCurrent
   }, [data, item])
   useEffect(() => {
     dispatch(getCurrentStage({day,stagePlant}));
@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     flexDirection: 'row',
-    gap: 10,
     justifyContent: 'center',
   },
   left: {
@@ -93,10 +92,13 @@ const styles = StyleSheet.create({
     left: -25,
     bottom: -10,
   },
-  right: {},
+  right: {
+    width: 170, // Đặt chiều rộng để văn bản tự động xuống dòng
+
+  },
   title: {
     color: '#2E5A1C',
-    fontSize: 30,
+    fontSize: 23,
     fontWeight: 'bold',
     marginBottom: 30,
   },

@@ -5,23 +5,45 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { useSelector } from 'react-redux';
 interface GaugeChartProps {
   data: number,
-  title?: string
+  title?: string,
+  unit?: string,
+  label?: string,
 }
 
-const Gauge: React.FC<GaugeChartProps> = ({data, title = ''})  => {
+const Gauge: React.FC<GaugeChartProps> = ({data, title = '', unit='%', label='soil'})  => {
   const field = useSelector((state: RootState) => state.field);
 
  // Khởi tạo trạng thái warning với giá trị mặc định là 'normal'
   const [warning, setWarning] = useState('Good');
 
   // Hàm để thay đổi giá trị warning
-  const compareNumber = (numberToCompare: number) => {
-    if (numberToCompare > field.plantStage.maxSoil) {
-      setWarning('High');
-    } else if (numberToCompare < field.plantStage.minSoil) {
-      setWarning('Low');
-    } else {
-      setWarning('Good');
+  const compareNumber = (numberToCompare: number, label: string) => {
+    if(label === 'temperature') {
+      if (numberToCompare > field.plantStage.maxTemperature) {
+        setWarning('High');
+      } else if (numberToCompare < field.plantStage.minTemperature) {
+        setWarning('Low');
+      } else {
+        setWarning('Good');
+      }
+    }
+    else if(label === 'soild') {
+      if (numberToCompare > field.plantStage.maxSoil) {
+        setWarning('High');
+      } else if (numberToCompare < field.plantStage.minSoil) {
+        setWarning('Low');
+      } else {
+        setWarning('Good');
+      }
+    }
+    else if(label === 'humidity') {
+      if (numberToCompare > field.plantStage.maxHumidity) {
+        setWarning('High');
+      } else if (numberToCompare < field.plantStage.minHumidity) {
+        setWarning('Low');
+      } else {
+        setWarning('Good');
+      }
     }
   };
   const colorWarning = () => {
@@ -30,7 +52,7 @@ const Gauge: React.FC<GaugeChartProps> = ({data, title = ''})  => {
     else return '#FFBC43'; 
   }
   useEffect(() => {
-    compareNumber(data)
+    compareNumber(data, label)
   }, [data])
   
   return (
@@ -46,11 +68,10 @@ const Gauge: React.FC<GaugeChartProps> = ({data, title = ''})  => {
         arcSweepAngle={240} // Vòng tròn chỉ bao phủ 240 độ
         children={() => (
           <SafeAreaView style={styles.content}>
-            <Text style={[styles.percentage, {color: colorWarning()}]}>{data}%</Text>
+            <Text style={[styles.percentage, {color: colorWarning()}]}>{data}{unit}</Text>
             <Text style= {[styles.warning, {color: colorWarning()}]}>{warning}</Text>
           </SafeAreaView>
-        )}
-        
+        )}      
       />
       <Text style={styles.label}>{title}</Text>
     </SafeAreaView>
@@ -61,7 +82,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: 10,
   },
   content: {
     position: 'absolute', // Giữ phần trăm trong vòng tròn

@@ -26,7 +26,7 @@ export const CardInfo: React.FC<CardInfoProps> = ({label, value, type, warning=0
 const styles = StyleSheet.create({
   container: {
     width: 125,
-    height: 100,
+    aspectRatio: 5/4,
     marginLeft: 5,
     alignItems: 'center',
     justifyContent: 'space-between',

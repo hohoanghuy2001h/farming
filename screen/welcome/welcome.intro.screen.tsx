@@ -50,13 +50,13 @@ const WelcomeIntroScreen = () => {
       <Carousel
         ref={carouselRef} // Gán ref cho carousel
         width={windowWidth}
+        style={styles.slideWrapper}
         data={carouselItems}
         onSnapToItem={(index) => setCurrentIndex(index)}
         renderItem={({ item, index }) => (
           <View style={styles.slideItem} key={index}>
               <Image
                 style={styles.image}
-                // source={{ uri: item.image }}
                 source={require('@/assets/images/Introduce.png')}
               />
               <View style={styles.textContainer}>
@@ -92,11 +92,15 @@ export default WelcomeIntroScreen
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'space-around',
     flexDirection: 'column',
-    marginVertical: 110,
-    gap: 60,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 20,
+    marginVertical: 100,
+  },
+  slideWrapper: {
+    justifyContent: 'center',
+    flex: 1,
   },
   slideItem: {
     alignItems: 'center',
@@ -104,13 +108,14 @@ const styles = StyleSheet.create({
     gap: 40,
   },
   image: {
-
+    width: 220,
+    height: 220, 
   },
   textContainer: {
     paddingHorizontal: 36,
   },
   text: {
-    fontSize: 20,
+    fontSize: 16,
     textAlign: 'center',
   },
   pagination: {

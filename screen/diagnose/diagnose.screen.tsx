@@ -28,7 +28,7 @@ const DiagnoseScreen = () => {
     // Dùng setTimeout để thay đổi trạng thái sau 5 giây
     const timer = setTimeout(() => {
       setVisibleText(false);
-    }, 5000);
+    }, 50000);
 
     // Dọn dẹp (cleanup) để tránh memory leak khi component bị unmount
     return () => clearTimeout(timer);
@@ -209,6 +209,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderRadius: 40,
     backgroundColor: 'transparent', 
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text: {
     fontSize: 20,

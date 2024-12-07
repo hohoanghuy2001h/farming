@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, TouchableOpacity, Image, FlatList} from 'react-
 import React, {useState} from 'react'
 import menu from '@/constants/menu'
 import { useRouter } from 'expo-router'
+import { windowHeight } from '@/utils/Dimensions'
 type itemProps =  {
     item: {
         image: any,
@@ -26,7 +27,6 @@ const Menu = () => {
                     () => {
                     router.push({
                         pathname: item.page,
-                        params: { },
                     })}}
             >
                 <Image 
@@ -47,6 +47,8 @@ const Menu = () => {
                 key={numColumns} // Change the key to force a full re-render when numColumns changes
                 numColumns={numColumns} // Dynamic number of columns
                 columnWrapperStyle = {styles.column}
+                scrollEnabled={true}
+                nestedScrollEnabled={true}
             />
         </View>
     </View>
@@ -58,6 +60,7 @@ export default Menu
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        height: windowHeight,
         gap: 20,
         backgroundColor: '#C6E9CA',
     },
@@ -71,7 +74,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     menuItem: {
-        width: 153,
+        width: '45%',
         aspectRatio: 1/1,
         justifyContent: 'center',
         alignItems: 'center',

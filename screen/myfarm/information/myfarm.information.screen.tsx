@@ -85,10 +85,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between'
   },
   leftContainer: {
-    width: '38%',
+    width: '42%',
   },
   rightContainer: {
-    width: '62%',
+    width: '55%',
     justifyContent: 'flex-end',
     alignItems: 'center',
   },

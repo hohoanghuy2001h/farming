@@ -63,16 +63,7 @@ const LoginScreen = () => {
             </View>
           </KeyboardAvoidingView>
           <PrimaryButton content='SIGN IN' action={resolveLogin}/>
-        </View>
-        <View style={styles.divided}>
-          <View style={styles.line} />
-              <Text>or</Text>
-          <View style={styles.line} />
-        </View>
-        <View style={styles.otherContainer}>
-          <SecondButton content='Login with Facebook' leftIcon='facebook' colorIcon='#475993'/>
-          <SecondButton content='Login with Email' leftIcon='envelope' colorIcon='red'/>
-        </View>
+        </View>  
       </View>
       <ModalNotice isOpen = {visible} setIsOpen={setVisible} >
         <View style={{
@@ -107,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   wrapper: {
-    justifyContent: 'space-between',
+    justifyContent: 'center',
     alignItems: 'center',
     marginVertical: 60,
     flex: 1,

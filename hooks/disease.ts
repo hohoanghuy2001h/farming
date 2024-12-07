@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState } from "react";
 import diseaseAPI from "@/constants/disease.api";
-import axios from "axios";
 
 const useDisease = () => {
     const [loading, setLoading] = useState(true);

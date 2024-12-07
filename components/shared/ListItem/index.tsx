@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         flex: 3,
     },
     image:{
-        height: 110,
+        height: 90,
         aspectRatio: 1/1,
         borderRadius: 100,
     },

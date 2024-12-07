@@ -18,7 +18,6 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({avatar = null, action, logOut}) => {
   const item = useSelector((state: RootState) => state.field);
   const {data} = useFieldDetail(item.fieldID)
-  const dispatch = useDispatch();
     const router = useRouter();
     const redictPage = () => {
       router.push({
@@ -68,7 +67,7 @@ export default Header
 
 const styles = StyleSheet.create({
   container: {
-    height: 60,
+    height: 30,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

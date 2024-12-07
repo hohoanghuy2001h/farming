@@ -15,7 +15,7 @@ Vụ Hè Thu: Gieo hạt vào tháng 4 và 5, tiếp tục trồng vào tháng 5
     },
     {
         _id: '2',
-        image: require('@/assets/images/disease/domla.png'),
+        image: require('@/assets/images/disease/botri.jpg'),
         label: 'thrips',
         title: 'Bệnh bọ trĩ',
         summary: 'Bọ trĩ gây ra hậu quả nghiêm trọng đối với cây trồng do chúng lây lan và tăng mật số nhanh chóng. Bọ trĩ không ...',
@@ -33,7 +33,7 @@ Sử dụng màng phủ nông nghiệp (Plastic) là phương pháp hiệu quả
     },
     {
         _id: '3',
-        image: require('@/assets/images/disease/domla.png'),
+        image: require('@/assets/images/disease/heovang.jpg'),
         label: 'virus_kuning',
         title: 'Bệnh héo vàng',
         summary: 'Bệnh thường xuất hiện ở giai đoạn từ cây con đến khi ra hoa. Triệu chứng điển hình thường thấy là ...',

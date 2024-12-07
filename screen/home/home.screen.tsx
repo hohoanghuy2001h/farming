@@ -14,7 +14,7 @@ import { auth } from '@/firebaseConfig'
 const HomeScreen = () => {
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
   const FieldBottomSheetModalRef = useRef<BottomSheetModal>(null);
-  const snapPoints = useMemo(() => ['40%', '88%'], []); 
+  const snapPoints = useMemo(() => ['33%', '90%'], []); 
   const FieldsnapPoints = useMemo(() => ['90%'], []); 
   const [visible, setVsible] = useState(false);
   const logoutUser = useLogout(auth);
