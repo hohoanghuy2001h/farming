@@ -1,12 +1,14 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import useStage from '@/hooks/useStage'
 import stageImages from '@/assets/images/stages'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/store/store'
-import { useFieldDetail } from '@/hooks/field'
+import { updateField, useFieldDetail } from '@/hooks/field'
 import { getCurrentStage } from '@/store/fieldReducer'
 import stageDefault from '@/constants/stage.template'
+import { convertToTimestamp } from '@/utils/Timestamp'
+import { router } from 'expo-router'
 const getStageDay = (date: Date) => {
   const day = new Date(date); // Tạo bản sao để không thay đổi inputDate
   // Bước 2: Lấy thời gian hiện tại
@@ -42,9 +44,20 @@ export const CardState = () => {
   useEffect(() => {
     dispatch(getCurrentStage({day,stagePlant}));
   }, [day, stagePlant]); 
+  const startCultivation = () => {
+    if(data) {
+      const updatedFieldData = {
+        ...data,
+        timePlant: new Date(), 
+        isPlanted: true,
+      } 
+      if(updatedFieldData._id)updateField(updatedFieldData._id, updatedFieldData);
+    }
+  }
   return (
     item.fieldID !== '' ? 
-    <View style={styles.container}>
+    data?.isPlanted === true ? 
+      <View style={styles.container}>
       <View style={styles.wrapper}>
         <View style={styles.left}>
           <Image 
@@ -55,14 +68,19 @@ export const CardState = () => {
         <View style={styles.right}>
           <Text style={styles.title}>The Chilli Plant</Text>
           <Text style={styles.text}>Growth stage: {stagePlant?.stage}</Text>
-          <Text style={styles.text}>{getStageDay(fieldCurrent?.timePlant)} days</Text>
+          <Text style={styles.text}>{fieldCurrent? getStageDay(fieldCurrent?.timePlant) : 0} days</Text>
         </View>
       </View>
-    </View> :
+    </View>:
+     <View style={styles.container}>
+        <Text style={styles.textUpdating}>Nông trại chưa được xác nhận trồng cây.</Text>
+        <TouchableOpacity style={styles.updateTimeBtn} onPress={startCultivation}>
+          <Text style={styles.updateTimeText}>Trồng ngay bây giờ.</Text>
+        </TouchableOpacity>
+    </View>:
     <View style={styles.container}>
         <Text style={styles.textLoading}>Vui lòng hãy chọn field.</Text>
-   </View>
-  )
+   </View>  )
 }
 
 export default CardState
@@ -109,6 +127,25 @@ const styles = StyleSheet.create({
   textLoading: {
     fontSize: 30,
     fontWeight: 'bold'
-  }
+  },
+  updateTimeBtn: {
+    backgroundColor: '#59C36A',
+    borderRadius: 20,
+    paddingHorizontal: 5,
+    height: 25,
+    justifyContent: 'center',
+    marginLeft: 10,
+    marginTop: 20,
+  },
+  updateTimeText: {
+    fontSize: 13,
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  textUpdating: {
+    textAlign: 'center',
+    fontWeight: 'bold',
+    fontSize: 20,
+  },
 
 })

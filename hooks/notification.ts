@@ -1,6 +1,5 @@
 
 import React, { useEffect, useState } from "react";
-import notificationsAPI from "@/constants/notifications.api";
 import notificationsTemplate from "@/constants/notifications.template";
 import { collection, getDocs, addDoc, getDoc, doc, updateDoc, query, where, deleteDoc, writeBatch, setDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";

@@ -46,7 +46,7 @@
           "savePhotosPermission": "Allow $(PRODUCT_NAME) to save photos.",
           "isAccessMediaLocationEnabled": true
         }
-      ], 
+      ],
       [
         "expo-image-picker",
         {
@@ -71,6 +71,6 @@
     },
     "updates": {
       "url": "https://u.expo.dev/a00154e3-d064-4cfc-b5e0-e28b340801db"
-    } 
+    }
   }
 }

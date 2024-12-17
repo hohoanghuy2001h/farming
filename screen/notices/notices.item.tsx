@@ -19,10 +19,10 @@ const ListItem: React.FC<ListItemProps> = ({_id, date, image, summary,title,rout
     return (
     <View style={styles.container}>
         <View style={styles.leftContainer}>
-            {/* <Image 
+            <Image 
                 source={image}
                 style={styles.image}
-            />  */}
+            /> 
         </View>
         <View style={styles.rightContainer}>
             <Text style={styles.textTitle}>{title}</Text>
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         flex: 3,
     },
     image:{
-        height: 110,
+        height: 90,
         aspectRatio: 1/1,
         borderRadius: 100,
     },

@@ -51,7 +51,7 @@ export default function RootLayout() {
               headerShown: true,
               // title: "My Farm",
               // headerBackTitle: "Back",
-              header: () => <Header title='Diagnostic'backgroundColor='none' position='absolute'/>
+              header: () => <Header title='Diagnostic' backgroundColor='none' position='absolute'/>
             }}
           />
           <Stack.Screen
@@ -89,6 +89,20 @@ export default function RootLayout() {
             options={{
               headerShown: true,
               header: () => <Header title='Notices'/>
+            }}
+          />
+          <Stack.Screen
+            name="(routes)/notplanted"
+            options={{
+              headerShown: true,
+              header: () => <Header title='My Farm'/>
+            }}
+          />
+          <Stack.Screen
+            name="(routes)/qrcode/index"
+            options={{
+              headerShown: true,
+              header: () => <Header title='My Farm' backgroundColor='none' position='absolute'/>
             }}
           />
         </Stack>

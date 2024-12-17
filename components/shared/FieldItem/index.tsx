@@ -41,10 +41,13 @@ const FieldItem: React.FC<FieldItemProps> = ({item, active=false}) =>  {
           <Text style={styles.size}>{item.size} ha</Text>
         </View>
         {
-          !item.isPlanted && item.isHarvest ? 
+          !item.isPlanted || item.isHarvest ? 
           <View style={styles.stateWrapper}>
             <View style={styles.statusPlant}>
-              <Text style={styles.statusText}>{!item.isPlanted ? 'Not Planted': item.isHarvest ? 'Harvest' : ''}</Text>
+              <Text style={styles.statusText}>
+                {!item.isPlanted ? 'Not Planted': ''}
+                {item.isHarvest ? 'Harvest' : ''}
+              </Text>
             </View>
           </View> 
           :  ''
@@ -92,9 +95,9 @@ const styles = StyleSheet.create({
   titleContainer: {
     position: 'absolute',
     top: 20,
-    left: 15,
+    left: 8,
     flexDirection: 'row', 
-    justifyContent: 'space-between',
+    gap: 0,
   },
   titleWrapper: {
 
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: 13,
     color: 'white',
   },
   size: {
@@ -139,6 +142,6 @@ const styles = StyleSheet.create({
   statusText: {
     textAlign: 'center',
     color: 'white',
-    fontSize: 12,
+    fontSize: 10,
   },
 })

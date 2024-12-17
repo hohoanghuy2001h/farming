@@ -6,11 +6,19 @@ import { windowWidth } from '@/utils/Dimensions'
 import { RootState } from '@/store/store'
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentField } from '@/store/fieldReducer'
+import Icon from 'react-native-vector-icons/FontAwesome'
+import { router } from 'expo-router'
 const FieldScreen = () => {
   const {data, loading} = useField();
   const field = useSelector((state: RootState) => state.field);
   const [activeIndex, setActiveIndex] = useState(field.fieldID);
   const dispatch = useDispatch();
+  const redictNewPage = () => {//Đây là function điều hướng trang
+    router.push({
+      pathname: "/(routes)/qrcode",
+      params: {  },
+    });
+  };
   const activeItem = (item: fieldType) => {
     setActiveIndex(item._id);
     dispatch(getCurrentField(item._id));
@@ -25,10 +33,18 @@ const FieldScreen = () => {
       </TouchableOpacity>
     )
   }
+  const qrCoderedict = () => {
+    redictNewPage();
+  }
   return (
     <View style ={styles.container}>
       <View style={styles.wrapper}>
-        <Text style={styles.title}>List of Fields</Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>List of Fields</Text>
+          <TouchableOpacity onPress={qrCoderedict}>
+            <Icon name="qrcode" size={40} color="black" />
+          </TouchableOpacity>
+        </View>
         <FlatList 
           data={data}
           renderItem={renderFieldItem}
@@ -52,6 +68,11 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: windowWidth - 50,
     gap: 20,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   title: {
     fontSize: 30,

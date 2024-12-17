@@ -32,7 +32,6 @@ const NotPlantedScreen = () => {
     loading ? <LoadingScreen /> :
     <View style={styles.container}>
       <View style={styles.wrapper}>
-        <HeaderMyFarm />
         <View style={styles.content}>
           <Text style={styles.titleText}>DON’T HAVE PLANT</Text>
           <Image source={require('@/assets/images/notPlanted.png')}/>

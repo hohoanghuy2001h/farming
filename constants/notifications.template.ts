@@ -115,5 +115,14 @@ const notificationsTemplate: notificationType[] = [
         isRead: false,
         navigateLink: '/(routes)/controller/fan',
     },
+    {
+        _id: '12',
+        label: 'New Season',
+        content: 'Đã bất đầu một mùa vụ mới!!!',
+        date: new Date(),
+        image: '@/assets/images/cultivation/seasonal.png',
+        isRead: false,
+        navigateLink: '/(routes)/controller/fan',
+    }
 ];
 export default notificationsTemplate
