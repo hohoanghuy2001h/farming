@@ -78,7 +78,6 @@ type feedType =  {
     key: string
 }
 type notificationType = {
-    _id: string,
     date: Date,
     label: string,
     content: string,

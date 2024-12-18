@@ -1,6 +1,6 @@
 const diseaseAPI: diseaseItem[] = [
     {
-        _id: '1',
+        _id: '0',
         image: require('@/assets/images/disease/domla.png'),
         label: 'bercak_daun',
         title: 'Bệnh đóm lá vi khuẩn',

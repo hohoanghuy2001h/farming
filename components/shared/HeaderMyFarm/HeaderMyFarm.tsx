@@ -7,8 +7,10 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { updateField, useFieldDetail } from '@/hooks/field';
 import { DateTimePickerAndroid } from '@react-native-community/datetimepicker';
-import {convertToTimestamp} from '@/utils/Timestamp'
+import { useToast, Toast} from "react-native-toast-notifications";
+import { useAddNotification } from '@/hooks/notification';
 import { Button } from 'react-native';
+import notificationsTemplate from '@/constants/notifications.template';
 const getStageDay = (date: Date) => {
   const day = new Date(date); // Tạo bản sao để không thay đổi inputDate
   // Bước 2: Lấy thời gian hiện tại
@@ -26,7 +28,8 @@ const HeaderMyFarm = () => {
   const {data, loading}= useFieldDetail(item.fieldID); //Tìm kiếm thông tin của field dựa trên fieldID
   const [date, setDate] = useState(new Date());
   const [day, setDay] = useState(0)
-  const [show, setShow] = useState(false);
+  const toast = useToast();
+
   useEffect(() => {
     setDay(getStageDay(data?.timePlant || new Date()));
     setDate(data?.timePlant || new Date());
@@ -49,6 +52,20 @@ const HeaderMyFarm = () => {
       ...data, timePlant: date
     });
     setVisible(false);
+    toast.show("Đã thay đổi thời gian trồng thành công!", 
+      {
+        type: "custom_toast",
+        animationDuration: 100,
+        data: {
+          title: "Change Time Plant",
+        },
+      }
+    )
+    const result = notificationsTemplate.find((item) => item.label === 'Change Time Plant');
+    if(result){
+      // console.log(result)
+      useAddNotification(result)
+    }
   }
   return (
     <View style={styles.container}>

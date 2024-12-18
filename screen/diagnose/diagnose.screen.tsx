@@ -12,6 +12,8 @@ import { router } from 'expo-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { getCurrentHealth } from '@/store/fieldReducer';
+import { useAddNotification } from '@/hooks/notification';
+import notificationsTemplate from '@/constants/notifications.template';
 const DiagnoseScreen = () => {
   const field = useSelector((state: RootState) => state.field);
   const dispatch = useDispatch();
@@ -42,7 +44,17 @@ const DiagnoseScreen = () => {
     }
   }, [disease])
   useEffect(() => {
-    if(diseaseDetail)dispatch(getCurrentHealth(diseaseDetail.title));
+    if(diseaseDetail) {
+      dispatch(getCurrentHealth(diseaseDetail.title))
+      useAddNotification({
+        label: 'Disease',
+        content: 'Đã phát hiện bệnh ở cây!!!',
+        date: new Date(),
+        image: 'temperature-half',
+        isRead: false,
+        navigateLink: '/(routes)/controller/diseases',
+      })
+    }
   }, [diseaseDetail])
   const takePicture = async () => {
     if (cameraRef.current) {

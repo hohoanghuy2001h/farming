@@ -33,7 +33,7 @@ const uploadImage = async (
 
         // Gửi request API
         const response = await axios.post(
-            "https://detect.roboflow.com/chili-disease-afgra/2",
+            "https://detect.roboflow.com/chili-disease-afgra/8",
             base64,
             {
                 params: {
@@ -54,38 +54,5 @@ const uploadImage = async (
         setVisibleModal(true);
     }
 };
-// const uploadImage = async (img: CameraCapturedPicture) => {
-//     const [data, setData] = useState();
-//     try {
-//         // Get the URI of the image
-//         const fileUri = img.uri;
-//         const compressUri = await compressImage(fileUri);
-//         const base64 = await FileSystem.readAsStringAsync(compressUri, {
-//             encoding: FileSystem.EncodingType.Base64,
-//         });
-//         axios({
-//             method: "POST",
-//             url: "https://detect.roboflow.com/chili-disease-afgra/2",
-//             params: {
-//                 api_key: "IRGWq8PjN2AzOjQfptpV"
-//             },
-//             data: base64,
-//             headers: {
-//                 "Content-Type": "application/x-www-form-urlencoded"
-//             }
-//         })
-//         .then(function(response) {
-//             setData(response.data["predictions"]);
-//             console.log(response.data["predictions"]); 
-//         })
-//         .catch(function(error) {
-//             console.log(error.message);
-//         });
-//     } catch (error) {
-//         console.error('Error uploading image:', error);
-//     } finally {
-        
-//     }
-//     return data;
-// }
+
 export default uploadImage;

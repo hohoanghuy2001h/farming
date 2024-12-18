@@ -9,6 +9,9 @@ import { getCurrentStage } from '@/store/fieldReducer'
 import stageDefault from '@/constants/stage.template'
 import { convertToTimestamp } from '@/utils/Timestamp'
 import { router } from 'expo-router'
+import { useToast } from 'react-native-toast-notifications'
+import notificationsTemplate from '@/constants/notifications.template'
+import { useAddNotification } from '@/hooks/notification'
 const getStageDay = (date: Date) => {
   const day = new Date(date); // Tạo bản sao để không thay đổi inputDate
   // Bước 2: Lấy thời gian hiện tại
@@ -28,7 +31,7 @@ export const CardState = () => {
   const [day, setDay] = useState(0)
   const {stagePlant} = useStage(day); //Tìm kiếm stage phù hợp dựa trên day = currentDate - plantingDate (ngày trồng)
   const [currentPage, setCurrentPage] = useState<number>(0);
-
+  const toast = useToast();
   const getStageProgress = () => {
     stageDefault.forEach((stage, index) => {
       if(stage === item.plantStage) setCurrentPage(index);
@@ -52,6 +55,20 @@ export const CardState = () => {
         isPlanted: true,
       } 
       if(updatedFieldData._id)updateField(updatedFieldData._id, updatedFieldData);
+      toast.show("Đã bắt đầu một mùa vụ mớimới!", 
+        {
+          type: "custom_toast",
+          animationDuration: 100,
+          data: {
+            title: "New Season",
+          },
+        }
+      )
+      const result = notificationsTemplate.find((item) => item.label === 'New Season');
+      if(result){
+        // console.log(result)
+        useAddNotification(result)
+      }
     }
   }
   return (

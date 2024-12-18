@@ -12,6 +12,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useFieldDetail } from '@/hooks/field';
 import { useAddData } from '@/hooks/data';
+import { useToast } from 'react-native-toast-notifications';
 const dataOption = [
   { key: 0, label: 'Không lập lại', type:'none'},
   { key: 1, label: 'Lặp lại hằng phút', type:'minute'},
@@ -25,6 +26,7 @@ interface DatePickerModalProps {
 const DatePickerModal: React.FC<DatePickerModalProps> = ({ activePumpAuto }) => {
   const field = useSelector((state: RootState) => state.field);
   const fieldDetail = useFieldDetail(field.fieldID);
+  const toast = useToast();
   const {data, loading} = useSchedule();
   const [visible, setVisible] = useState(false);
   const [date, setDate] = useState(new Date());
@@ -91,7 +93,16 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ activePumpAuto }) => 
       timeOut: 0,  //Đây là giá trị không có ở database
     }
     useAddSchedule(newSchedule);
-    addStack(newSchedule)
+    toast.show("Tạo mới thành công.", 
+      {
+        type: "custom_toast",
+        animationDuration: 100,
+        data: {
+          title: "Create New Schedule",
+        },
+      }
+    )
+    addStack(newSchedule);
     resetTime();
     setVisible(false);
   }

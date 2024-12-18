@@ -31,9 +31,8 @@ const useNotification = () => {
                     label: docData.label,
                   };
                 });
-                data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+                data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setData(data);
-
             } catch (err) {
                 console.error(err)
             } finally {
@@ -47,9 +46,8 @@ const useNotification = () => {
 const useAddNotification = (newNotification: notificationType) => {
     const subscription = async () => {
         try {
-                const docRef = doc(db, "schedule", newNotification._id);
+                const docRef = doc(db, "notification", `notification_${Math.floor(Math.random() * 2000)}`);
                 await setDoc(docRef, {
-                    _id: newNotification._id, 
                     content: newNotification.content,
                     date: convertToTimestamp(newNotification.date),
                     isRead: newNotification.isRead,
@@ -58,6 +56,7 @@ const useAddNotification = (newNotification: notificationType) => {
         } catch (err: any) {
             console.error(err);
         } finally {
+            console.log('Add Notification Document successfully!');
         }
     };
     subscription();
@@ -65,9 +64,8 @@ const useAddNotification = (newNotification: notificationType) => {
 const useUpdateNotification = (newNotification :notificationType) => {
     const updateNotification = async () => {
         try {
-            const userDocRef = doc(db, 'notification', newNotification._id);
+            const userDocRef = doc(db, 'notification', `notification_${Math.floor(Math.random() * 2000)}`);
             await updateDoc(userDocRef, {
-                _id: newNotification._id, 
                 content: newNotification.content,
                 date: convertToTimestamp(newNotification.date),
                 isRead: newNotification.isRead,
@@ -75,9 +73,11 @@ const useUpdateNotification = (newNotification :notificationType) => {
             });
         } catch(err) {
             console.error(err)
-        } finally {}
+        } finally {
+            console.log('Update Notification Document successfully!')
+        }
     }
-    updateNotification()
+    updateNotification();
 }
 const useDeleteNotification = (_id: string) => {
     const removeNotification = async () => {
@@ -96,8 +96,8 @@ const useUpdateAllNotificationOnRead = (data: boolean) => {
         try {
             // Create a batch instance
             const batch = writeBatch(db);
-            const querySnapshot = await getDocs(collection(db, 'schedule'));
-            // Iterate over each schedule ID and add an update operation to the batch
+            const querySnapshot = await getDocs(collection(db, 'notification'));
+            // Iterate over each notification ID and add an update operation to the batch
             querySnapshot.docs.forEach(doc => {
     
                 batch.update(doc.ref, {
@@ -108,7 +108,7 @@ const useUpdateAllNotificationOnRead = (data: boolean) => {
             // Commit the batch operation
             await batch.commit();
           } catch (error) {
-            console.error('Error updating schedules: ', error);
+            console.error('Error updating notifications: ', error);
           }
     }
     updateAllNotification();

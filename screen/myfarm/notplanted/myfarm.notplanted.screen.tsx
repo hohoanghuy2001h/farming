@@ -8,12 +8,15 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { router } from 'expo-router';
 import { updateField, useFieldDetail } from '@/hooks/field';
 import LoadingScreen from '@/screen/loading/loading.screen';
-
+import { useToast } from 'react-native-toast-notifications';
+import notificationsTemplate from '@/constants/notifications.template';
+import { useAddNotification } from '@/hooks/notification';
 
 const NotPlantedScreen = () => {
   const field = useSelector((state: RootState) => state.field);
   const fieldDetail = useFieldDetail(field.fieldID).data;
   const loading = useFieldDetail(field.fieldID).loading;
+  const toast = useToast();
   const redictNewPage = () => {//Đây là function điều hiếu trang
     router.replace('/(routes)/myfarm/info');
   };
@@ -25,6 +28,20 @@ const NotPlantedScreen = () => {
         isPlanted: true,
       } 
       if(updatedFieldData._id)updateField(updatedFieldData._id, updatedFieldData);
+      toast.show("Đã bắt đầu một mùa vụ mớimới!", 
+        {
+          type: "custom_toast",
+          animationDuration: 100,
+          data: {
+            title: "New Season",
+          },
+        }
+      )
+      const result = notificationsTemplate.find((item) => item.label === 'New Season');
+      if(result){
+        // console.log(result)
+        useAddNotification(result)
+      }
     }
     redictNewPage();
   }

@@ -14,15 +14,112 @@ configureReanimatedLogger({
   level: ReanimatedLogLevel.warn,
   strict: false, // Reanimated runs in strict mode by default
 });
+import Icon from 'react-native-vector-icons/FontAwesome';
 import { store } from '@/store/store';
 import { Provider } from 'react-redux';
 import Toast from 'react-native-toast-message';
+import { Text, TouchableOpacity, View } from 'react-native';
 export default function RootLayout() {
   return (
     <GestureHandlerRootView>
     <Provider store={store}>
-      <ToastProvider>
-        <Stack screenOptions={{ headerShown: false }}>
+    <ToastProvider
+      placement="top"
+      dangerIcon={<Icon name="exclamation-triangle" size={24} color="red" />}
+      successIcon={<Icon name="check-circle" size={24} color="green" />}
+      offset={10}
+      renderType={{
+        custom_toast: (toast) => (
+          <View
+            style={{
+              maxWidth: "85%",
+              paddingHorizontal: 15,
+              paddingVertical: 10,
+              backgroundColor: "#fff",
+              marginVertical: 4,
+              borderRadius: 8,
+              borderLeftColor: "#00C851",
+              borderLeftWidth: 6,
+              justifyContent: "center",
+              paddingLeft: 16,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                color: "#333",
+                fontWeight: "bold",
+              }}
+            >
+              {toast.data.title}
+            </Text>
+            <Text style={{ color: "#a3a3a3", marginTop: 2 }}>{toast.message}</Text>
+          </View>
+        ),
+        with_close_button: (toast) => (
+          <View
+            style={{
+              maxWidth: "85%",
+              paddingVertical: 10,
+              backgroundColor: "#fff",
+              marginVertical: 4,
+              borderRadius: 8,
+              borderLeftColor: "#00C851",
+              borderLeftWidth: 6,
+              justifyContent: "center",
+              paddingHorizontal: 16,
+              flexDirection: "row",
+            }}
+          >
+            <Text style={{ color: "#a3a3a3", marginRight: 16 }}>{toast.message}</Text>
+            <TouchableOpacity
+              onPress={() => toast.onHide()}
+              style={{
+                marginLeft: "auto",
+                width: 25,
+                height: 25,
+                borderRadius: 5,
+                backgroundColor: "#333",
+                justifyContent: "center",
+                alignItems: "center",
+              }}
+            >
+              <Text style={{ color: "#fff", fontWeight: "500", marginBottom: 2.5 }}>
+                x
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ),
+        custom_danger_toasttoast: (toast) => (
+          <View
+            style={{
+              maxWidth: "85%",
+              paddingHorizontal: 15,
+              paddingVertical: 10,
+              backgroundColor: "#fff",
+              marginVertical: 4,
+              borderRadius: 8,
+              borderLeftColor: "#E13832",
+              borderLeftWidth: 6,
+              justifyContent: "center",
+              paddingLeft: 16,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                color: "#333",
+                fontWeight: "bold",
+              }}
+            >
+              {toast.data.title}
+            </Text>
+            <Text style={{ color: "#a3a3a3", marginTop: 2 }}>{toast.message}</Text>
+          </View>
+        ),
+      }}
+    >        
+          <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
           <Stack.Screen name="(routes)/welcome-intro/index" />
           <Stack.Screen name="(routes)/login/index" />

@@ -109,7 +109,7 @@ const styles = StyleSheet.create({
   },
   left: {
     width: '50%',
-    paddingBottom: 120,
+    paddingBottom: 200,
   },
   right: {
     alignSelf: 'flex-end',
