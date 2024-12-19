@@ -8,22 +8,6 @@ import { useEffect } from 'react';
 export default function MyfarmLayout() {
   const item = useSelector((state: RootState) => state.field);
   const {data}= useFieldDetail(item.fieldID); //Tìm kiếm thông tin của field dựa trên fieldID
-  // useEffect(() => {
-  //   if (data) {
-  //     if (!data.isPlanted) {
-  //       // Set timeout để delay 10 giây
-  //       const timer = setTimeout(() => {
-  //         router.replace({
-  //           pathname: "/(routes)/home",
-  //           params: {},
-  //         });
-  //       }, 10000); // 10000ms = 10 giây
-
-  //       // Cleanup để hủy setTimeout nếu component bị unmount
-  //       return () => clearTimeout(timer);
-  //     }
-  //   }
-  // }, [data]);
   useEffect(() => {
     if(data) {
       if(!data.isPlanted) 

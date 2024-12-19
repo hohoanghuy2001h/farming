@@ -1,7 +1,7 @@
 import { Link } from 'expo-router';
 import { View, Text, StyleSheet, TouchableOpacity, FlatList} from 'react-native';
 import CardName from '@/components/shared/CardName/CardName';
-import { windowWidth } from '@/utils/Dimensions';
+import { windowHeight, windowWidth } from '@/utils/Dimensions';
 import HeaderMyFarm from '@/components/shared/HeaderMyFarm/HeaderMyFarm';
 import { useData, useNewestData } from '@/hooks/data';
 // import Line from '@/components/shared/Chart/Line';
@@ -11,6 +11,7 @@ import { RootState } from '@/store/store';
 import LoadingScreen from '@/screen/loading/loading.screen';
 import { useFieldDetail } from '@/hooks/field';
 import Line from '@/components/shared/Chart/Line';
+import { ScrollView } from 'react-native';
 
 const configDataChart = (rawData: any) => {
   if (!rawData || rawData.length === 0) {
@@ -68,8 +69,7 @@ export default function StatisticalScreen() {
   const [dataChart, setDataChart] = useState({})
   useEffect(() => {
       if(data.length !== 0)setDataChart(configDataChart(data));
-  }, [fieldDetail])
-
+  }, [data])
   const itemRender = (item: any, index: number) => {
     return (
       <TouchableOpacity 
@@ -90,35 +90,41 @@ export default function StatisticalScreen() {
   return (
     loading ?  <LoadingScreen /> : 
     <View style={styles.container}>
-      <View style={styles.wrapper}>
-        <HeaderMyFarm />
-        <View style={styles.graphContainer}>
-          {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={feed.feed[activeItem].unit}/>}</View>
-        <View style={styles.swipperContainer}>
-            <FlatList 
-              data={feed.feed}
-              contentContainerStyle ={styles.swipperWrapper}
-              renderItem={({item, index}) => itemRender(item, index)}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              ItemSeparatorComponent={() => <View style={{ width: 20 }} />}  // 20px spacing between items
-            />
-        </View>
+       <ScrollView 
+        style={styles.scrollContainer} 
+        contentContainerStyle={{ flexGrow: 1 }} 
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.wrapper}>
+          <HeaderMyFarm />
+          <View style={styles.graphContainer}>
+            {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={feed.feed[activeItem].unit}/>}</View>
+          <View style={styles.swipperContainer}>
+              <FlatList 
+                data={feed.feed}
+                contentContainerStyle ={styles.swipperWrapper}
+                renderItem={({item, index}) => itemRender(item, index)}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                ItemSeparatorComponent={() => <View style={{ width: 20 }} />}  // 20px spacing between items
+              />
+          </View>
 
-        <View style={styles.desContainer}>
-            <Text style={styles.desTitle}>Best Conditions:</Text>
-            <View style={styles.desTextContainer}>
-              <Text style = {styles.text}>
-                {`Các thông số ở điều kiện lý tưởng khi cây đang trong giai đoạn ${field.plantStage.stage}:
+          <View style={styles.desContainer}>
+              <Text style={styles.desTitle}>Best Conditions:</Text>
+              <View style={styles.desTextContainer}>
+                <Text style = {styles.text}>
+                  {`Các thông số ở điều kiện lý tưởng khi cây đang trong giai đoạn ${field.plantStage.stage}:
 
-  - Nhiệt độ: ${field.plantStage.minTemperature}°C - ${field.plantStage.maxTemperature}°C
-  - Độ ẩm: ${field.plantStage.minHumidity}% - ${field.plantStage.minHumidity}%
-  - Ánh sáng: ${field.plantStage.maxLight}lux - ${field.plantStage.maxLight}lux
-                `}
-              </Text>
-            </View>
-        </View>       
+    - Nhiệt độ: ${field.plantStage.minTemperature}°C - ${field.plantStage.maxTemperature}°C
+    - Độ ẩm: ${field.plantStage.minHumidity}% - ${field.plantStage.minHumidity}%
+    - Ánh sáng: ${field.plantStage.maxLight}lux - ${field.plantStage.maxLight}lux
+                  `}
+                </Text>
+              </View>
+          </View>       
         </View>
+      </ScrollView>
     </View>
   );
 }
@@ -128,6 +134,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
+  },
+  scrollContainer: {
+    
   },
   wrapper: {
     width: windowWidth - 40,
@@ -144,6 +153,7 @@ const styles = StyleSheet.create({
   },
   desContainer: {
     gap: 15,
+    marginBottom: 100,
   },
   desTitle: {
     fontSize: 20,

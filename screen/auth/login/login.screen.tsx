@@ -23,10 +23,9 @@ const LoginScreen = () => {
     });
   };
   const resolveLogin  = async () => {
-      // const user = await login(email,password);
-      // if (user) redictNewPage()
-      // else setVisible(true)
-      redictNewPage()
+      const user = await login(email,password);
+      if (user) redictNewPage()
+      else setVisible(true)
   }
   return (
     <SafeAreaView style={styles.container}>

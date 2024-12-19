@@ -26,11 +26,6 @@ const menu = [
         namepage: "Diseases & Medicare",
     },
     {
-        image: require('@/assets/images/menu/news.png'),
-        page: "/(routes)/news",
-        namepage: "News",
-    },
-    {
         image: require('@/assets/images/menu/aboutme.png'),
         page: "/(routes)/aboutus",
         namepage: "About Us",

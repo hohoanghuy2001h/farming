@@ -67,7 +67,7 @@ export const CardState = () => {
       const result = notificationsTemplate.find((item) => item.label === 'New Season');
       if(result){
         // console.log(result)
-        useAddNotification(result)
+      useAddNotification({...result, fieldID: item.fieldID})
       }
     }
   }

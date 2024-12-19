@@ -84,6 +84,7 @@ type notificationType = {
     image: string,
     isRead: boolean,
     navigateLink: string,
+    fieldID: string,
 }
 type diseaseItem = {
     _id: string;

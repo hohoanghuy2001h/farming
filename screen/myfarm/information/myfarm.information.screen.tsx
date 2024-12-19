@@ -37,7 +37,7 @@ export default function InformationScreen() {
   }, [field,currentPage])
   const renderItem = (data: any) => {
     return (
-      <CardInfo label={data.item.label} type={data.item.unit} value={data.item.value} warning={data.item.warning} date={data.item.timeUpdate} />
+      <CardInfo label={data.item.label} type={data.item.unit} value={data.item.value} warning={data.item.warning} date={new Date(data.item.timeUpdate)} />
     );
   }
   return (

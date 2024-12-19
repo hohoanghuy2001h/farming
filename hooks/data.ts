@@ -12,7 +12,7 @@ const useData = (aio_username: string, aio_key: string, feed_key: string, aio_fi
   const [refetch, setRefetch] = useState(false);
   useEffect(() => {
     if(aio_username !== '' && aio_key !== '' && feed_key !== '') {
-      const URL = `https://io.adafruit.com/api/v2/${aio_username}/feeds/${aio_fieldname}.${feed_key}/data?limit=20`;
+      const URL = `https://io.adafruit.com/api/v2/${aio_username}/feeds/${aio_fieldname}.${feed_key}/data?limit=10`;
       const subscription = async () => {
         try {
           const response = await axios.get(URL, {
@@ -20,13 +20,12 @@ const useData = (aio_username: string, aio_key: string, feed_key: string, aio_fi
               'X-AIO-Key': aio_key, // Thêm header
             },
           });
-          response.data
-          .forEach((item: any) => {
-            setData((prev) => [...prev, {
-              value: parseInt(item.value),
-              created_at: item.created_at
-            }])
-          })
+          const newData = response.data.map((item: any) => ({
+            value: parseInt(item.value),
+            created_at: item.created_at,
+          }));
+
+          setData(newData); // Ghi đè dữ liệu cũ bằng dữ liệu mới
         } catch (err) {
           console.error('Error fetching data:', err);
         } finally {

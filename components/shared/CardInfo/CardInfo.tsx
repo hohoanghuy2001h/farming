@@ -4,7 +4,7 @@ interface CardInfoProps {
   value: string;
   type: string;
   warning?: number;
-  date: string,
+  date: Date,
 }
 export const CardInfo: React.FC<CardInfoProps> = ({label, value, type, warning=0, date}) => {
   return (
@@ -14,9 +14,6 @@ export const CardInfo: React.FC<CardInfoProps> = ({label, value, type, warning=0
           <Text style={[styles.label,warning? styles.warning:null]}>{label}</Text>
           {warning? <Image style={styles.warningIcon} source={require('@/assets/icons/alertIcon.png')}></Image> : null}
         </View>
-        {/* <View>
-          <Text style={styles.smallText}>{date}</Text>
-        </View> */}
       </View>
       <Text style={[styles.value, warning? styles.warning:null]}>{value}{type}</Text>
     </View>

@@ -25,11 +25,12 @@ const getStageDay = (date: Date) => {
 const HeaderMyFarm = () => {
   const [visible, setVisible] = useState(false);
   const item = useSelector((state: RootState) => state.field);
+  const feed = useSelector((state: RootState) => state.feed);
   const {data, loading}= useFieldDetail(item.fieldID); //Tìm kiếm thông tin của field dựa trên fieldID
   const [date, setDate] = useState(new Date());
   const [day, setDay] = useState(0)
   const toast = useToast();
-
+  const [updateTime, setupdateTime] = useState(new Date());
   useEffect(() => {
     setDay(getStageDay(data?.timePlant || new Date()));
     setDate(data?.timePlant || new Date());
@@ -46,6 +47,9 @@ const HeaderMyFarm = () => {
       mode: 'date',
     });
   };
+  useEffect(() => {
+    if(feed.feed.length !== 0)setupdateTime(new Date(feed.feed[0].timeUpdate) || new Date())
+  }, [feed])
   //Change Planting date of field
   const changeDateField = () =>  {
     if(data) updateField(data._id, {
@@ -64,9 +68,10 @@ const HeaderMyFarm = () => {
     const result = notificationsTemplate.find((item) => item.label === 'Change Time Plant');
     if(result){
       // console.log(result)
-      useAddNotification(result)
+      useAddNotification({...result, fieldID: item.fieldID})
     }
   }
+  
   return (
     <View style={styles.container}>
         <View style={styles.headerName}>
@@ -80,6 +85,12 @@ const HeaderMyFarm = () => {
             >
               <FontAwesome name="pencil" size={20} color="gray" />   
             </TouchableOpacity>
+        </View>
+        <View>
+          <Text style={{
+            fontSize: 10,
+            color: 'gray'
+          }}>Lần cuối update: {updateTime.toLocaleString()}</Text>
         </View>
         </View>
         <View style={[styles.statusPlant, {backgroundColor: item.health === 'Good Health'? '#59C36A' : '#E13832'}]}>

@@ -53,6 +53,7 @@ const DiagnoseScreen = () => {
         image: 'temperature-half',
         isRead: false,
         navigateLink: '/(routes)/controller/diseases',
+        fieldID: field.fieldID,
       })
     }
   }, [diseaseDetail])

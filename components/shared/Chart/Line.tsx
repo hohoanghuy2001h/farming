@@ -16,7 +16,7 @@ const Line: React.FC<ChartProps> = ({data, title = '', unit = ''})  => {
     <SafeAreaView style={styles.container}>
       <LineChart
         data={data}
-        width={screenWidth-40} // from react-native
+        width={screenWidth} // from react-native
         height={220}
         formatXLabel={(value) => `${value}`}  // Tùy chỉnh thêm 'Day' trước mỗi nhãn trên trục X
         formatYLabel={(value) => `${value}${unit}`}  // Thêm ký hiệu độ cho trục Y

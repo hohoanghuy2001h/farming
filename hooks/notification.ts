@@ -10,8 +10,9 @@ interface Notification {
     date: any;
     isRead: any;
     label: any;
+    fieldID: string,
   }
-const useNotification = () => {
+const useNotification = (fieldID: string) => {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<Notification[]>([]);
     const [error, setError] = useState("");
@@ -29,8 +30,11 @@ const useNotification = () => {
                     date: convertFromTimestamp(docData.date),
                     isRead: docData.isRead,
                     label: docData.label,
+                    fieldID: docData.fieldID,
                   };
-                });
+                })
+                .filter(item => item.fieldID === fieldID); // Lọc theo fieldID
+
                 data.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setData(data);
             } catch (err) {
@@ -40,7 +44,7 @@ const useNotification = () => {
             }
         };
         subscription();
-    }, [refetch, data]);
+    }, [refetch, fieldID]);
     return { loading, data, error, setRefetch, refetch };
 };
 const useAddNotification = (newNotification: notificationType) => {
@@ -52,6 +56,7 @@ const useAddNotification = (newNotification: notificationType) => {
                     date: convertToTimestamp(newNotification.date),
                     isRead: newNotification.isRead,
                     label: newNotification.label,
+                    fieldID: newNotification.fieldID
                 })
         } catch (err: any) {
             console.error(err);

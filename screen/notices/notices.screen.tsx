@@ -6,8 +6,12 @@ import { windowWidth } from '@/utils/Dimensions';
 import { useNotification, useUpdateAllNotificationOnRead } from '@/hooks/notification';
 import LoadingScreen from '../loading/loading.screen';
 import configNotification from '@/utils/ConfigNotification';
+import { useSelector } from 'react-redux';
+import { useFieldDetail } from '@/hooks/field';
+import { RootState } from '@/store/store';
 const NoticesScreen = () => {
-  const {data, loading} = useNotification();
+  const item = useSelector((state: RootState) => state.field);
+  const {data, loading} = useNotification(item.fieldID);
   const [arrayConfig, setArrayConfig] = useState<notificationType[]>([])
   useEffect(() => {
     setArrayConfig(configNotification(data));
@@ -23,7 +27,7 @@ const NoticesScreen = () => {
   const renderItem = ({item}: any) => {
     return (
       <SafeAreaView style = {{marginBottom: 20}}>
-        <ListItem _id={item._id} date={item.date} key={item._id} image={item.image} title={item.label} summary={item.content} route='cultivation'/>
+        <ListItem _id={item._id} date={item.date} key={item._id} image={item.image} title={item.label} summary={item.content} route={item.navigateLink}/>
       </SafeAreaView>
     )
   }
