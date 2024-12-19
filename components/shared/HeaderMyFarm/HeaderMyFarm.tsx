@@ -31,6 +31,7 @@ const HeaderMyFarm = () => {
   const [day, setDay] = useState(0)
   const toast = useToast();
   const [updateTime, setupdateTime] = useState(new Date());
+  const [harvestConfirm, setHarvestConfirm] = useState(false)
   useEffect(() => {
     setDay(getStageDay(data?.timePlant || new Date()));
     setDate(data?.timePlant || new Date());
@@ -67,11 +68,28 @@ const HeaderMyFarm = () => {
     )
     const result = notificationsTemplate.find((item) => item.label === 'Change Time Plant');
     if(result){
-      // console.log(result)
       useAddNotification({...result, fieldID: item.fieldID})
     }
   }
-  
+  const settingHarvest = () => {
+    if(data) updateField(data._id, {
+      ...data, isHarvest: true,
+    });
+    setVisible(false);
+    toast.show("Đã kết thúc mùa vụ!", 
+      {
+        type: "custom_toast",
+        animationDuration: 100,
+        data: {
+          title: "End SeasonSeason",
+        },
+      }
+    )
+    const result = notificationsTemplate.find((item) => item.label === 'Harvesting');
+    if(result){
+      useAddNotification({...result, fieldID: item.fieldID})
+    }
+  }
   return (
     <View style={styles.container}>
         <View style={styles.headerName}>
@@ -84,6 +102,13 @@ const HeaderMyFarm = () => {
               }}
             >
               <FontAwesome name="pencil" size={20} color="gray" />   
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                setHarvestConfirm(true)
+              }}
+            >
+              <FontAwesome name="leaf" size={20} color="gray" />   
             </TouchableOpacity>
         </View>
         <View>
@@ -102,6 +127,13 @@ const HeaderMyFarm = () => {
                 Edit Planting Time
             </Text>
             <Button title={`${date.toLocaleDateString()}`} onPress={showDatePicker} />
+          </View>
+        </ModalQuestion>
+        <ModalQuestion isOpen = {harvestConfirm} setIsOpen={setHarvestConfirm} submit={settingHarvest}>
+          <View>
+            <Text style={styles.modalTitle}>
+              Cây trồng vẫn chưa kết thúc mùa vụ. Bạn vẫn muốn kết thúc chứ?
+            </Text>
           </View>
         </ModalQuestion>
     </View>

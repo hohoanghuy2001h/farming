@@ -55,7 +55,7 @@ const Header: React.FC<HeaderProps> = ({avatar = null, action, logOut}) => {
               >
               <Image 
                    style={styles.avatar}
-                   source={require('@/assets/images/location.png')}
+                   source={require('@/assets/images/avatar.png')}
                />
               </TouchableOpacity>
             </View>

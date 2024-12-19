@@ -12,6 +12,7 @@ import { router } from 'expo-router'
 import { useToast } from 'react-native-toast-notifications'
 import notificationsTemplate from '@/constants/notifications.template'
 import { useAddNotification } from '@/hooks/notification'
+import sendEmail from '@/utils/gmailPush'
 const getStageDay = (date: Date) => {
   const day = new Date(date); // Tạo bản sao để không thay đổi inputDate
   // Bước 2: Lấy thời gian hiện tại
@@ -55,7 +56,7 @@ export const CardState = () => {
         isPlanted: true,
       } 
       if(updatedFieldData._id)updateField(updatedFieldData._id, updatedFieldData);
-      toast.show("Đã bắt đầu một mùa vụ mớimới!", 
+      toast.show("Đã bắt đầu một mùa vụ mới!", 
         {
           type: "custom_toast",
           animationDuration: 100,
@@ -68,12 +69,14 @@ export const CardState = () => {
       if(result){
         // console.log(result)
       useAddNotification({...result, fieldID: item.fieldID})
+      sendEmail(result.label, item.fieldID, new Date().toLocaleDateString(), result.content, "Hãy vào app kiểm tra.");
+
       }
     }
   }
   return (
     item.fieldID !== '' ? 
-    data?.isPlanted === true ? 
+    data?.isPlanted === true && data.isHarvest === false ? 
       <View style={styles.container}>
       <View style={styles.wrapper}>
         <View style={styles.left}>
@@ -90,11 +93,12 @@ export const CardState = () => {
       </View>
     </View>:
      <View style={styles.container}>
-        <Text style={styles.textUpdating}>Nông trại chưa được xác nhận trồng cây.</Text>
+        <Text style={styles.textUpdating}>{data?.isHarvest === false? 'Nông trại chưa được xác nhận trồng cây.': 'Đã kết thúc mùa vụ.'}</Text>
         <TouchableOpacity style={styles.updateTimeBtn} onPress={startCultivation}>
           <Text style={styles.updateTimeText}>Trồng ngay bây giờ.</Text>
         </TouchableOpacity>
-    </View>:
+    </View>
+    :
     <View style={styles.container}>
         <Text style={styles.textLoading}>Vui lòng hãy chọn field.</Text>
    </View>  )

@@ -14,6 +14,7 @@ import { RootState } from '@/store/store';
 import { getCurrentHealth } from '@/store/fieldReducer';
 import { useAddNotification } from '@/hooks/notification';
 import notificationsTemplate from '@/constants/notifications.template';
+import sendEmail from '@/utils/gmailPush';
 const DiagnoseScreen = () => {
   const field = useSelector((state: RootState) => state.field);
   const dispatch = useDispatch();
@@ -50,11 +51,13 @@ const DiagnoseScreen = () => {
         label: 'Disease',
         content: 'Đã phát hiện bệnh ở cây!!!',
         date: new Date(),
-        image: 'temperature-half',
+        image: '',
         isRead: false,
         navigateLink: '/(routes)/controller/diseases',
         fieldID: field.fieldID,
       })
+      sendEmail('Detect Disease', field.fieldID, new Date().toLocaleDateString(),`Đã phát hiện bệnh ${diseaseDetail.title} ở cây!!!`, "Hãy vào app kiểm tra.");
+
     }
   }, [diseaseDetail])
   const takePicture = async () => {

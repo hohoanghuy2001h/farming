@@ -11,6 +11,7 @@ import LoadingScreen from '@/screen/loading/loading.screen';
 import { useToast } from 'react-native-toast-notifications';
 import notificationsTemplate from '@/constants/notifications.template';
 import { useAddNotification } from '@/hooks/notification';
+import sendEmail from '@/utils/gmailPush';
 
 const NotPlantedScreen = () => {
   const field = useSelector((state: RootState) => state.field);
@@ -26,9 +27,10 @@ const NotPlantedScreen = () => {
         ...fieldDetail,
         timePlant: new Date(), 
         isPlanted: true,
+        isHarvest: false,
       } 
       if(updatedFieldData._id)updateField(updatedFieldData._id, updatedFieldData);
-      toast.show("Đã bắt đầu một mùa vụ mớimới!", 
+      toast.show("Đã bắt đầu một mùa vụ mới!", 
         {
           type: "custom_toast",
           animationDuration: 100,
@@ -40,7 +42,9 @@ const NotPlantedScreen = () => {
       const result = notificationsTemplate.find((item) => item.label === 'New Season');
       if(result){
         // console.log(result)
-        useAddNotification(result)
+      useAddNotification({...result, fieldID: field.fieldID});
+      sendEmail(result.label, field.fieldID, new Date().toLocaleDateString(), result.content, "Hãy vào app kiểm tra.");
+
       }
     }
     redictNewPage();
@@ -49,17 +53,32 @@ const NotPlantedScreen = () => {
     loading ? <LoadingScreen /> :
     <View style={styles.container}>
       <View style={styles.wrapper}>
-        <View style={styles.content}>
-          <Text style={styles.titleText}>DON’T HAVE PLANT</Text>
-          <Image source={require('@/assets/images/notPlanted.png')}/>
-          <Text style={styles.subText}>
-            Hiện tại, bạn vẫn chưa bắt đầu mùa vụ nào. Vui lòng hãy tạo một mùa vụ mới.
-          </Text>
-          <TouchableOpacity style={styles.buttonWrapper} onPress={createNewCrop}>
-            <Icon name="plus" size={40} color="white" />
-            <Text style={styles.btnText}>Tạo mới</Text>
-          </TouchableOpacity>
-        </View>
+        {!fieldDetail?.isPlanted? 
+          <View style={styles.content}>
+            <Text style={styles.titleText}>DON’T HAVE PLANT</Text>
+            <Image source={require('@/assets/images/notPlanted.png')}/>
+            <Text style={styles.subText}>
+              Hiện tại, bạn vẫn chưa bắt đầu mùa vụ nào. Vui lòng hãy tạo một mùa vụ mới.
+            </Text>
+            <TouchableOpacity style={styles.buttonWrapper} onPress={createNewCrop}>
+              <Icon name="plus" size={40} color="white" />
+              <Text style={styles.btnText}>Tạo mới</Text>
+            </TouchableOpacity>
+          </View>
+        :
+          fieldDetail?.isHarvest?
+          <View style={styles.content}>
+            <Text style={styles.titleText}>END THIS SEASON</Text>
+            <Image source={require('@/assets/images/harvesting.png')}/>
+            <Text style={styles.subText}>
+              Hiện tại, mùa vụ của bạn đã kết thúc. Vui lòng hãy tạo một mùa vụ mới.
+            </Text>
+            <TouchableOpacity style={styles.buttonWrapper} onPress={createNewCrop}>
+              <Icon name="plus" size={40} color="white" />
+              <Text style={styles.btnText}>Tạo mới</Text>
+            </TouchableOpacity>
+          </View> : ''
+        }
       </View>
     </View>
   );

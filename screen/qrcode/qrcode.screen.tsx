@@ -4,10 +4,13 @@ import { router } from 'expo-router';
 import { useEffect, useRef, useState  } from 'react';
 import { StatusBar } from 'react-native';
 import {StyleSheet, TouchableOpacity, View, AppState, Platform  } from 'react-native';
+import { useToast, Toast} from "react-native-toast-notifications";
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { createField } from '@/hooks/field';
 const QrCodeScreen = () => {
   const qrLock = useRef(false);
+  const toast = useToast();
   const appState = useRef(AppState.currentState);
   const [facing, setFacing] = useState<CameraType>('back');
   const [permission, requestPermission] = useCameraPermissions();
@@ -49,6 +52,15 @@ const QrCodeScreen = () => {
           parsedData.device,
         );
         redictNewPage();
+        toast.show("Đã thêm một field mới thành công!", 
+          {
+            type: "custom_toast",
+            animationDuration: 100,
+            data: {
+              title: "Create New Field",
+            },
+          }
+        )
       } else {
         console.warn("QR code không hợp lệ hoặc thiếu dữ liệu.");
       }

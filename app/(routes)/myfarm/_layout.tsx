@@ -10,7 +10,7 @@ export default function MyfarmLayout() {
   const {data}= useFieldDetail(item.fieldID); //Tìm kiếm thông tin của field dựa trên fieldID
   useEffect(() => {
     if(data) {
-      if(!data.isPlanted) 
+      if(!data.isPlanted || data.isHarvest) 
         router.replace({
           pathname: "/(routes)/notplanted",
           params: {  },
