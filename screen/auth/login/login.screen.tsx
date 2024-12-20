@@ -9,6 +9,7 @@ import Icon from 'react-native-vector-icons/FontAwesome'
 import { useLogin } from '@/hooks/auth/userAuth'
 import { auth } from '@/firebaseConfig'
 import ModalNotice from '@/components/shared/Modal/ModalNotice'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const LoginScreen = () => {
   const router = useRouter();
   const [email, setEmail] = useState<string>("")
@@ -24,7 +25,10 @@ const LoginScreen = () => {
   };
   const resolveLogin  = async () => {
       const user = await login(email,password);
-      if (user) redictNewPage()
+      if (user) {
+        redictNewPage()
+        await AsyncStorage.setItem('currentUser', JSON.stringify(user));
+      }
       else setVisible(true)
   }
   return (

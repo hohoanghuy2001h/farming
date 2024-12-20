@@ -13,18 +13,22 @@ import { useFieldDetail } from '@/hooks/field';
 import configFeed from '@/utils/ConfigFeed';
 import { setFeed } from '@/store/feedReducer';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function InformationScreen() {
   const field = useSelector((state: RootState) => state.field);
   const fieldDetail = useFieldDetail(field.fieldID);
   const {data, loading} = useNewestData(fieldDetail.data?.aio_username || "",fieldDetail.data?.aio_key || "", fieldDetail.data?.aio_fieldname || "")
   const [feedList, setFeedList] = useState<feedType[]>([]);
   const dispatch = useDispatch();
-
+  const saveEnviroment = async (data: any) => {
+    await AsyncStorage.setItem('environmentData', JSON.stringify(data));
+  }
   useEffect(() => {
     setFeedList(configFeed(data, field.plantStage))
   }, [data])
   useEffect(() => {
     dispatch(setFeed(feedList));
+    saveEnviroment(feedList);
   }, [feedList])
   const [currentPage, setCurrentPage] = useState<number>(0);
   const getStageProgress = () => {

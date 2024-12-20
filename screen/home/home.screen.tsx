@@ -11,6 +11,8 @@ import Menu from '@/components/shared/Menu'
 import { useRouter } from 'expo-router'
 import { useLogout } from '@/hooks/auth/userAuth'
 import { auth } from '@/firebaseConfig'
+import { registerBackgroundTask } from '@/task/backgroundTask'
+import { registerBackgroundTask as registerBackgroundTaskNotification } from '@/task/backgroundTaskNotification'
 const HomeScreen = () => {
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
   const FieldBottomSheetModalRef = useRef<BottomSheetModal>(null);
@@ -28,6 +30,11 @@ const HomeScreen = () => {
     })
     logoutUser()
   }
+  useEffect(() => {
+    registerBackgroundTask();
+    registerBackgroundTaskNotification();
+  }, [])
+  
   const openModal = () => {
 
   }

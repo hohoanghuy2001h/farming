@@ -13,6 +13,7 @@ import { useToast } from 'react-native-toast-notifications'
 import notificationsTemplate from '@/constants/notifications.template'
 import { useAddNotification } from '@/hooks/notification'
 import sendEmail from '@/utils/gmailPush'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const getStageDay = (date: Date) => {
   const day = new Date(date); // Tạo bản sao để không thay đổi inputDate
   // Bước 2: Lấy thời gian hiện tại
@@ -38,12 +39,19 @@ export const CardState = () => {
       if(stage === item.plantStage) setCurrentPage(index);
     })
   }
+    // Lưu ngày trồng vào AsyncStorage khi người dùng chọn ngày mới
+  const savePlantDate = async (date: any) => {
+      await AsyncStorage.setItem('plantDate', date.toISOString()); // Lưu ngày dưới dạng chuỗi ISO
+  };
   useEffect(() => {
     getStageProgress();
   }, [item,currentPage]);
   useEffect(() => {
     setFieldCurrent(data); //Cho thông tin field current vào biến fieldCurrent
-    if(data)setDay(getStageDay(data?.timePlant)); //Lấy thời gian từ thời gian trồng đến hiện tại của fieldCurrent
+    if(data){
+      setDay(getStageDay(data?.timePlant)); //Lấy thời gian từ thời gian trồng đến hiện tại của fieldCurrent
+      savePlantDate(data.timePlant)
+    }
   }, [data, item])
   useEffect(() => {
     dispatch(getCurrentStage({day,stagePlant}));

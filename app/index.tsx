@@ -1,12 +1,27 @@
 import {useUser} from '@/hooks/auth/userAuth'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Redirect } from "expo-router";
+import { useEffect, useState } from 'react';
 
 const index = () => {
   // const router = useRouter();
   const { loading, user } = useUser();
+  const [currentUser, setCurrentUser] = useState("")
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        const user = await AsyncStorage.getItem('currentUser');
+        setCurrentUser(user ? JSON.parse(user) : "");
+      } catch (error) {
+        console.error('Error fetching current user:', error);
+      }
+    };
+
+    fetchCurrentUser();
+  }, []);
   return (
     <>
-        <Redirect href={!user ? "/(routes)/onboarding" : "/(routes)/home"} />
+        <Redirect href={!currentUser ? "/(routes)/onboarding" : "/(routes)/home"} />
     </>
   );
   // // Sử dụng useEffect để tự động chuyển sang trang 'introduce'

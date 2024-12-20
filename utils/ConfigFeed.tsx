@@ -36,7 +36,6 @@ const configFeed = (data: dataNewestType[], stage: stagePlant) => {
                      key:  dataItem.data.key.split('.')[1],
                  };
              }
-             console.log(feed);
              return feed; // Trả về feed nếu không tìm thấy đối tượng tương ứng
         })
     return matchedFeeds;
