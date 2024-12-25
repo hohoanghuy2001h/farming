@@ -47,7 +47,7 @@ const uploadImage = async (
 
         // Lưu dữ liệu dự đoán
         setData(response.data["predictions"]);
-        console.log(response.data["predictions"]);
+        console.log("Predictions ",response.data["predictions"]);
     } catch (error) {
         console.error("Error uploading image:", error);
     } finally {

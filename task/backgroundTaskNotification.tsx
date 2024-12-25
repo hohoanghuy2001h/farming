@@ -16,7 +16,7 @@ TaskManager.defineTask(BACKGROUND_TASK_NAME, async () => {
         // Lấy ngày trồng từ AsyncStorage hoặc nơi lưu trữ dữ liệu của bạn
         const data = await AsyncStorage.getItem('environmentData');
         if (data) {
-            console.log(data);
+            console.log("DataTask",data);
         } else {
           console.log('Không có data');
         }

@@ -41,7 +41,6 @@ const NotPlantedScreen = () => {
       )
       const result = notificationsTemplate.find((item) => item.label === 'New Season');
       if(result){
-        // console.log(result)
       useAddNotification({...result, fieldID: field.fieldID});
       sendEmail(result.label, field.fieldID, new Date().toLocaleDateString(), result.content, "Hãy vào app kiểm tra.");
 

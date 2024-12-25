@@ -122,12 +122,12 @@ const useNewestFieldData = (_id: string, feed: string) => {
     else if(feed === "Pump") {
       // Lắng nghe sự kiện "message"
       newSocket.on('pumpTriggerMCU', (newMessage: any) => {
-          console.log(newMessage)
+          console.log("pumpTriggerMCU", newMessage)
       });
     }
     else if(feed === "Fan") {
       newSocket.on('fanTrigger', (newMessage: any) => {
-        console.log(newMessage)
+        console.log("pumpTriggerFan", newMessage)
     });
     }
     // Ngắt kết nối khi component bị unmount
