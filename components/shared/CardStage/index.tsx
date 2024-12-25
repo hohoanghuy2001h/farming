@@ -75,10 +75,8 @@ export const CardState = () => {
       )
       const result = notificationsTemplate.find((item) => item.label === 'New Season');
       if(result){
-        // console.log(result)
-      useAddNotification({...result, fieldID: item.fieldID})
-      sendEmail(result.label, item.fieldID, new Date().toLocaleDateString(), result.content, "Hãy vào app kiểm tra.");
-
+        useAddNotification({...result, fieldID: item.fieldID})
+        sendEmail(result.label, item.fieldID, new Date().toLocaleDateString(), result.content, "Hãy vào app kiểm tra.");
       }
     }
   }

@@ -27,10 +27,7 @@ const useField = () => {
             timePlant: convertFromTimestamp(docData.timePlant),
             isPlanted: docData.isPlanted,
             isHarvest: docData.isHarvest,
-            aio_key: docData.aio_key,
-            aio_username: docData.aio_username,
             image: docData.image === "" ? require('@/assets/images/fields/field 1.png') : docData.image,
-            aio_fieldname: docData.aio_fieldname
           };
         });
 
@@ -78,7 +75,6 @@ const useFieldDetail = (_id: string) => {
             (docSnapshot) => {
               if (docSnapshot.exists()) {
                 const docData = docSnapshot.data();
-
                 // Tạo đối tượng `fieldType`
                 const fieldData: fieldType = {
                   _id: docSnapshot.id,
@@ -91,11 +87,7 @@ const useFieldDetail = (_id: string) => {
                   isPlanted: docData.isPlanted,
                   isHarvest: docData.isHarvest,
                   image: docData.image,
-                  aio_key: docData.aio_key,
-                  aio_username: docData.aio_username,
-                  aio_fieldname: docData.aio_fieldname,
                 };
-
                 setData(fieldData); // Cập nhật dữ liệu mới
               } else {
                 setError("Document does not exist");
@@ -138,15 +130,13 @@ const updateField = async (_id: string, updatedData: fieldType) => {
     console.error("Error updating document: ", error);
   }
 };
-const createField = async ( aio_fieldname: string, aio_key: string, aio_username: string, device: string[]) => {
-  const _id = `field_${Math.floor(Math.random() * 2000)}`;
+const createField = async (device: string[], _id: string) => {
   const date = new Date();
   const subscription = async () => {
     try {
       const docRef = doc(db, "field", _id);
       await setDoc(docRef, {
-        _id: _id,
-        name: _id,
+        name: `Field ${_id}`,
         size: 0,
         device: device,
         latitude: 0,
@@ -155,9 +145,6 @@ const createField = async ( aio_fieldname: string, aio_key: string, aio_username
         isPlanted: false,
         isHarvest: false,
         image: "",
-        aio_key: aio_key,
-        aio_username: aio_username,
-        aio_fieldname: aio_fieldname
       })
     } catch (err: any) {
         console.error(err);

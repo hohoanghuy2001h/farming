@@ -48,10 +48,6 @@ type fieldType = {
     timePlant: Date, 
     isPlanted: boolean,
     isHarvest: boolean,
-    aio_key: string,
-    aio_username: string,
-    aio_fieldname: string
-
 };
 type dateScheduleType = {
     _id: string,
@@ -65,17 +61,15 @@ type dataNewestType = {
     data: {
       key: string,
       last_value: string,
-      name: string
     }
 }
 type feedType =  { 
-    label: string,
+    key: string,
     value: number,
     unit: string, 
     warning: number, 
     timeUpdate: string,
     icon: string,
-    key: string
 }
 type notificationType = {
     date: Date,
