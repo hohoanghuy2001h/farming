@@ -29,16 +29,15 @@ const configDataChart = (rawData: any) => {
   }
     // Xử lý dữ liệu hợp lệ
     const data = {
-      labels: rawData.map((item: any) => {
+      labels: rawData.map((item: any, index: any) => {
         try {
-          const date = new Date(item.created_at);
-          // Kiểm tra xem có lỗi khi chuyển đổi ngày không
-          if (isNaN(date.getTime())) {
-            throw new Error('Invalid date');
-          }
-          const timePart = date.toLocaleString().split(", ")[0];
-          const [hour, minute] = timePart.split(":");
-          return `${hour.padStart(2, '0')}:${minute.padStart(2, '0')}`; // Định dạng giờ phút
+            if(index > 0) {
+              const currentIndexDay = new Date(item.created_at).getDate();
+              const prevIndexDay = new Date(rawData[index - 1].created_at).getDate();  
+              if(currentIndexDay == prevIndexDay) return "";
+              else return item.created_at;
+            }         
+            return item.created_at;
         } catch (error) {
           console.error("Error processing date:", item.created_at, error);
           return ''; // Trả về chuỗi trống nếu có lỗi
@@ -59,16 +58,14 @@ const configDataChart = (rawData: any) => {
 export default function StatisticalScreen() {
   const field = useSelector((state: RootState) => state.field);
   const feed = useSelector((state: RootState) => state.feed);
-  const [activeFeed, setActiveFeed] = useState('temp');
+  const [activeFeed, setActiveFeed] = useState('Temperature');
   const [activeItem, setActiveItem] = useState(0)
-  const fieldDetail = useFieldDetail(field.fieldID);
-  const {data, loading} = useData(
-    fieldDetail.data?.aio_username||'',
-    fieldDetail.data?.aio_key||'', 
-    activeFeed, fieldDetail.data?.aio_fieldname || '');
+  const {data, loading} = useData(field.fieldID, activeFeed);
   const [dataChart, setDataChart] = useState({})
   useEffect(() => {
-      if(data.length !== 0)setDataChart(configDataChart(data));
+      if(data.length !== 0)  {
+        setDataChart(configDataChart(data));
+      }
   }, [data])
   const itemRender = (item: any, index: number) => {
     return (
@@ -98,7 +95,8 @@ export default function StatisticalScreen() {
         <View style={styles.wrapper}>
           <HeaderMyFarm />
           <View style={styles.graphContainer}>
-            {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={feed.feed[activeItem].unit}/>}</View>
+            {Object.keys(dataChart).length === 0 ? <Text>Loading</Text>: <Line data={dataChart} unit={feed.feed[activeItem].unit}/>}
+          </View>
           <View style={styles.swipperContainer}>
               <FlatList 
                 data={feed.feed}

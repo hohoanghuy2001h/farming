@@ -16,8 +16,7 @@ import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function InformationScreen() {
   const field = useSelector((state: RootState) => state.field);
-  const fieldDetail = useFieldDetail(field.fieldID);
-  const {data, loading} = useNewestData(fieldDetail.data?.aio_username || "",fieldDetail.data?.aio_key || "", fieldDetail.data?.aio_fieldname || "")
+  const {data, loading} = useNewestData(field.fieldID)
   const [feedList, setFeedList] = useState<feedType[]>([]);
   const dispatch = useDispatch();
   const saveEnviroment = async (data: any) => {
@@ -41,7 +40,7 @@ export default function InformationScreen() {
   }, [field,currentPage])
   const renderItem = (data: any) => {
     return (
-      <CardInfo label={data.item.label} type={data.item.unit} value={data.item.value} warning={data.item.warning} date={new Date(data.item.timeUpdate)} />
+      <CardInfo label={data.item.key} type={data.item.unit} value={data.item.value} warning={data.item.warning} date={new Date(data.item.timeUpdate)} />
     );
   }
   return (

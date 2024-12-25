@@ -18,19 +18,20 @@ import Gauge from '@/components/shared/Chart/Gauge';
 import Toast from 'react-native-toast-message';
 import notificationsTemplate from '@/constants/notifications.template';
 import ModalQuestion from '@/components/shared/Modal/ModalQuestion';
+import { setSoil } from '@/store/feedReducer';
 export default function PumpScreen() {
   const field = useSelector((state: RootState) => state.field);
+  const feed = useSelector((state: RootState) => state.feed);
   const irrigation = useSelector((state: RootState) => state.controller);
   const dispatch = useDispatch()
-  const fieldDetail = useFieldDetail(field.fieldID);
-  const soil = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'soil-moisturizer', fieldDetail.data?.aio_fieldname || '');
-  const irrigationData = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', fieldDetail.data?.aio_fieldname || '');
+  const soil = useNewestFieldData(field.fieldID, "Soil moisturize");
   const [auto, setAuto] = useState(irrigation.controller.pump.auto);
   const [manual, setManual] = useState(irrigation.controller.pump.manual);
   const [visibleAcceptManual, setVisibleAcceptManual] = useState(false);
   const BottomSheetModalRef = useRef<BottomSheetModal>(null);
   const snapPoints = useMemo(() => ['100%'], []); 
-  const soildData = 500;
+  const [soildData, setSoildData] = useState(Number(feed.feed[3].value) | 0);
+  const [schedule, setSchedule] = useState(false);
   const showToast = (type: string, text1: string, text2: string) => {
     Toast.show({
       type,
@@ -42,36 +43,51 @@ export default function PumpScreen() {
     });
   };
   useEffect(() => {
-    unactivePumpAuto()
-  }, [soil])
+    if(soil.data) {
+      dispatch(setSoil({
+        value: soil.data?.value,
+        timeUpdate: new Date().toLocaleString(),
+      }))
+      if(schedule) {
+        unactivePumpAuto()
+      }
+    }
+  }, [soil.data]);
 
-  const toggleAuto = (value: string) => {
-    setAuto(value !== "PUMP_OFF_0xCC");
-    useUpdateAllSchedulewithOnActive(value !== "AUTO_PUMP_OFF_0xCC");
-    dispatch(setAutoIrrgation(value !== "AUTO_PUMP_OFF_0xCC"))
+  useEffect(() => {
+    setSoildData(feed.feed[3].value);
+  }, [feed])
+
+
+  const toggleAuto = (value: boolean) => {
+    setAuto(value);
+    useUpdateAllSchedulewithOnActive(value);
+    dispatch(setAutoIrrgation(value))
     //Chưa giải quyết vấn đề khi bật tắt thì tắt cái onActive
   }
   const activePumpAuto = () => {
-    useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'auto-irrigation-feed', "AUTO_PUMP_ON_0xCC", fieldDetail.data?.aio_fieldname || '')
+    useAddData(true, field.fieldID, "pump");
     showToast('success', 'Turn ON PUMP', 'Hệ thông đang bật pump');
+    setSchedule(true);
   }
   const unactivePumpAuto = () => {
-    if(parseFloat(soil.data) > field.plantStage.maxSoil) {
-      useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'auto-irrigation-feed', "AUTO_PUMP_OFF_0xCC", fieldDetail.data?.aio_fieldname || '')
+    if(soildData > 40) {
+      useAddData(false, field.fieldID, "pump");
       showToast('error', 'Turn OFF PUMP', 'Hệ thông đã tắt pump');
+      setSchedule(false);
     }
   }
   const activePumpManual = () => {
-      // useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', "PUMP_ON_0xCC", fieldDetail.data?.aio_fieldname || '')
-      showToast('success', 'Turn ON PUMP', 'Hệ thông đang bật pump');
+    useAddData(true, field.fieldID, "pump");
+    showToast('success', 'Turn ON PUMP', 'Hệ thông đang bật pump');
   }
   const unactivePumpManual = () => {
-      // useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'irrigation-feed', "PUMP_OFF_0xCC", fieldDetail.data?.aio_fieldname || '')
-      showToast('error', 'Turn OFF PUMP', 'Hệ thông đã tắt pump');
+    useAddData(false, field.fieldID, "pump");
+    showToast('error', 'Turn OFF PUMP', 'Hệ thông đã tắt pump');
   }
   const toggleManual = (value: boolean) => {
     setManual(value)
-    if(value) activePumpManual();
+    if(value === true) activePumpManual();
     else unactivePumpManual();
     dispatch(setManualIrrgation(value))
   }
@@ -117,7 +133,7 @@ export default function PumpScreen() {
           <View style={styles.wrapper}>
             <View style= {styles.mainContainer}>
               <View style={styles.chartContainer}>
-                <Gauge data={ parseFloat(soil.data) || 73}  title='Soil Moiturizer'/>
+                <Gauge data={feed?.feed[3].value || 0}   title='Soil Moiturizer' label='Soil moisturize'/>
               </View>
               <View style={styles.imageContainer}>
               <Image 
@@ -147,7 +163,7 @@ export default function PumpScreen() {
                     value={auto} 
                     style = {styles.button}
                     onValueChange={(value) => {
-                      toggleAuto(value === true ? "AUTO_PUMP_ON_0xCC": "AUTO_PUMP_OFF_0xCC")
+                      toggleAuto(value)
                     }} 
                     trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                   />

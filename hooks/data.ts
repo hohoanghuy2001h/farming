@@ -1,159 +1,162 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import mqtt from "mqtt";
 import axios from "axios";
+import io from 'socket.io-client';
+import dataTemplate from "@/constants/data.template";
 interface DataItem {
   created_at: Date; // Hoặc kiểu dữ liệu chính xác (nếu không phải string)
   value: number; // Thay đổi kiểu `any` thành kiểu cụ thể nếu biết rõ
 }
-const useData = (aio_username: string, aio_key: string, feed_key: string, aio_fieldname: string) => {
+const useData = (_id: string, key: string) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<DataItem[]>([])
   const [error, setError] = useState("");
   const [refetch, setRefetch] = useState(false);
   useEffect(() => {
-    if(aio_username !== '' && aio_key !== '' && feed_key !== '') {
-      const URL = `https://io.adafruit.com/api/v2/${aio_username}/feeds/${aio_fieldname}.${feed_key}/data?limit=10`;
+      const URL = `http://192.168.1.121:3000/field-data/${_id}`;
       const subscription = async () => {
         try {
-          const response = await axios.get(URL, {
-            headers: {
-              'X-AIO-Key': aio_key, // Thêm header
-            },
-          });
-          const newData = response.data.map((item: any) => ({
-            value: parseInt(item.value),
-            created_at: item.created_at,
-          }));
-
-          setData(newData); // Ghi đè dữ liệu cũ bằng dữ liệu mới
+          const response = await axios.get(URL);
+          // const newData = response.data.devices
+          // .find((data: any) => data.key === key)?.data.reverse()
+          const template = dataTemplate
+          .find((data: any) => data.key === key)?.data.reverse()
+          .map((item: any) => ({
+            value: item.value, // hoặc item.temperature nếu cần chuyển đổi
+            created_at: item.created_at || item.timestamp, // Đảm bảo trường này tồn tại
+          })) || [];
+        
+          
+          setData(template); // Ghi đè dữ liệu cũ bằng dữ liệu mới
         } catch (err) {
           console.error('Error fetching data:', err);
         } finally {
           setLoading(false);
-        }
+        }    
       }
       subscription();
-    }
-  }, [refetch, feed_key, aio_username, aio_fieldname]);
+  }, [refetch, key, _id]);
   return { loading, data, error, setRefetch, refetch };
 
 }
-const useNewestData = (aio_username: string, aio_key: string, aio_fieldname: string) => {
+const useNewestData = (_id: string) => {
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState<dataNewestType[]>([])
     const [error, setError] = useState("");
     const [refetch, setRefetch] = useState(false);
     useEffect(() => {
-      if(aio_username !== '' && aio_key !== '' ) {
-      const URL = `https://io.adafruit.com/api/v2/${aio_username}/feeds`;
-      const subscription = async () => {
-        try {
-          const response = await axios.get(URL, {
-            headers: {
-              "X-AIO-Key": aio_key, // Thêm header
-            },
-          });
-          const fetchData = response.data
-          .filter((item: any) => item.key.includes(aio_fieldname))
-          .map((data: any) => {
-            return (
-              {
-                created_at: data.created_at,
-                data: {
-                  key: data.key,
-                  name: data.name,
-                  last_value: data.last_value,
+      if(_id !== "") {
+        const URL = `http://192.168.1.121:3000/field-data/${_id}`;
+        const subscription = async () => {
+          try {
+            const response = await axios.get(URL);
+            const fetchData = response.data.devices
+            .map((data: any) => {
+              return (
+                {
+                  created_at: data.data[0].created_at,
+                  data: {
+                    key: data.key,
+                    last_value: data.data[0].value,
+                  }
                 }
-              }
-            )
-          })
-          // console.log(fetchData);
-          setData(fetchData);
-        } catch (err) {
-          console.error(err);
-        } finally {
-          setLoading(false);
+              )
+            })
+            setData(fetchData);
+          } catch (err) {
+            console.error(err);
+          } finally {
+            setLoading(false);
+          }        
         }
-      };
-      subscription();
+        subscription();
       }
-    }, [refetch, aio_username, aio_key, aio_fieldname]);
+    }, [refetch, _id]);
   
     return { loading, data, error, setRefetch, refetch };
 }
-const useNewestFieldData = (aio_username: string, aio_key: string, feed_key: string, aio_fieldname: string) => {
+
+const useNewestFieldData = (_id: string, feed: string) => {
   const [loading, setLoading] = useState(true);
-  const [data, setData] = useState("")
+  const [data, setData] = useState<DataItem>();
   const [error, setError] = useState("");
   const [refetch, setRefetch] = useState(false);
+  const [socket, setSocket] = useState<any>(null);
   useEffect(() => {
-    const options = {
-      username: aio_username,
-      password: aio_key,
-    };
-    // Connect to Adafruit IO
-    const client = mqtt.connect("wss://io.adafruit.com:443/mqtt", options);
-    // console.log(client);
-    if(aio_fieldname != '' && aio_key != '' && feed_key != '' && aio_fieldname != '' ) {
-      client.on("connect", () => {
-        // Subscribe to the feed
-        client.subscribe(`${aio_username}/feeds/${aio_fieldname}.${feed_key}`, (err, granted) => {
-          if (err) {
-            console.error("Subscription failed:", err);
-          } else {
-            console.log("Subscribed successfully:", granted);
-          }
-        });
-      });
-      client.on("message", (topic, message) => {
-        try {
-          const incomingData = message.toString();
-          console.log("Message received:", incomingData);
-          setData(incomingData); // Update state with new data
-        } catch (err) {
-          setError("Failed to parse message");
-          console.error("Error parsing message:", err);
-        } finally {
-          setLoading(false);
+    const newSocket = io("http://192.168.1.121:3000/");
+    setSocket(newSocket);
+
+    if(feed === "Soil moisturize") {
+      // Lắng nghe sự kiện "message"
+      newSocket.on('updateSoilPumpOn', (newMessage: any) => {
+        if(newMessage["id"] == Number(_id) ) {
+          setData({
+            value: newMessage["Soil moisturize"],
+            created_at: newMessage["timeUpdated"]
+          })
         }
       });
-      client.on("offline", () => {
-        console.log("MQTT client is offline. Attempting to reconnect...");
-        client.reconnect();
-      });
-      // Clean up the MQTT client connection when the component unmounts
-      return () => {
-        client.end();
-      };
     }
-  }, [refetch, aio_username, aio_key, feed_key, aio_fieldname]);
+    else if(feed === "Temperature") {
+      // Lắng nghe sự kiện "message"
+      newSocket.on('updateTempFanOn', (newMessage: any) => {
+        if(newMessage["id"] == Number(_id) ) {
+          setData({
+            value: newMessage["Temperature"],
+            created_at: newMessage["timeUpdated"]
+          })
+        }
+      });
+    }
+    else if(feed === "Humidity") {
+      // Lắng nghe sự kiện "message"
+      newSocket.on('updateHumFanOn', (newMessage: any) => {
+        if(newMessage["id"] == Number(_id) ) {
+          setData({
+            value: newMessage["Humidity"],
+            created_at: newMessage["timeUpdated"]
+          })
+        }
+      });
+    }
+    else if(feed === "Pump") {
+      // Lắng nghe sự kiện "message"
+      newSocket.on('pumpTriggerMCU', (newMessage: any) => {
+          console.log(newMessage)
+      });
+    }
+    else if(feed === "Fan") {
+      newSocket.on('fanTrigger', (newMessage: any) => {
+        console.log(newMessage)
+    });
+    }
+    // Ngắt kết nối khi component bị unmount
+    return () => {
+      newSocket.disconnect();
+    };
+  }, [refetch, _id]);
 
   return { loading, data, error, setRefetch, refetch };
 }
-const useAddData = (aio_username: string, aio_key: string, feed_key: string, value: string, aio_fieldname: string) => {
-   // MQTT Client Options
-   const options = {
-    username: aio_username,
-    password: aio_key,
-  };
-  // Connect to Adafruit IO
-  const client = mqtt.connect("wss://io.adafruit.com:443/mqtt", options);
-      // Subscribe to the feed
-  client.on("connect", () => {
-    client.subscribe(`${aio_username}/feeds/${aio_fieldname}.${feed_key}`);
-  });
-  client.on("connect", () => {
-    // Push the data to the feed
-    client.publish(`${aio_username}/feeds/${aio_fieldname}.${feed_key}`, value, () => {
-      console.log("Data sent to Adafruit IO:", value);
-    });
-  });
-  client.on("offline", () => {
-    console.log("MQTT client is offline. Attempting to reconnect...");
-    client.reconnect();
-  });
-  return () => {
-    client.end();
-  };
+
+const useAddData = (value: boolean, _id: string, feed: string) => {
+  try {
+    const newSocket = io("http://192.168.1.121:3000/");
+    if(feed === "pump") {
+      newSocket.emit("pumpTrigger", {
+        field: Number(_id),
+        state: value,
+      });
+    }
+    else if(feed === "fan") {
+      newSocket.emit("fanTrigger", {
+        field: Number(_id),
+        state: value,
+      });
+    }
+  }
+  catch (error) {
+    console.error(error)
+  }
 }
 export {useData, useNewestData, useNewestFieldData, useAddData}

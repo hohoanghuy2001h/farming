@@ -1,29 +1,37 @@
-import { Text, View, StyleSheet, Image ,Dimensions, Switch} from 'react-native';
+import { Text, View, StyleSheet, Image ,Dimensions, Switch, Button} from 'react-native';
 import React, { useState, useEffect } from 'react';
 // import Gauge from '@/components/shared/Chart/Gauge';
 import { windowHeight, windowWidth } from '@/utils/Dimensions';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useAddData, useNewestFieldData } from '@/hooks/data';
+import { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet'
 import { useRef, useCallback, useMemo } from 'react'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'; // Import GestureHandlerRootView
+import DatePickerModal from '@/components/shared/DatePickerModal';
 import { useUpdateAllSchedulewithOnActive } from '@/hooks/schedule';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { useFieldDetail } from '@/hooks/field';
 import LoadingScreen from '@/screen/loading/loading.screen';
-import { setRightFan, setLeftFan} from '@/store/controllerReducer';
+import { setManualIrrgation, setAutoIrrgation } from '@/store/controllerReducer';
 import Gauge from '@/components/shared/Chart/Gauge';
 import Toast from 'react-native-toast-message';
-export default function FanScreen() {
+import notificationsTemplate from '@/constants/notifications.template';
+import ModalQuestion from '@/components/shared/Modal/ModalQuestion';
+import { setSoil } from '@/store/feedReducer';
+export default function PumpScreen() {
   const field = useSelector((state: RootState) => state.field);
+  const feed = useSelector((state: RootState) => state.feed);
   const irrigation = useSelector((state: RootState) => state.controller);
   const dispatch = useDispatch()
-  const fieldDetail = useFieldDetail(field.fieldID);
-  const temp = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'temp', fieldDetail.data?.aio_fieldname || '');
-  const humidity = useNewestFieldData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'humidity', fieldDetail.data?.aio_fieldname || '');
-
-  const [left, setLeft] = useState(irrigation.controller.fan.left);
-  const [right, setRight] = useState(irrigation.controller.fan.right);
-
+  const soil = useNewestFieldData(field.fieldID, "Soil moisturize");
+  const [auto, setAuto] = useState(irrigation.controller.pump.auto);
+  const [manual, setManual] = useState(irrigation.controller.pump.manual);
+  const [visibleAcceptManual, setVisibleAcceptManual] = useState(false);
+  const BottomSheetModalRef = useRef<BottomSheetModal>(null);
+  const snapPoints = useMemo(() => ['100%'], []); 
+  const [soildData, setSoildData] = useState(Number(feed.feed[3].value) | 0);
+  const [schedule, setSchedule] = useState(false);
   const showToast = (type: string, text1: string, text2: string) => {
     Toast.show({
       type,
@@ -34,75 +42,128 @@ export default function FanScreen() {
       position:'top',
     });
   };
-  const toggleLeft = (value: string) => {
-    setLeft(value !== "FAN_OFF_0xCC");
-    useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'fan', value,fieldDetail.data?.aio_fieldname || '')
-    dispatch(setLeftFan(value !== "FAN_OFF_0xCC"))
-    if(value !== "FAN_OFF_0xCC") {
-      showToast('success', 'Turn ON FAN', 'Hệ thông đang bật Fan.')
+  useEffect(() => {
+    if(soil.data) {
+      dispatch(setSoil({
+        value: soil.data?.value,
+        timeUpdate: new Date().toLocaleString(),
+      }))
+      if(schedule) {
+        unactivePumpAuto()
+      }
     }
-    else {
-      showToast('success', 'Turn OFF FAN', 'Hệ thông đã tắt Fan.')
-    }
+  }, [soil.data]);
 
+  useEffect(() => {
+    setSoildData(feed.feed[3].value);
+  }, [feed])
+
+
+  const toggleAuto = (value: boolean) => {
+    setAuto(value);
+    useUpdateAllSchedulewithOnActive(value);
+    dispatch(setAutoIrrgation(value))
     //Chưa giải quyết vấn đề khi bật tắt thì tắt cái onActive
   }
-
-  const toggleRight = (value: string) => {
-    //Nếu active gửi data cho FAN
-    setRight(value !== "FAN_OFF_0xCC")
-    useAddData(fieldDetail.data?.aio_username || "doanladeproject",fieldDetail.data?.aio_key || "aio_VHsC42XjBSHWVrN4GkjxoU7sl3cA", 'fan', value,fieldDetail.data?.aio_fieldname || '')
-    dispatch(setRightFan(value !== "FAN_OFF_0xCC"))
-    if(value !== "FAN_OFF_0xCC") {
-      showToast('success', 'Turn ON FAN', 'Hệ thông đang bật Fan.')
+  const activePumpAuto = () => {
+    useAddData(true, field.fieldID, "pump");
+    showToast('success', 'Turn ON PUMP', 'Hệ thông đang bật pump');
+    setSchedule(true);
+  }
+  const unactivePumpAuto = () => {
+    if(soildData > 40) {
+      useAddData(false, field.fieldID, "pump");
+      showToast('error', 'Turn OFF PUMP', 'Hệ thông đã tắt pump');
+      setSchedule(false);
     }
+  }
+  const activePumpManual = () => {
+    useAddData(true, field.fieldID, "pump");
+    showToast('success', 'Turn ON PUMP', 'Hệ thông đang bật pump');
+  }
+  const unactivePumpManual = () => {
+    useAddData(false, field.fieldID, "pump");
+    showToast('error', 'Turn OFF PUMP', 'Hệ thông đã tắt pump');
+  }
+  const toggleManual = (value: boolean) => {
+    setManual(value)
+    if(value === true) activePumpManual();
+    else unactivePumpManual();
+    dispatch(setManualIrrgation(value))
+  }
+  const toggleManualLogic = (value: boolean) => {
+    if(value === true) {
+      if(soildData < field.plantStage.maxSoil ) {
+        toggleManual(value)
+      }
+      else {
+        setVisibleAcceptManual(true)
+      }
+    } 
     else {
-      showToast('success', 'Turn OFF FAN', 'Hệ thông đã tắt Fan.')
+      if(soildData > field.plantStage.minSoil) {
+        toggleManual(value)
+      }
+      else {
+        setVisibleAcceptManual(true)
+      }
     }
   }
 
+  //Đây là hàm mở màn hình schedule - irrigation
+  const openPresentBottomSheetModal = useCallback(() => {
+    BottomSheetModalRef.current?.present();
+    BottomSheetModalRef.current?.snapToIndex(0);
+  }, []);
+  // Hàm đóng BottomSheetModal
+  const handleDismissModal = () => {
+    BottomSheetModalRef.current?.dismiss();
+  };
+  //Đây là hàm onclick để mở schedule
+  const onClickScheduleBtn = () => {
+    openPresentBottomSheetModal();
+  }
+  //Đây là hàm mở tắt chế độ schedule irrigation
+
   return (
-    // temp.loading && humidity.loading ? <LoadingScreen /> :
+    // soil.loading && irrigationData.loading ? <LoadingScreen /> :
+    <GestureHandlerRootView>
+      <BottomSheetModalProvider>
         <View style={styles.container}>
           <View style={styles.wrapper}>
             <View style= {styles.mainContainer}>
               <View style={styles.chartContainer}>
-                <Gauge data={parseFloat(temp.data) || 27.1} title='Temperature' unit="°C" label='temperature'/>
-                <Gauge data={parseFloat(humidity.data) || 73} title='Humidity' label='humidity'/>
+                <Gauge data={feed?.feed[3].value || 0}   title='Soil Moiturizer' label='Soil moisturize'/>
               </View>
               <View style={styles.imageContainer}>
-                {
-                  !left && !right ? 
-                    <Image 
-                      style={styles.image} 
-                      source={require('@/assets/images/Fan.png')}
-                    /> :
-                  left? 
-                    <Image 
-                        style={styles.image} 
-                        source={require('@/assets/images/FanLefttoRight.png')}
-                    />:
-                  <Image 
-                      style={styles.image} 
-                      source={require('@/assets/images/FanRighttoLeft.png')}
-                  />
-                }
+              <Image 
+                  style={styles.image} 
+                  source={require('@/assets/images/Watering.png')}
+              />
               </View>
             </View>
             <View style={styles.buttonContainer}>
               <View style={styles.btnItem}>
                 <View style={styles.btnTitleContain}>
                   <View style={styles.btnTitleRight}>
-                    <Text style={styles.btnTitle}>Rotate Left</Text>
-                    <Text style={styles.subbtnTitle}>Help decrease the Humidity.</Text>
+                    <Text style={styles.btnTitle}>Automic</Text>
+                    <Text style={styles.subbtnTitle}>Next irrigates in 8:00</Text>
                   </View>
+                  <TouchableOpacity 
+                    style={styles.btnTitleLeft} 
+                    onPress={onClickScheduleBtn}
+                  >
+                    <Image 
+                      source={require('@/assets/images/setting.png')}
+                    />
+                  </TouchableOpacity>
                 </View>
                 <View>
                   <Switch 
-                    value={left} 
+                    value={auto} 
                     style = {styles.button}
                     onValueChange={(value) => {
-                      toggleLeft(value === true ? "FAN_ON_0xCC": "FAN_OFF_0xCC")
+                      toggleAuto(value)
                     }} 
                     trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                   />
@@ -111,8 +172,8 @@ export default function FanScreen() {
               <View style={styles.btnItem}>
                 <View style={styles.btnTitleContain}>
                   <View style={styles.btnTitleRight}>
-                    <Text style={styles.btnTitle}>Rotate Right</Text>
-                    <Text style={styles.subbtnTitle}>Help decrease the Temperature.</Text>
+                    <Text style={styles.btnTitle}>Manually</Text>
+                    <Text style={styles.subbtnTitle}>System will turn of after the soil moisture is enough.</Text>
                   </View>
                   <View style={styles.btnTitleLeft}>
 
@@ -120,10 +181,10 @@ export default function FanScreen() {
                 </View>
                 <View>
                   <Switch 
-                    value={right} 
+                    value={manual} 
                     style = {styles.button}
                     onValueChange={(value) => {
-                      toggleRight(value === true? "FAN_ON_0xCC": "FAN_OFF_0xCC")
+                      toggleManualLogic(value)
                     }} 
                     trackColor={{false: '#D9D9D9' , true: '#13852F'}}
                   />
@@ -132,6 +193,48 @@ export default function FanScreen() {
             </View>
           </View>
         </View>
+        <View>
+          <BottomSheetModal 
+            ref={BottomSheetModalRef}
+            index={0}
+            snapPoints={snapPoints}
+            backgroundStyle ={styles.bottomModal}
+            enablePanDownToClose={true}
+            onDismiss={handleDismissModal} // Xử lý khi modal đóng
+          >
+            <BottomSheetView style={styles.contentContainer}>
+              <DatePickerModal activePumpAuto={activePumpAuto}/>
+            </BottomSheetView>
+          </BottomSheetModal>
+          <ModalQuestion isOpen = {visibleAcceptManual} setIsOpen={setVisibleAcceptManual} 
+                submit={() => {
+                  //Turn on when
+                  if(soildData > field.plantStage.maxSoil) {
+                    toggleManual(true)
+                  }
+                  //Turn off when
+                  else if (soildData < field.plantStage.minSoil) {
+                    toggleManual(false)
+                  }
+                  setVisibleAcceptManual(false);
+                }}
+          >
+            <View>
+              <Text style={styles.modalTitle}>
+                  { soildData > field.plantStage.maxSoil ? 'Vượt quá độ ẩm' : soildData < field.plantStage.minSoil ? 'Chưa đủ ẩm' : ''}
+              </Text>
+              <View style={styles.datePickerWrapper}>
+                  <Text>                  
+                    { soildData > field.plantStage.maxSoil ? `Độ ẩm đang vượt quá cho phép \nbạn vẫn muốn bật máy bơm?` : 
+                      soildData < field.plantStage.minSoil ? `Độ ẩm đang chưa đủ \nbạn vẫn muốn tắt máy bơm?` : ''
+                    }
+                  </Text>
+              </View>
+            </View>
+          </ModalQuestion>
+        </View>
+      </BottomSheetModalProvider>
+    </GestureHandlerRootView>
   );
 }
 
@@ -153,12 +256,12 @@ const styles = StyleSheet.create({
   },
   imageContainer: { 
     position: 'absolute',
-    right: '-35%',
-    top: 40,
+    right: '-40%',
+    width: 370,
+    bottom: -20,
   },
   image: {},
   chartContainer: {
-
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -204,5 +307,16 @@ const styles = StyleSheet.create({
 
     // Shadow cho Android
     elevation: 5, 
-  }
+  }, 
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: 'red'
+  },
+  datePickerWrapper: {
+    marginBottom: 20,
+    gap: 20,
+    justifyContent: 'center',
+  },
 });
