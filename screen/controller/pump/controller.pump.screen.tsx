@@ -221,12 +221,12 @@ export default function PumpScreen() {
           >
             <View>
               <Text style={styles.modalTitle}>
-                  { soildData > field.plantStage.maxSoil ? 'Vượt quá độ ẩm' : soildData < field.plantStage.minSoil ? 'Chưa đủ ẩm' : ''}
+                  { soildData >= field.plantStage.maxSoil ? 'Vượt quá độ ẩm' : soildData <= field.plantStage.minSoil ? 'Chưa đủ ẩm' : ''}
               </Text>
               <View style={styles.datePickerWrapper}>
                   <Text>                  
-                    { soildData > field.plantStage.maxSoil ? `Độ ẩm đang vượt quá cho phép \nbạn vẫn muốn bật máy bơm?` : 
-                      soildData < field.plantStage.minSoil ? `Độ ẩm đang chưa đủ \nbạn vẫn muốn tắt máy bơm?` : ''
+                    { soildData >= field.plantStage.maxSoil ? `Độ ẩm đang vượt quá cho phép \nbạn vẫn muốn bật máy bơm?` : 
+                      soildData <= field.plantStage.minSoil ? `Độ ẩm đang chưa đủ \nbạn vẫn muốn tắt máy bơm?` : ''
                     }
                   </Text>
               </View>

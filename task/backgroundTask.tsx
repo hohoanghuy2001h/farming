@@ -20,57 +20,57 @@ const checkPlantingDays = (plantDate: any) => {
         case 9:
             if(result){
                 // console.log(result)
-              useAddNotification({...result, fieldID: "field_1"})
-              sendEmail(result.label, "field_1", new Date().toLocaleDateString(), result.content, 'Germination');
+              useAddNotification({...result, fieldID: "204"})
+              sendEmail(result.label, "204", new Date().toLocaleDateString(), result.content, 'Germination');
               }
             break;
         case 40:
             if(result){
                 // console.log(result)
-              useAddNotification({...result, fieldID: "field_1"})
-              sendEmail(result.label, "field_1", new Date().toLocaleDateString(), result.content, 'Seedling');
+              useAddNotification({...result, fieldID: "204"})
+              sendEmail(result.label, "204", new Date().toLocaleDateString(), result.content, 'Seedling');
               }
             break;
         case 47:
             if(result){
                 // console.log(result)
-              useAddNotification({...result, fieldID: "field_1"})
-              sendEmail(result.label, "field_1", new Date().toLocaleDateString(), result.content, 'Green Anise');
+              useAddNotification({...result, fieldID: "204"})
+              sendEmail(result.label, "204", new Date().toLocaleDateString(), result.content, 'Green Anise');
               }
             break;
         case 65:
             if(result){
                 // console.log(result)
-              useAddNotification({...result, fieldID: "field_1"})
-              sendEmail(result.label, "field_1", new Date().toLocaleDateString(), result.content, 'Branching');
+              useAddNotification({...result, fieldID: "204"})
+              sendEmail(result.label, "204", new Date().toLocaleDateString(), result.content, 'Branching');
               }
             break;
         case 85:
             if(result){
                 // console.log(result)
-              useAddNotification({...result, fieldID: "field_1"})
-              sendEmail(result.label, "field_1", new Date().toLocaleDateString(), result.content, 'Flowering');
+              useAddNotification({...result, fieldID: "204"})
+              sendEmail(result.label, "204", new Date().toLocaleDateString(), result.content, 'Flowering');
               }
             break;
         case 100:
             if(result){
                 // console.log(result)
-              useAddNotification({...result, fieldID: "field_1"})
-              sendEmail(result.label, "field_1", new Date().toLocaleDateString(), result.content, 'Fruit');
+              useAddNotification({...result, fieldID: "204"})
+              sendEmail(result.label, "204", new Date().toLocaleDateString(), result.content, 'Fruit');
               }
             break;
         case 140:
             if(result){
                 // console.log(result)
-              useAddNotification({...result, fieldID: "field_1"})
-              sendEmail(result.label, "field_1", new Date().toLocaleDateString(), result.content, 'Rippen & First Harvest');
+              useAddNotification({...result, fieldID: "204"})
+              sendEmail(result.label, "204", new Date().toLocaleDateString(), result.content, 'Rippen & First Harvest');
               }
             break;
         case 200:
             if(result){
                 // console.log(result)
-              useAddNotification({...result, fieldID: "field_1"})
-              sendEmail(result.label, "field_1", new Date().toLocaleDateString(), result.content, 'Rippen & Second Harvest');
+              useAddNotification({...result, fieldID: "204"})
+              sendEmail(result.label, "204", new Date().toLocaleDateString(), result.content, 'Rippen & Second Harvest');
               }
             break;  
         defautl: 

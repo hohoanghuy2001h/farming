@@ -44,12 +44,10 @@ const QrCodeScreen = () => {
       const parsedData = JSON.parse(data);
 
       // Kiểm tra và truyền các giá trị cần thiết vào createField
-      if (parsedData.aio_fieldname && parsedData.aio_key && parsedData.aio_username && parsedData.device) {
+      if (parsedData.device && parsedData._id) {
         await createField(
-          parsedData.aio_fieldname,
-          parsedData.aio_key,
-          parsedData.aio_username,
           parsedData.device,
+          parsedData._id
         );
         redictNewPage();
         toast.show("Đã thêm một field mới thành công!", 

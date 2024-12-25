@@ -130,6 +130,7 @@ const useNewestFieldData = (_id: string, feed: string) => {
         console.log("pumpTriggerFan", newMessage)
     });
     }
+    setLoading(false);
     // Ngắt kết nối khi component bị unmount
     return () => {
       newSocket.disconnect();
