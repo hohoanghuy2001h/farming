@@ -33,7 +33,7 @@ const uploadImage = async (
 
         // Gửi request API
         const response = await axios.post(
-            "https://detect.roboflow.com/chili-disease-afgra/8",
+            "https://detect.roboflow.com/chili-disease-afgra/12",
             base64,
             {
                 params: {

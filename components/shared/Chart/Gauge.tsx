@@ -10,15 +10,14 @@ interface GaugeChartProps {
   label?: string,
 }
 
-const Gauge: React.FC<GaugeChartProps> = ({data, title = '', unit='%', label='soil'})  => {
+const Gauge: React.FC<GaugeChartProps> = ({data, title = '', unit='%', label='Soil moisturize'})  => {
   const field = useSelector((state: RootState) => state.field);
-
  // Khởi tạo trạng thái warning với giá trị mặc định là 'normal'
   const [warning, setWarning] = useState('Good');
 
   // Hàm để thay đổi giá trị warning
   const compareNumber = (numberToCompare: number, label: string) => {
-    if(label === 'temperature') {
+    if(label === 'Temperature') {
       if (numberToCompare > field.plantStage.maxTemperature) {
         setWarning('High');
       } else if (numberToCompare < field.plantStage.minTemperature) {
@@ -27,7 +26,7 @@ const Gauge: React.FC<GaugeChartProps> = ({data, title = '', unit='%', label='so
         setWarning('Good');
       }
     }
-    else if(label === 'soild') {
+    else if(label === 'Soil moisturize') {
       if (numberToCompare > field.plantStage.maxSoil) {
         setWarning('High');
       } else if (numberToCompare < field.plantStage.minSoil) {
@@ -36,7 +35,7 @@ const Gauge: React.FC<GaugeChartProps> = ({data, title = '', unit='%', label='so
         setWarning('Good');
       }
     }
-    else if(label === 'humidity') {
+    else if(label === 'Humidity') {
       if (numberToCompare > field.plantStage.maxHumidity) {
         setWarning('High');
       } else if (numberToCompare < field.plantStage.minHumidity) {

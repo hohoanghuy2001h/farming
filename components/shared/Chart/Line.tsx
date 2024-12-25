@@ -18,7 +18,9 @@ const Line: React.FC<ChartProps> = ({data, title = '', unit = ''})  => {
         data={data}
         width={screenWidth} // from react-native
         height={220}
-        formatXLabel={(value) => `${value}`}  // Tùy chỉnh thêm 'Day' trước mỗi nhãn trên trục X
+        formatXLabel={(value) => {
+          return value? `${new Date(value).getDate()}`: '';
+        }}  // Tùy chỉnh thêm 'Day' trước mỗi nhãn trên trục X
         formatYLabel={(value) => `${value}${unit}`}  // Thêm ký hiệu độ cho trục Y
         fromZero
         style={{
@@ -35,8 +37,9 @@ const Line: React.FC<ChartProps> = ({data, title = '', unit = ''})  => {
           labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
           decimalPlaces: 1,
           propsForDots: {
-            r: "0", // Không hiển thị điểm (bán kính bằng 0)
-            strokeWidth: "0", // Không có đường viền
+            r: "3", // Bán kính của điểm
+            strokeWidth: "2", // Độ dày viền xung quanh điểm
+            stroke: "#37B84F", // Màu viền điểm
           },
           propsForLabels: {
             fontSize: 11, // Kích thước font cho nhãn

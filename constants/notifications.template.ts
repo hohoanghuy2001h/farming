@@ -18,7 +18,7 @@ const notificationsTemplate = [
     },
     //Temperature
     {
-        label: 'High temperature',
+        label: 'High Temperature',
         content: 'Hiện tại nhiệt độ môi trường đang quá cao hãy sử dụng quạt!!!',
         date: new Date(),
         image: require('@/assets/images/notice/hightemp.png'),
@@ -26,7 +26,7 @@ const notificationsTemplate = [
         navigateLink: '/(routes)/controller/fan',
     },
     {
-        label: 'Low temperature',
+        label: 'Low Temperature',
         content: 'Hiện tại nhiệt độ môi trường đang quá thấp!!!',
         date: new Date(),
         image: require('@/assets/images/notice/lowtemp.png'),

@@ -3,6 +3,7 @@ import React from 'react'
 import { useLocalSearchParams } from 'expo-router'
 import { useDiseaseDetail } from '@/hooks/disease'
 import { ScrollView } from 'react-native-gesture-handler'
+import { windowWidth } from '@/utils/Dimensions'
 
 const DetailScreen = () => {
   const { id } = useLocalSearchParams();
@@ -39,7 +40,10 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     paddingTop: 10,
   },
-  image: {},
+  image: {
+    width: windowWidth,
+    height: 150,
+  },
   content: {
     textAlign: 'justify',
     paddingHorizontal: 30,

@@ -221,7 +221,7 @@ const DatePickerModal: React.FC<DatePickerModalProps> = ({ activePumpAuto }) => 
                   alignItems: 'center'
               }}
             >
-            <Text key={index} style={styles.timerText}>{timer.date.toLocaleString().split(', ')[1]}</Text>
+            <Text key={index} style={styles.timerText}>{timer.date.toLocaleString().split(', ')[0]}</Text>
             {
               timer.repeat !== 'none' ?  
               <View style={styles.repeatWrapper}>
